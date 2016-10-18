@@ -1,7 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokerCalculator", "PokerCalculator\PokerCalculator.csproj", "{D13E63A6-640F-49D3-8CE3-14BF9A16BD52}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{059495E2-3B00-4184-BAE8-B50FF4787166}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests - Integration", "Tests - Integration\Tests - Integration.csproj", "{7A70A8FD-B311-40DA-AA07-06001F7D1791}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests - Unit", "Tests - Unit\Tests - Unit.csproj", "{7164928E-0164-4443-8DCF-FD3AD66A69E9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests - Speed", "Tests - Speed\Tests - Speed.csproj", "{CE4348D1-D954-4B34-B9C8-64CAE40BA2B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App", "App\App.csproj", "{D13E63A6-640F-49D3-8CE3-14BF9A16BD52}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,6 +17,22 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{059495E2-3B00-4184-BAE8-B50FF4787166}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{059495E2-3B00-4184-BAE8-B50FF4787166}.Debug|x86.Build.0 = Debug|Any CPU
+		{059495E2-3B00-4184-BAE8-B50FF4787166}.Release|x86.ActiveCfg = Release|Any CPU
+		{059495E2-3B00-4184-BAE8-B50FF4787166}.Release|x86.Build.0 = Release|Any CPU
+		{7164928E-0164-4443-8DCF-FD3AD66A69E9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7164928E-0164-4443-8DCF-FD3AD66A69E9}.Debug|x86.Build.0 = Debug|Any CPU
+		{7164928E-0164-4443-8DCF-FD3AD66A69E9}.Release|x86.ActiveCfg = Release|Any CPU
+		{7164928E-0164-4443-8DCF-FD3AD66A69E9}.Release|x86.Build.0 = Release|Any CPU
+		{7A70A8FD-B311-40DA-AA07-06001F7D1791}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7A70A8FD-B311-40DA-AA07-06001F7D1791}.Debug|x86.Build.0 = Debug|Any CPU
+		{7A70A8FD-B311-40DA-AA07-06001F7D1791}.Release|x86.ActiveCfg = Release|Any CPU
+		{7A70A8FD-B311-40DA-AA07-06001F7D1791}.Release|x86.Build.0 = Release|Any CPU
+		{CE4348D1-D954-4B34-B9C8-64CAE40BA2B9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CE4348D1-D954-4B34-B9C8-64CAE40BA2B9}.Debug|x86.Build.0 = Debug|Any CPU
+		{CE4348D1-D954-4B34-B9C8-64CAE40BA2B9}.Release|x86.ActiveCfg = Release|Any CPU
+		{CE4348D1-D954-4B34-B9C8-64CAE40BA2B9}.Release|x86.Build.0 = Release|Any CPU
 		{D13E63A6-640F-49D3-8CE3-14BF9A16BD52}.Debug|x86.ActiveCfg = Debug|x86
 		{D13E63A6-640F-49D3-8CE3-14BF9A16BD52}.Debug|x86.Build.0 = Debug|x86
 		{D13E63A6-640F-49D3-8CE3-14BF9A16BD52}.Release|x86.ActiveCfg = Release|x86
