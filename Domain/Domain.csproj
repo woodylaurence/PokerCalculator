@@ -32,6 +32,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PokerObjects\Card.cs" />
+    <Compile Include="PokerObjects\Hand.cs" />
+    <Compile Include="PokerObjects\Deck.cs" />
+    <Compile Include="PokerEnums\CardValue.cs" />
+    <Compile Include="PokerEnums\CardSuit.cs" />
+    <Compile Include="PokerEnums\PokerHand.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="PokerObjects\" />
+    <Folder Include="PokerEnums\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
