@@ -5,7 +5,9 @@ namespace PokerCalculator.Domain.PokerObjects
 {
 	public class Hand
 	{
-		public static Hand Create (List<Card> cards)
+		public virtual List<Card> Cards { get; set; }
+
+		public static Hand Create (List<Card> cards = null)
 		{
 			throw new NotImplementedException();
 		}
