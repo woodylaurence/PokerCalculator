@@ -39,6 +39,8 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PokerObjects\CardUnitTests.cs" />
+    <Compile Include="PokerObjects\HandUnitTests.cs" />
+    <Compile Include="CardComparerUnitTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="PokerObjects\" />
