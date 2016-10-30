@@ -11,7 +11,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 	[TestFixture]
 	public class CardUnitTests
 	{
-		private Card _instance;
+		Card _instance;
 
 		[SetUp]
 		public void Setup()

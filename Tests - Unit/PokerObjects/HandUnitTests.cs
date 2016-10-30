@@ -1,0 +1,139 @@
+﻿using System;
+using System.Collections.Generic;
+using NUnit.Framework;
+using PokerCalculator.Domain.PokerObjects;
+using Rhino.Mocks;
+using PokerCalculator.Domain.PokerEnums;
+
+namespace PokerCalculator.Tests.Unit
+{
+	[TestFixture]
+	public class HandUnitTests
+	{
+		Hand _instance;
+
+		[SetUp]
+		public void Setup()
+		{
+			_instance = MockRepository.GeneratePartialMock<Hand>();
+
+			Hand.MethodObject = MockRepository.GenerateStrictMock<Hand>();
+		}
+
+		[TearDown]
+		public void TearDown()
+		{
+			Hand.MethodObject = new Hand();
+		}
+
+		#region Create
+
+		[Test]
+		public void Create_WHERE_not_supplying_cards_SHOULD_call_slave_with_null_list_of_cards()
+		{
+			//arrange
+			Hand.MethodObject.Expect(x => x.CreateSlave(null)).Return(_instance);
+
+			//act
+			var actual = Hand.Create();
+
+			//assert
+			Hand.MethodObject.VerifyAllExpectations();
+			Assert.That(actual, Is.EqualTo(_instance));
+		}
+
+		[Test]
+		public void Create_WHERE_supplying_cards_SHOULD_call_slave_with_supplied_cards()
+		{
+			//arrange
+			var cards = new List<Card> { MockRepository.GenerateStrictMock<Card>() };
+			Hand.MethodObject.Expect(x => x.CreateSlave(cards)).Return(_instance);
+
+			//act
+			var actual = Hand.Create(cards);
+
+			//assert
+			Hand.MethodObject.VerifyAllExpectations();
+			Assert.That(actual, Is.EqualTo(_instance));
+		}
+
+		[Test]
+		public void CreateSlave_WHERE_more_than_seven_cards_in_supplied_cards_SHOULD_throw_error()
+		{
+			//arrange
+			var cards = new List<Card> 
+			{ 
+				MockRepository.GenerateStrictMock<Card>(),
+				MockRepository.GenerateStrictMock<Card>(),
+				MockRepository.GenerateStrictMock<Card>(),
+				MockRepository.GenerateStrictMock<Card>(),
+				MockRepository.GenerateStrictMock<Card>(),
+				MockRepository.GenerateStrictMock<Card>(),
+				MockRepository.GenerateStrictMock<Card>(),
+				MockRepository.GenerateStrictMock<Card>()
+			};
+
+			//act + assert
+			var actualException = Assert.Throws<ArgumentException>(() => _instance.CreateSlave(cards));
+			Assert.That(actualException.Message, Is.EqualTo("A Hand cannot contain more than seven cards\nParameter name: cards"));
+			Assert.That(actualException.ParamName, Is.EqualTo("cards"));
+		}
+
+		[Test]
+		public void CreateSlave_WHERE_cards_contains_duplicates_SHOULD_throw_error()
+		{
+			//arrange
+			var duplicatedCard1 = MockRepository.GenerateStrictMock<Card>();
+			var duplicatedCard2 = MockRepository.GenerateStrictMock<Card>();
+			var card3 = MockRepository.GenerateStrictMock<Card>();
+
+			const CardValue cardValue = CardValue.Nine;
+			const CardSuit cardSuit = CardSuit.Clubs;
+			duplicatedCard1.Stub(x => x.Value).Return(cardValue);
+			duplicatedCard2.Stub(x => x.Value).Return(cardValue);
+			card3.Stub(x => x.Value).Return(CardValue.Eight);
+
+			duplicatedCard1.Stub(x => x.Suit).Return(cardSuit);
+			duplicatedCard2.Stub(x => x.Suit).Return(cardSuit);
+			card3.Stub(x => x.Suit).Return(CardSuit.Hearts);
+
+			var cards = new List<Card> { duplicatedCard1, card3, duplicatedCard2 };
+
+			//act + assert
+			var actualException = Assert.Throws<ArgumentException>(() => _instance.CreateSlave(cards));
+			Assert.That(actualException.Message, Is.EqualTo("A Hand cannot contain duplicate cards\nParameter name: cards"));
+			Assert.That(actualException.ParamName, Is.EqualTo("cards"));
+		}
+
+		[Test]
+		public void CreateSlave_SHOULD_copy_supplied_cards_to_Cards_property()
+		{
+			//arrange
+			var card1 = MockRepository.GenerateStrictMock<Card>();
+			var card2 = MockRepository.GenerateStrictMock<Card>();
+			var card3 = MockRepository.GenerateStrictMock<Card>();
+
+			var cards = new List<Card> { card1, card2, card3 };
+
+			card1.Stub(x => x.Value).Return(CardValue.Six);
+			card2.Stub(x => x.Value).Return(CardValue.Ten);
+			card3.Stub(x => x.Value).Return(CardValue.Ace);
+
+			card1.Stub(x => x.Suit).Return(CardSuit.Hearts);
+			card2.Stub(x => x.Suit).Return(CardSuit.Diamonds);
+			card3.Stub(x => x.Suit).Return(CardSuit.Diamonds);
+
+			//act
+			var actual = _instance.CreateSlave(cards);
+
+			//assert
+			Assert.That(actual.Cards, Is.Not.SameAs(cards));
+			Assert.That(actual.Cards, Has.Count.EqualTo(3));
+			Assert.That(actual.Cards [0], Is.EqualTo(card1));
+			Assert.That(actual.Cards [1], Is.EqualTo(card2));
+			Assert.That(actual.Cards [2], Is.EqualTo(card3));
+		}
+
+		#endregion
+	}
+}
