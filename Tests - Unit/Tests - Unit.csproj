@@ -41,6 +41,7 @@
     <Compile Include="PokerObjects\CardUnitTests.cs" />
     <Compile Include="PokerObjects\HandUnitTests.cs" />
     <Compile Include="CardComparerUnitTests.cs" />
+    <Compile Include="PokerObjects\HandRankUnitTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="PokerObjects\" />

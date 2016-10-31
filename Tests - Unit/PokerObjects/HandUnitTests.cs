@@ -135,5 +135,97 @@ namespace PokerCalculator.Tests.Unit
 		}
 
 		#endregion
+
+		#region AddCard
+
+		[Test]
+		public void AddCard_WHERE_hand_already_has_seven_cards_SHOULD_throw_exception()
+		{
+			//arrange
+			var cardToAdd = MockRepository.GenerateStrictMock<Card>();
+			_instance.Stub(x => x.Cards).Return(new List<Card>
+			{
+				MockRepository.GenerateStrictMock<Card>(),
+				MockRepository.GenerateStrictMock<Card>(),
+				MockRepository.GenerateStrictMock<Card>(),
+				MockRepository.GenerateStrictMock<Card>(),
+				MockRepository.GenerateStrictMock<Card>(),
+				MockRepository.GenerateStrictMock<Card>(),
+				MockRepository.GenerateStrictMock<Card>()
+			});
+
+			//act + assert
+			var actualException = Assert.Throws<Exception>(() => _instance.AddCard(cardToAdd));
+			Assert.That(actualException.Message, Is.EqualTo("A Hand cannot have more than seven cards"));
+		}
+
+		[Test]
+		public void AddCard_WHERE_hand_already_contains_card_SHOULD_throw_exception()
+		{
+			//arrange
+			var cardToAdd = MockRepository.GenerateStrictMock<Card>();
+			var cardInHand = MockRepository.GenerateStrictMock<Card>();
+			_instance.Stub(x => x.Cards).Return(new List<Card> { cardInHand });
+
+			const CardValue value = CardValue.Eight;
+			cardToAdd.Stub(x => x.Value).Return(value);
+			cardInHand.Stub(x => x.Value).Return(value);
+
+			const CardSuit suit = CardSuit.Diamonds;
+			cardToAdd.Stub(x => x.Suit).Return(suit);
+			cardInHand.Stub(x => x.Suit).Return(suit);
+
+			//act + assert
+			var actualException = Assert.Throws<Exception>(() => _instance.AddCard(cardToAdd));
+			Assert.That(actualException.Message, Is.EqualTo("A Hand cannot contain duplicate cards"));
+		}
+
+		[Test]
+		public void AddCard_WHERE_hand_initially_has_no_cards_SHOULD_add_hand_to_card_and_reset_rank()
+		{
+			//arrange
+			var cardToAdd = MockRepository.GenerateStrictMock<Card>();
+			var cards = new List<Card>();
+			_instance.Stub(x => x.Cards).Return(cards).Repeat.Times(3);
+
+			_instance.Expect(x => x.Rank = null);
+
+			//act
+			_instance.AddCard(cardToAdd);
+
+			//assert
+			_instance.VerifyAllExpectations();
+			Assert.That(cards, Has.Count.EqualTo(1));
+			Assert.That(cards, Has.Some.EqualTo(cardToAdd));
+		}
+
+		[Test]
+		public void AddCard_WHERE_hand_has_some_cards_SHOULD_add_card_to_hand_along_with_other_cards_and_reset_rank()
+		{
+			//arrange
+			var cardToAdd = MockRepository.GenerateStrictMock<Card>();
+			var cardInHand = MockRepository.GenerateStrictMock<Card>();
+			var cards = new List<Card> { cardInHand };
+			_instance.Stub(x => x.Cards).Return(cards).Repeat.Times(3);
+
+			_instance.Expect(x => x.Rank = null);
+
+			cardToAdd.Stub(x => x.Value).Return(CardValue.Four);
+			cardInHand.Stub(x => x.Value).Return(CardValue.Nine);
+
+			cardToAdd.Stub(x => x.Suit).Return(CardSuit.Diamonds);
+			cardInHand.Stub(x => x.Suit).Return(CardSuit.Hearts);
+
+			//act
+			_instance.AddCard(cardToAdd);
+
+			//assert
+			_instance.VerifyAllExpectations();
+			Assert.That(cards, Has.Count.EqualTo(2));
+			Assert.That(cards, Has.Some.EqualTo(cardToAdd));
+			Assert.That(cards, Has.Some.EqualTo(cardInHand));
+		}
+
+		#endregion
 	}
 }

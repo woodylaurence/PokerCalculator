@@ -40,6 +40,7 @@
     <Compile Include="PokerEnums\PokerHand.cs" />
     <Compile Include="VisibleTo.cs" />
     <Compile Include="CardComparer.cs" />
+    <Compile Include="PokerObjects\HandRank.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="PokerObjects\" />

@@ -89,6 +89,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		{
 			//arrange
 			var cardToAdd = Card.Create(CardValue.Four, CardSuit.Hearts);
+			_instance.Rank = HandRank.Create(PokerHand.Flush);
 
 			//act
 			_instance.AddCard(cardToAdd);
@@ -96,6 +97,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			//assert
 			Assert.That(_instance.Cards, Has.Count.EqualTo(1));
 			Assert.That(_instance.Cards, Has.Some.EqualTo(cardToAdd));
+			Assert.That(_instance._rank, Is.Null);
 		}
 
 		[Test]
@@ -104,6 +106,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			//arrange
 			var initialCard = Card.Create(CardValue.Ten, CardSuit.Diamonds);
 			_instance.AddCard(initialCard);
+			_instance.Rank = HandRank.Create(PokerHand.ThreeOfAKind);
 
 			var cardToAdd = Card.Create(CardValue.Seven, CardSuit.Spades);
 
@@ -114,6 +117,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			Assert.That(_instance.Cards, Has.Count.EqualTo(2));
 			Assert.That(_instance.Cards, Has.Some.EqualTo(initialCard));
 			Assert.That(_instance.Cards, Has.Some.EqualTo(cardToAdd));
+			Assert.That(_instance._rank, Is.Null);
 		}
 
 		#endregion

@@ -8,7 +8,20 @@ namespace PokerCalculator.Domain.PokerObjects
 	{
 		internal static Hand MethodObject = new Hand();
 
+		#region Properties and Fields
+
 		public virtual List<Card> Cards { get; set; }
+
+		protected internal virtual HandRank _rank { get; set; }
+		public virtual HandRank Rank
+		{
+			get { throw new NotImplementedException(); }
+			set { throw new NotImplementedException(); }
+		}
+
+		#endregion
+
+		#region Static Methods
 
 		/// <summary>
 		/// Create the specified cards.
@@ -26,9 +39,22 @@ namespace PokerCalculator.Domain.PokerObjects
 			};
 		}
 
+		#endregion
+
+		#region Instance Methods
+
+		/// <summary>
+		/// Adds the card.
+		/// </summary>
+		/// <param name="cardToAdd">Card to add.</param>
 		public virtual void AddCard(Card cardToAdd)
 		{
-			throw new NotImplementedException();
+			if (Cards.Count == 7) throw new Exception("A Hand cannot have more than seven cards");
+			if (Cards.Contains(cardToAdd, new CardComparer())) throw new Exception("A Hand cannot contain duplicate cards");
+			Cards.Add(cardToAdd);
+			Rank = null;
 		}
+
+		#endregion
 	}
 }
