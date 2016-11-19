@@ -26,6 +26,59 @@ namespace PokerCalculator.Tests.Unit
 			Hand.MethodObject = new Hand();
 		}
 
+		#region Properties and Fields
+
+		[Test]
+		public void Rank_get_WHERE_backing_field_has_already_been_set_SHOULD_return_value_of_backing_field()
+		{
+			//arrange
+			var handRank = MockRepository.GenerateStrictMock<HandRank>();
+			_instance.Stub(x => x._rank).Return(handRank);
+
+			//act
+			var actual = _instance.Rank;
+
+			//assert
+			Assert.That(actual, Is.EqualTo(handRank));
+			_instance.AssertWasNotCalled(x => x.CalculateRank());
+		}
+
+		[Test]
+		public void Rank_get_WHERE_backing_field_is_null_SHOULD_return_calculate_value_of_rank_set_backing_field_and_return_rank()
+		{
+			//arrange
+			_instance.Stub(x => x._rank).Return(null).Repeat.Once();
+
+			var handRank = MockRepository.GenerateStrictMock<HandRank>();
+			_instance.Stub(x => x.CalculateRank()).Return(handRank);
+
+			_instance.Expect(x => x._rank = handRank);
+			_instance.Stub(x => x._rank).Return(handRank).Repeat.Once();
+
+			//act
+			var actual = _instance.Rank;
+
+			//assert
+			_instance.VerifyAllExpectations();
+			Assert.That(actual, Is.EqualTo(handRank));
+		}
+
+		[Test]
+		public void Rank_set_SHOULD_set_value_of_backing_field()
+		{
+			//arrange
+			var handRank = MockRepository.GenerateStrictMock<HandRank>();
+			_instance.Expect(x => x._rank = handRank);
+
+			//act
+			_instance.Rank = handRank;
+
+			//assert
+			_instance.VerifyAllExpectations();
+		}
+
+		#endregion
+
 		#region Create
 
 		[Test]

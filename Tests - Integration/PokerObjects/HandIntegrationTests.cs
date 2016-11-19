@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
+using NUnit.Framework.Constraints;
 
 namespace PokerCalculator.Tests.Integration.PokerObjects
 {
@@ -15,7 +16,56 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		{
 			_instance = Hand.Create();
 		}
-		
+
+		#region Properties and Fields
+
+		[Test]
+		public void Rank_get_WHERE_backing_field_already_set_SHOULD_return_value_of_backing_field()
+		{
+			//arrange
+			var handRank = HandRank.Create(PokerHand.Pair);
+			_instance._rank = handRank;
+
+			//act
+			var actual = _instance.Rank;
+
+			//assert
+			Assert.That(actual, Is.EqualTo(handRank));
+
+		}
+
+		[Test]
+		public void Rank_get_WHERE_backing_field_is_null_SHOULD_calculate_value_and_set_backing_field_and_return_rank()
+		{
+			//arrange
+			_instance._rank = null;
+			_instance.AddCard(Card.Create(CardValue.Queen, CardSuit.Diamonds));
+			_instance.AddCard(Card.Create(CardValue.Queen, CardSuit.Clubs));
+
+			//act
+			var actual = _instance.Rank;
+
+			//assert
+			Assert.That(actual, Is.Not.Null);
+			Assert.That(_instance._rank, Is.Not.Null);
+		}
+
+		[Test]
+		public void Rank_set_SHOULD_set_backing_field_value()
+		{
+			//arrange
+			var handRank = HandRank.Create(PokerHand.Straight);
+
+			//act
+			_instance.Rank = handRank;
+
+			//assert
+			Assert.That(_instance.Rank, Is.EqualTo(handRank));
+			Assert.That(_instance._rank, Is.EqualTo(handRank));
+		}
+
+		#endregion
+
 		#region Create
 
 		[Test]

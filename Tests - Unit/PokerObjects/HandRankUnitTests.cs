@@ -52,10 +52,10 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			var kickers = new List<Card> { MockRepository.GenerateStrictMock<Card>() };
 
 			var expected = MockRepository.GenerateStrictMock<HandRank>();
-			HandRank.MethodObject.Expect(x => x.CreateSlave(handRank, null)).Return(expected);
+			HandRank.MethodObject.Expect(x => x.CreateSlave(handRank, kickers)).Return(expected);
 
 			//act
-			var actual = HandRank.Create(handRank);
+			var actual = HandRank.Create(handRank, kickers);
 
 			//assert
 			HandRank.MethodObject.VerifyAllExpectations();

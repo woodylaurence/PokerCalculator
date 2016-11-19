@@ -15,8 +15,12 @@ namespace PokerCalculator.Domain.PokerObjects
 		protected internal virtual HandRank _rank { get; set; }
 		public virtual HandRank Rank
 		{
-			get { throw new NotImplementedException(); }
-			set { throw new NotImplementedException(); }
+			get
+			{
+				if (_rank == null) _rank = CalculateRank();
+				return _rank;
+			}
+			set { _rank = value; }
 		}
 
 		#endregion
@@ -53,6 +57,11 @@ namespace PokerCalculator.Domain.PokerObjects
 			if (Cards.Contains(cardToAdd, new CardComparer())) throw new Exception("A Hand cannot contain duplicate cards");
 			Cards.Add(cardToAdd);
 			Rank = null;
+		}
+
+		public virtual HandRank CalculateRank()
+		{
+			throw new NotImplementedException();
 		}
 
 		#endregion
