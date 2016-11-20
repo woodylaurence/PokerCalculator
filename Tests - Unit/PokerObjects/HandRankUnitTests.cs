@@ -49,7 +49,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		{
 			//arrange
 			const PokerHand handRank = PokerHand.StraightFlush;
-			var kickers = new List<Card> { MockRepository.GenerateStrictMock<Card>() };
+			var kickers = new List<CardValue> { CardValue.Nine };
 
 			var expected = MockRepository.GenerateStrictMock<HandRank>();
 			HandRank.MethodObject.Expect(x => x.CreateSlave(handRank, kickers)).Return(expected);
@@ -73,7 +73,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 
 			//assert
 			Assert.That(actual.PokerHand, Is.EqualTo(pokerHand));
-			Assert.That(actual.KickerCards, Is.Empty);
+			Assert.That(actual.KickerCardValues, Is.Empty);
 		}
 
 		[Test]
@@ -81,14 +81,14 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		{
 			//arrange
 			const PokerHand pokerHand = PokerHand.Pair;
-			var kickers = new List<Card> { MockRepository.GenerateStrictMock<Card>() };
+			var kickers = new List<CardValue> { CardValue.Queen };
 
 			//act
 			var actual = _instance.CreateSlave(pokerHand, kickers);
 
 			//assert
 			Assert.That(actual.PokerHand, Is.EqualTo(pokerHand));
-			Assert.That(actual.KickerCards, Is.EqualTo(kickers));
+			Assert.That(actual.KickerCardValues, Is.EqualTo(kickers));
 		}
 
 		#endregion

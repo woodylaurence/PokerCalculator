@@ -21,7 +21,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 
 			//assert
 			Assert.That(actual.PokerHand, Is.EqualTo(pokerHand));
-			Assert.That(actual.KickerCards, Is.Empty);
+			Assert.That(actual.KickerCardValues, Is.Empty);
 		}
 
 		[Test]
@@ -29,15 +29,14 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		{
 			//arrange
 			const PokerHand pokerHand = PokerHand.TwoPair;
-			var kickerCard = Card.Create(CardValue.Six, CardSuit.Clubs);
-			var kickers = new List<Card> { kickerCard };
+			var kickers = new List<CardValue> { CardValue.Six };
 
 			//act
 			var actual = HandRank.Create(pokerHand, kickers);
 
 			//assert
 			Assert.That(actual.PokerHand, Is.EqualTo(pokerHand));
-			Assert.That(actual.KickerCards, Is.EqualTo(kickers));			            
+			Assert.That(actual.KickerCardValues, Is.EqualTo(kickers));			            
 		}
 
 		#endregion
