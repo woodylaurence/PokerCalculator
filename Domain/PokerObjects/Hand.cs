@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System;
 using System.Linq;
+using PokerCalculator.Domain.PokerEnums;
+using System.Runtime.InteropServices;
+using System.Net;
 
 namespace PokerCalculator.Domain.PokerObjects
 {
@@ -62,6 +65,25 @@ namespace PokerCalculator.Domain.PokerObjects
 		public virtual HandRank CalculateRank()
 		{
 			throw new NotImplementedException();
+		}
+
+		protected internal virtual bool IsFlush()
+		{
+			throw new NotImplementedException();
+		}
+
+		/// <summary>
+		/// Gets the flush values.
+		/// </summary>
+		/// <returns>The flush values.</returns>
+		protected internal virtual List<CardValue> GetFlushValues()
+		{
+			return Cards.GroupBy(x => x.Suit)
+						.OrderByDescending(x => x.Count())
+						.First()
+						.Select(x => x.Value)
+						.OrderByDescending(x => x)
+				        .ToList();
 		}
 
 		#endregion

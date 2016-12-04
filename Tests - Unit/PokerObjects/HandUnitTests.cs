@@ -280,5 +280,56 @@ namespace PokerCalculator.Tests.Unit
 		}
 
 		#endregion
+
+		#region GetFlushValues
+
+		[Test]
+		public void GetFlushValues_SHOULD_group_cards_together_by_suit_and_return_list_of_card_values_ordered_by_value_descending_for_suit_with_most_cards()
+		{
+			//arrange
+			var card1 = MockRepository.GenerateStrictMock<Card>();
+			var card2 = MockRepository.GenerateStrictMock<Card>();
+			var card3 = MockRepository.GenerateStrictMock<Card>();
+			var card4 = MockRepository.GenerateStrictMock<Card>();
+			var card5 = MockRepository.GenerateStrictMock<Card>();
+			var card6 = MockRepository.GenerateStrictMock<Card>();
+
+			_instance.Stub(x => x.Cards).Return(new List<Card>
+			{
+				card1, card2, card3, card4, card5, card6
+			});
+
+			const CardValue card1Value = CardValue.Six;
+			card1.Stub(x => x.Suit).Return(CardSuit.Clubs);
+			card1.Stub(x => x.Value).Return(card1Value);
+
+			card2.Stub(x => x.Suit).Return(CardSuit.Hearts);
+			card2.Stub(x => x.Value).Return(CardValue.Ace);
+
+			const CardValue card3Value = CardValue.Four;
+			card3.Stub(x => x.Suit).Return(CardSuit.Clubs);
+			card3.Stub(x => x.Value).Return(card3Value);
+
+			card4.Stub(x => x.Suit).Return(CardSuit.Diamonds);
+			card4.Stub(x => x.Value).Return(CardValue.Jack);
+
+			const CardValue card5Value = CardValue.Nine;
+			card5.Stub(x => x.Suit).Return(CardSuit.Clubs);
+			card5.Stub(x => x.Value).Return(card5Value);
+
+			card6.Stub(x => x.Suit).Return(CardSuit.Diamonds);
+			card6.Stub(x => x.Value).Return(CardValue.Two);
+
+			//act
+			var actual = _instance.GetFlushValues();
+
+			//assert
+			Assert.That(actual, Has.Count.EqualTo(3));
+			Assert.That(actual[0], Is.EqualTo(card5Value));
+			Assert.That(actual[1], Is.EqualTo(card1Value));
+			Assert.That(actual[2], Is.EqualTo(card3Value));
+		}
+
+		#endregion
 	}
 }
