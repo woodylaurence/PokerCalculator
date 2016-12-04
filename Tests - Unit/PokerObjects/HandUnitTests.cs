@@ -331,5 +331,255 @@ namespace PokerCalculator.Tests.Unit
 		}
 
 		#endregion
+
+		#region GetStraightValues
+
+		[Test]
+		public void GetStraightValues_WHERE_no_consecutive_values_SHOULD_return_highest_value()
+		{
+			//Cards Values: K J 9 8 4 6 2
+
+			//arrange
+			var card1 = MockRepository.GenerateStrictMock<Card>();
+			var card2 = MockRepository.GenerateStrictMock<Card>();
+			var card3 = MockRepository.GenerateStrictMock<Card>();
+			var card4 = MockRepository.GenerateStrictMock<Card>();
+			var card5 = MockRepository.GenerateStrictMock<Card>();
+			var card6 = MockRepository.GenerateStrictMock<Card>();
+
+			_instance.Stub(x => x.Cards).Return(new List<Card>
+			{
+				card1, card2, card3, card4, card5, card6
+			});
+
+			const CardValue highestCardValue = CardValue.King;
+
+			card1.Stub(x => x.Value).Return(CardValue.Eight);
+			card2.Stub(x => x.Value).Return(CardValue.Jack);
+			card3.Stub(x => x.Value).Return(highestCardValue);
+			card4.Stub(x => x.Value).Return(CardValue.Two);
+			card5.Stub(x => x.Value).Return(CardValue.Four);
+			card6.Stub(x => x.Value).Return(CardValue.Six);
+
+			//act
+			var actual = _instance.GetStraightValues();
+
+			//assert
+			Assert.That(actual, Has.Count.EqualTo(1));
+			Assert.That(actual[0], Is.EqualTo(highestCardValue));
+		}
+
+		[Test]
+		public void GetStraightValues_WHERE_straight_but_has_longer_straight_starting_at_lower_value_SHOULD_return_longer_straight_with_cards_ordered_by_value()
+		{
+			//Cards Values: K 10 9 5 4 3 2 
+
+			//arrange
+			var card1 = MockRepository.GenerateStrictMock<Card>();
+			var card2 = MockRepository.GenerateStrictMock<Card>();
+			var card3 = MockRepository.GenerateStrictMock<Card>();
+			var card4 = MockRepository.GenerateStrictMock<Card>();
+			var card5 = MockRepository.GenerateStrictMock<Card>();
+			var card6 = MockRepository.GenerateStrictMock<Card>();
+			var card7 = MockRepository.GenerateStrictMock<Card>();
+
+			_instance.Stub(x => x.Cards).Return(new List<Card>
+			{
+				card1, card2, card3, card4, card5, card6, card7
+			});
+
+			const CardValue straightCardValue1 = CardValue.Five;
+			const CardValue straightCardValue2 = CardValue.Four;
+			const CardValue straightCardValue3 = CardValue.Three;
+			const CardValue straightCardValue4 = CardValue.Two;
+
+			card1.Stub(x => x.Value).Return(CardValue.King);
+			card2.Stub(x => x.Value).Return(straightCardValue2);
+			card3.Stub(x => x.Value).Return(CardValue.Nine);
+			card4.Stub(x => x.Value).Return(CardValue.Ten);
+			card5.Stub(x => x.Value).Return(straightCardValue3);
+			card6.Stub(x => x.Value).Return(straightCardValue1);
+			card7.Stub(x => x.Value).Return(straightCardValue4);
+
+			//act
+			var actual = _instance.GetStraightValues();
+
+			//assert
+			Assert.That(actual, Has.Count.EqualTo(4));
+			Assert.That(actual[0], Is.EqualTo(straightCardValue1));
+			Assert.That(actual[1], Is.EqualTo(straightCardValue2));
+			Assert.That(actual[2], Is.EqualTo(straightCardValue3));
+			Assert.That(actual[3], Is.EqualTo(straightCardValue4));
+		}
+
+		[Test]
+		public void GetStraightValues_WHERE_two_straights_of_same_length_SHOULD_return_higher_straight_with_cards_ordered_by_value()
+		{
+			//Cards Values: J 10 9 6 4 3 2 
+
+			//arrange
+			var card1 = MockRepository.GenerateStrictMock<Card>();
+			var card2 = MockRepository.GenerateStrictMock<Card>();
+			var card3 = MockRepository.GenerateStrictMock<Card>();
+			var card4 = MockRepository.GenerateStrictMock<Card>();
+			var card5 = MockRepository.GenerateStrictMock<Card>();
+			var card6 = MockRepository.GenerateStrictMock<Card>();
+			var card7 = MockRepository.GenerateStrictMock<Card>();
+
+			_instance.Stub(x => x.Cards).Return(new List<Card>
+			{
+				card1, card2, card3, card4, card5, card6, card7
+			});
+
+			const CardValue straightCardValue1 = CardValue.Jack;
+			const CardValue straightCardValue2 = CardValue.Ten;
+			const CardValue straightCardValue3 = CardValue.Nine;
+
+			card1.Stub(x => x.Value).Return(CardValue.Six);
+			card2.Stub(x => x.Value).Return(straightCardValue2);
+			card3.Stub(x => x.Value).Return(CardValue.Four);
+			card4.Stub(x => x.Value).Return(CardValue.Three);
+			card5.Stub(x => x.Value).Return(straightCardValue3);
+			card6.Stub(x => x.Value).Return(straightCardValue1);
+			card7.Stub(x => x.Value).Return(CardValue.Two);
+
+			//act
+			var actual = _instance.GetStraightValues();
+
+			//assert
+			Assert.That(actual, Has.Count.EqualTo(3));
+			Assert.That(actual[0], Is.EqualTo(straightCardValue1));
+			Assert.That(actual[1], Is.EqualTo(straightCardValue2));
+			Assert.That(actual[2], Is.EqualTo(straightCardValue3));
+		}
+
+		[Test]
+		public void GetStraightValues_WHERE_hand_has_ace_and_have_longer_straight_using_ace_as_low_than_ace_as_high_SHOULD_return_longer_straight_with_ace_used_as_low_and_cards_ordered_by_value()
+		{
+			//Cards Values: K Q 9 4 3 2 A
+
+			//arrange
+			var card1 = MockRepository.GenerateStrictMock<Card>();
+			var card2 = MockRepository.GenerateStrictMock<Card>();
+			var card3 = MockRepository.GenerateStrictMock<Card>();
+			var card4 = MockRepository.GenerateStrictMock<Card>();
+			var card5 = MockRepository.GenerateStrictMock<Card>();
+			var card6 = MockRepository.GenerateStrictMock<Card>();
+			var card7 = MockRepository.GenerateStrictMock<Card>();
+
+			_instance.Stub(x => x.Cards).Return(new List<Card>
+			{
+				card1, card2, card3, card4, card5, card6, card7
+			});
+
+			const CardValue straightCardValue1 = CardValue.Four;
+			const CardValue straightCardValue2 = CardValue.Three;
+			const CardValue straightCardValue3 = CardValue.Two;
+			const CardValue straightCardValue4 = CardValue.Ace;
+
+			card1.Stub(x => x.Value).Return(CardValue.Queen);
+			card2.Stub(x => x.Value).Return(straightCardValue1);
+			card3.Stub(x => x.Value).Return(CardValue.King);
+			card4.Stub(x => x.Value).Return(straightCardValue2);
+			card5.Stub(x => x.Value).Return(straightCardValue4);
+			card6.Stub(x => x.Value).Return(CardValue.Nine);
+			card7.Stub(x => x.Value).Return(straightCardValue3);
+
+			//act
+			var actual = _instance.GetStraightValues();
+
+			//assert
+			Assert.That(actual, Has.Count.EqualTo(4));
+			Assert.That(actual[0], Is.EqualTo(straightCardValue1));
+			Assert.That(actual[1], Is.EqualTo(straightCardValue2));
+			Assert.That(actual[2], Is.EqualTo(straightCardValue3));
+			Assert.That(actual[3], Is.EqualTo(straightCardValue4));
+		}
+
+		[Test]
+		public void GetStraightValues_WHERE_hand_has_ace_and_have_longer_straight_using_ace_as_high_than_ace_as_low_SHOULD_return_longer_straight_with_ace_used_as_high_and_cards_ordered_by_value()
+		{
+			//Cards Values: K Q J 7 3 2 A
+
+			//arrange
+			var card1 = MockRepository.GenerateStrictMock<Card>();
+			var card2 = MockRepository.GenerateStrictMock<Card>();
+			var card3 = MockRepository.GenerateStrictMock<Card>();
+			var card4 = MockRepository.GenerateStrictMock<Card>();
+			var card5 = MockRepository.GenerateStrictMock<Card>();
+			var card6 = MockRepository.GenerateStrictMock<Card>();
+			var card7 = MockRepository.GenerateStrictMock<Card>();
+
+			_instance.Stub(x => x.Cards).Return(new List<Card>
+			{
+				card1, card2, card3, card4, card5, card6, card7
+			});
+
+			const CardValue straightCardValue1 = CardValue.Ace;
+			const CardValue straightCardValue2 = CardValue.King;
+			const CardValue straightCardValue3 = CardValue.Queen;
+			const CardValue straightCardValue4 = CardValue.Jack;
+
+			card1.Stub(x => x.Value).Return(CardValue.Seven);
+			card2.Stub(x => x.Value).Return(straightCardValue3);
+			card3.Stub(x => x.Value).Return(straightCardValue2);
+			card4.Stub(x => x.Value).Return(CardValue.Two);
+			card5.Stub(x => x.Value).Return(straightCardValue4);
+			card6.Stub(x => x.Value).Return(straightCardValue1);
+			card7.Stub(x => x.Value).Return(CardValue.Three);
+
+			//act
+			var actual = _instance.GetStraightValues();
+
+			//assert
+			Assert.That(actual, Has.Count.EqualTo(4));
+			Assert.That(actual[0], Is.EqualTo(straightCardValue1));
+			Assert.That(actual[1], Is.EqualTo(straightCardValue2));
+			Assert.That(actual[2], Is.EqualTo(straightCardValue3));
+			Assert.That(actual[3], Is.EqualTo(straightCardValue4));
+		}
+
+		[Test]
+		public void GetStraightValues_WHERE_hand_has_ace_and_have_higher_straight_using_ace_as_high_than_ace_as_low_SHOULD_return_higher_straight_with_ace_used_as_high_and_cards_ordered_by_value()
+		{
+			//Cards Values: K Q 9 7 3 2 A
+
+			//arrange
+			var card1 = MockRepository.GenerateStrictMock<Card>();
+			var card2 = MockRepository.GenerateStrictMock<Card>();
+			var card3 = MockRepository.GenerateStrictMock<Card>();
+			var card4 = MockRepository.GenerateStrictMock<Card>();
+			var card5 = MockRepository.GenerateStrictMock<Card>();
+			var card6 = MockRepository.GenerateStrictMock<Card>();
+			var card7 = MockRepository.GenerateStrictMock<Card>();
+
+			_instance.Stub(x => x.Cards).Return(new List<Card>
+			{
+				card1, card2, card3, card4, card5, card6, card7
+			});
+
+			const CardValue straightCardValue1 = CardValue.Ace;
+			const CardValue straightCardValue2 = CardValue.King;
+			const CardValue straightCardValue3 = CardValue.Queen;
+
+			card1.Stub(x => x.Value).Return(straightCardValue3);
+			card2.Stub(x => x.Value).Return(CardValue.Seven);
+			card3.Stub(x => x.Value).Return(straightCardValue2);
+			card4.Stub(x => x.Value).Return(CardValue.Two);
+			card5.Stub(x => x.Value).Return(straightCardValue1);
+			card6.Stub(x => x.Value).Return(CardValue.Three);
+			card7.Stub(x => x.Value).Return(CardValue.Nine);
+
+			//act
+			var actual = _instance.GetStraightValues();
+
+			//assert
+			Assert.That(actual, Has.Count.EqualTo(3));
+			Assert.That(actual[0], Is.EqualTo(straightCardValue1));
+			Assert.That(actual[1], Is.EqualTo(straightCardValue2));
+			Assert.That(actual[2], Is.EqualTo(straightCardValue3));
+		}
+
+		#endregion
 	}
 }
