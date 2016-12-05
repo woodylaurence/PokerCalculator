@@ -64,7 +64,16 @@ namespace PokerCalculator.Domain.PokerObjects
 
 		public virtual HandRank CalculateRank()
 		{
-			throw new NotImplementedException();
+			var flushValues = GetFlushValues();
+			var straightFlushValues = GetStraightValues(flushValues);
+			if (straightFlushValues.Count >= 5)
+			{
+				var highestStraightFlushValue = straightFlushValues.First();
+				return highestStraightFlushValue == CardValue.Ace
+					   	? HandRank.Create(PokerHand.RoyalFlush)
+						: HandRank.Create(PokerHand.StraightFlush, new List<CardValue> { straightFlushValues.First() });
+			}
+			return HandRank.Create(PokerHand.Flush, flushValues);
 		}
 
 		protected internal virtual bool IsFlush()

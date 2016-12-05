@@ -357,7 +357,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		#region Full House
 
 		[Test]
-		public void CalculateHandRank_SHOULD_return_full_house_with_primary_value_set_to_three_of_a_kind_value_and_secondary_value_set_to_pair_value()
+		public void CalculateHandRank_WHERE_full_house_SHOULD_return_full_house_with_primary_value_set_to_three_of_a_kind_value_and_secondary_value_set_to_pair_value()
 		{
 			//	    FULL HOUSE	  -  OTHERS
 			// {7C 7D 7H} {2H 2C} - {9D 4C}
