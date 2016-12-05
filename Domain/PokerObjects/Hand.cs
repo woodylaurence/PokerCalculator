@@ -130,6 +130,15 @@ namespace PokerCalculator.Domain.PokerObjects
 								  .First();
 		}
 
+		protected internal virtual List<KeyValuePair<int, CardValue>> GetOrderedCardGroups()
+		{
+			return Cards.GroupBy(x => x.Value)
+				        .Select(x => new KeyValuePair<int, CardValue>(x.Count(), x.Key))
+						.OrderByDescending(x => x.Key)
+						.ThenByDescending(x => x.Value)
+						.ToList();
+		}
+
 		#endregion
 	}
 }

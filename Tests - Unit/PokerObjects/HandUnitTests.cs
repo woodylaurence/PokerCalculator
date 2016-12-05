@@ -549,5 +549,155 @@ namespace PokerCalculator.Tests.Unit
 		}
 
 		#endregion
+
+		#region GetOrderedCardGroups
+
+		[Test]
+		public void GetOrderedCardGroups_WHERE_no_multi_cards_SHOULD_return_groups_of_one_ordered_by_card_value_descending()
+		{
+			//arrange
+			var card1 = MockRepository.GenerateStrictMock<Card>();
+			var card2 = MockRepository.GenerateStrictMock<Card>();
+			var card3 = MockRepository.GenerateStrictMock<Card>();
+			var card4 = MockRepository.GenerateStrictMock<Card>();
+			var card5 = MockRepository.GenerateStrictMock<Card>();
+			var card6 = MockRepository.GenerateStrictMock<Card>();
+			var card7 = MockRepository.GenerateStrictMock<Card>();
+
+			_instance.Stub(x => x.Cards).Return(new List<Card>
+			{
+				card1, card2, card3, card4, card5, card6, card7
+			});
+
+			const CardValue card1Value = CardValue.Eight;
+			const CardValue card2Value = CardValue.Four;
+			const CardValue card3Value = CardValue.King;
+			const CardValue card4Value = CardValue.Ace;
+			const CardValue card5Value = CardValue.Ten;
+			const CardValue card6Value = CardValue.Seven;
+			const CardValue card7Value = CardValue.Two;
+
+			card1.Stub(x => x.Value).Return(card1Value);
+			card2.Stub(x => x.Value).Return(card2Value);
+			card3.Stub(x => x.Value).Return(card3Value);
+			card4.Stub(x => x.Value).Return(card4Value);
+			card5.Stub(x => x.Value).Return(card5Value);
+			card6.Stub(x => x.Value).Return(card6Value);
+			card7.Stub(x => x.Value).Return(card7Value);
+
+			//act
+			var actual = _instance.GetOrderedCardGroups();
+
+			//assert
+			Assert.That(actual, Has.Count.EqualTo(7));
+			Assert.That(actual[0].Key, Is.EqualTo(1));
+			Assert.That(actual[0].Value, Is.EqualTo(card4Value));
+
+			Assert.That(actual[1].Key, Is.EqualTo(1));
+			Assert.That(actual[1].Value, Is.EqualTo(card3Value));
+
+			Assert.That(actual[2].Key, Is.EqualTo(1));
+			Assert.That(actual[2].Value, Is.EqualTo(card5Value));
+
+			Assert.That(actual[3].Key, Is.EqualTo(1));
+			Assert.That(actual[3].Value, Is.EqualTo(card1Value));
+
+			Assert.That(actual[4].Key, Is.EqualTo(1));
+			Assert.That(actual[4].Value, Is.EqualTo(card6Value));
+
+			Assert.That(actual[5].Key, Is.EqualTo(1));
+			Assert.That(actual[5].Value, Is.EqualTo(card2Value));
+
+			Assert.That(actual[6].Key, Is.EqualTo(1));
+			Assert.That(actual[6].Value, Is.EqualTo(card7Value));
+		}
+
+		[Test]
+		public void GetOrderedCardGroups_WHERE_have_a_three_of_a_kind_and_pair_SHOULD_return_groups_of_multi_cards_ordered_by_descending_quantity()
+		{
+			//arrange
+			var card1 = MockRepository.GenerateStrictMock<Card>();
+			var card2 = MockRepository.GenerateStrictMock<Card>();
+			var card3 = MockRepository.GenerateStrictMock<Card>();
+			var card4 = MockRepository.GenerateStrictMock<Card>();
+			var card5 = MockRepository.GenerateStrictMock<Card>();
+			var card6 = MockRepository.GenerateStrictMock<Card>();
+
+			_instance.Stub(x => x.Cards).Return(new List<Card>
+			{
+				card1, card2, card3, card4, card5, card6
+			});
+
+			const CardValue threeOfAKindCardValue = CardValue.Nine;
+			const CardValue pairCardValue = CardValue.Jack;
+			const CardValue highCardValue = CardValue.King;
+
+
+			card1.Stub(x => x.Value).Return(highCardValue);
+			card2.Stub(x => x.Value).Return(threeOfAKindCardValue);
+			card3.Stub(x => x.Value).Return(pairCardValue);
+			card4.Stub(x => x.Value).Return(threeOfAKindCardValue);
+			card5.Stub(x => x.Value).Return(pairCardValue);
+			card6.Stub(x => x.Value).Return(threeOfAKindCardValue);
+
+			//act
+			var actual = _instance.GetOrderedCardGroups();
+
+			//assert
+			Assert.That(actual, Has.Count.EqualTo(3));
+			Assert.That(actual[0].Key, Is.EqualTo(3));
+			Assert.That(actual[0].Value, Is.EqualTo(threeOfAKindCardValue));
+
+			Assert.That(actual[1].Key, Is.EqualTo(2));
+			Assert.That(actual[1].Value, Is.EqualTo(pairCardValue));
+
+			Assert.That(actual[2].Key, Is.EqualTo(1));
+			Assert.That(actual[2].Value, Is.EqualTo(highCardValue));
+		}
+
+		[Test]
+		public void GetOrderedCardGroups_WHERE_have_three_pairs_SHOULD_return_groups_of_multi_cards_ordered_by_descending_value()
+		{
+			//arrange
+			var card1 = MockRepository.GenerateStrictMock<Card>();
+			var card2 = MockRepository.GenerateStrictMock<Card>();
+			var card3 = MockRepository.GenerateStrictMock<Card>();
+			var card4 = MockRepository.GenerateStrictMock<Card>();
+			var card5 = MockRepository.GenerateStrictMock<Card>();
+			var card6 = MockRepository.GenerateStrictMock<Card>();
+
+			_instance.Stub(x => x.Cards).Return(new List<Card>
+			{
+				card1, card2, card3, card4, card5, card6
+			});
+
+			const CardValue pair1CardValue = CardValue.Nine;
+			const CardValue pair2CardValue = CardValue.Jack;
+			const CardValue pair3CardValue = CardValue.King;
+
+
+			card1.Stub(x => x.Value).Return(pair3CardValue);
+			card2.Stub(x => x.Value).Return(pair1CardValue);
+			card3.Stub(x => x.Value).Return(pair2CardValue);
+			card4.Stub(x => x.Value).Return(pair1CardValue);
+			card5.Stub(x => x.Value).Return(pair2CardValue);
+			card6.Stub(x => x.Value).Return(pair3CardValue);
+
+			//act
+			var actual = _instance.GetOrderedCardGroups();
+
+			//assert
+			Assert.That(actual, Has.Count.EqualTo(3));
+			Assert.That(actual[0].Key, Is.EqualTo(2));
+			Assert.That(actual[0].Value, Is.EqualTo(pair3CardValue));
+
+			Assert.That(actual[1].Key, Is.EqualTo(2));
+			Assert.That(actual[1].Value, Is.EqualTo(pair2CardValue));
+
+			Assert.That(actual[2].Key, Is.EqualTo(2));
+			Assert.That(actual[2].Value, Is.EqualTo(pair1CardValue));
+		}
+
+		#endregion
 	}
 }
