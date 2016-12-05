@@ -337,11 +337,14 @@ namespace PokerCalculator.Tests.Unit
 		[Test]
 		public void GetStraightValues_without_card_list_SHOULD_pass_hand_cards_to_GetStraightValues()
 		{
-			var handCards = new List<Card> { MockRepository.GenerateStrictMock<Card>() };
-			_instance.Stub(x => x.Cards).Return(handCards);
+			var cardInHand = MockRepository.GenerateStrictMock<Card>();
+			_instance.Stub(x => x.Cards).Return(new List<Card> { cardInHand });
+
+			const CardValue cardValue = CardValue.Seven;
+			cardInHand.Stub(x => x.Value).Return(cardValue);
 
 			var expected = new List<CardValue> { CardValue.Nine };
-			_instance.Expect(x => x.GetStraightValues(handCards)).Return(expected);
+			_instance.Expect(x => x.GetStraightValues(new List<CardValue> { cardValue })).Return(expected);
 
 			//act
 			var actual = _instance.GetStraightValues();
@@ -357,29 +360,19 @@ namespace PokerCalculator.Tests.Unit
 			//Cards Values: K J 9 8 4 6 2
 
 			//arrange
-			var card1 = MockRepository.GenerateStrictMock<Card>();
-			var card2 = MockRepository.GenerateStrictMock<Card>();
-			var card3 = MockRepository.GenerateStrictMock<Card>();
-			var card4 = MockRepository.GenerateStrictMock<Card>();
-			var card5 = MockRepository.GenerateStrictMock<Card>();
-			var card6 = MockRepository.GenerateStrictMock<Card>();
-
-			var cards = new List<Card>
+			const CardValue highestCardValue = CardValue.King;
+			var cardValue = new List<CardValue>
 			{
-				card1, card2, card3, card4, card5, card6
+				CardValue.Eight,
+				CardValue.Jack,
+				highestCardValue,
+				CardValue.Two,
+				CardValue.Four,
+				CardValue.Six
 			};
 
-			const CardValue highestCardValue = CardValue.King;
-
-			card1.Stub(x => x.Value).Return(CardValue.Eight);
-			card2.Stub(x => x.Value).Return(CardValue.Jack);
-			card3.Stub(x => x.Value).Return(highestCardValue);
-			card4.Stub(x => x.Value).Return(CardValue.Two);
-			card5.Stub(x => x.Value).Return(CardValue.Four);
-			card6.Stub(x => x.Value).Return(CardValue.Six);
-
 			//act
-			var actual = _instance.GetStraightValues(cards);
+			var actual = _instance.GetStraightValues(cardValue);
 
 			//assert
 			Assert.That(actual, Has.Count.EqualTo(1));
@@ -400,26 +393,24 @@ namespace PokerCalculator.Tests.Unit
 			var card6 = MockRepository.GenerateStrictMock<Card>();
 			var card7 = MockRepository.GenerateStrictMock<Card>();
 
-			var cards = new List<Card>
-			{
-				card1, card2, card3, card4, card5, card6, card7
-			};
-
 			const CardValue straightCardValue1 = CardValue.Five;
 			const CardValue straightCardValue2 = CardValue.Four;
 			const CardValue straightCardValue3 = CardValue.Three;
 			const CardValue straightCardValue4 = CardValue.Two;
 
-			card1.Stub(x => x.Value).Return(CardValue.King);
-			card2.Stub(x => x.Value).Return(straightCardValue2);
-			card3.Stub(x => x.Value).Return(CardValue.Nine);
-			card4.Stub(x => x.Value).Return(CardValue.Ten);
-			card5.Stub(x => x.Value).Return(straightCardValue3);
-			card6.Stub(x => x.Value).Return(straightCardValue1);
-			card7.Stub(x => x.Value).Return(straightCardValue4);
+			var cardValues = new List<CardValue>
+			{
+				CardValue.King,
+				straightCardValue2,
+				CardValue.Nine,
+				CardValue.Ten,
+				straightCardValue3,
+				straightCardValue1,
+				straightCardValue4
+			};
 
 			//act
-			var actual = _instance.GetStraightValues(cards);
+			var actual = _instance.GetStraightValues(cardValues);
 
 			//assert
 			Assert.That(actual, Has.Count.EqualTo(4));
@@ -435,33 +426,23 @@ namespace PokerCalculator.Tests.Unit
 			//Cards Values: J 10 9 6 4 3 2 
 
 			//arrange
-			var card1 = MockRepository.GenerateStrictMock<Card>();
-			var card2 = MockRepository.GenerateStrictMock<Card>();
-			var card3 = MockRepository.GenerateStrictMock<Card>();
-			var card4 = MockRepository.GenerateStrictMock<Card>();
-			var card5 = MockRepository.GenerateStrictMock<Card>();
-			var card6 = MockRepository.GenerateStrictMock<Card>();
-			var card7 = MockRepository.GenerateStrictMock<Card>();
-
-			var cards = new List<Card>
-			{
-				card1, card2, card3, card4, card5, card6, card7
-			};
-
 			const CardValue straightCardValue1 = CardValue.Jack;
 			const CardValue straightCardValue2 = CardValue.Ten;
 			const CardValue straightCardValue3 = CardValue.Nine;
 
-			card1.Stub(x => x.Value).Return(CardValue.Six);
-			card2.Stub(x => x.Value).Return(straightCardValue2);
-			card3.Stub(x => x.Value).Return(CardValue.Four);
-			card4.Stub(x => x.Value).Return(CardValue.Three);
-			card5.Stub(x => x.Value).Return(straightCardValue3);
-			card6.Stub(x => x.Value).Return(straightCardValue1);
-			card7.Stub(x => x.Value).Return(CardValue.Two);
+			var cardValues = new List<CardValue>
+			{
+				CardValue.Six,
+				straightCardValue2,
+				CardValue.Four,
+				CardValue.Three,
+				straightCardValue3,
+				straightCardValue1,
+				CardValue.Two
+			};
 
 			//act
-			var actual = _instance.GetStraightValues(cards);
+			var actual = _instance.GetStraightValues(cardValues);
 
 			//assert
 			Assert.That(actual, Has.Count.EqualTo(3));
@@ -476,34 +457,24 @@ namespace PokerCalculator.Tests.Unit
 			//Cards Values: K Q 9 4 3 2 A
 
 			//arrange
-			var card1 = MockRepository.GenerateStrictMock<Card>();
-			var card2 = MockRepository.GenerateStrictMock<Card>();
-			var card3 = MockRepository.GenerateStrictMock<Card>();
-			var card4 = MockRepository.GenerateStrictMock<Card>();
-			var card5 = MockRepository.GenerateStrictMock<Card>();
-			var card6 = MockRepository.GenerateStrictMock<Card>();
-			var card7 = MockRepository.GenerateStrictMock<Card>();
-
-			var cards = new List<Card>
-			{
-				card1, card2, card3, card4, card5, card6, card7
-			};
-
 			const CardValue straightCardValue1 = CardValue.Four;
 			const CardValue straightCardValue2 = CardValue.Three;
 			const CardValue straightCardValue3 = CardValue.Two;
 			const CardValue straightCardValue4 = CardValue.Ace;
 
-			card1.Stub(x => x.Value).Return(CardValue.Queen);
-			card2.Stub(x => x.Value).Return(straightCardValue1);
-			card3.Stub(x => x.Value).Return(CardValue.King);
-			card4.Stub(x => x.Value).Return(straightCardValue2);
-			card5.Stub(x => x.Value).Return(straightCardValue4);
-			card6.Stub(x => x.Value).Return(CardValue.Nine);
-			card7.Stub(x => x.Value).Return(straightCardValue3);
+			var cardValues = new List<CardValue>
+			{
+				CardValue.Queen,
+				straightCardValue1,
+				CardValue.King,
+				straightCardValue2,
+				straightCardValue4,
+				CardValue.Nine,
+				straightCardValue3
+			};
 
 			//act
-			var actual = _instance.GetStraightValues(cards);
+			var actual = _instance.GetStraightValues(cardValues);
 
 			//assert
 			Assert.That(actual, Has.Count.EqualTo(4));
@@ -519,34 +490,24 @@ namespace PokerCalculator.Tests.Unit
 			//Cards Values: K Q J 7 3 2 A
 
 			//arrange
-			var card1 = MockRepository.GenerateStrictMock<Card>();
-			var card2 = MockRepository.GenerateStrictMock<Card>();
-			var card3 = MockRepository.GenerateStrictMock<Card>();
-			var card4 = MockRepository.GenerateStrictMock<Card>();
-			var card5 = MockRepository.GenerateStrictMock<Card>();
-			var card6 = MockRepository.GenerateStrictMock<Card>();
-			var card7 = MockRepository.GenerateStrictMock<Card>();
-
-			var cards = new List<Card>
-			{
-				card1, card2, card3, card4, card5, card6, card7
-			};
-
 			const CardValue straightCardValue1 = CardValue.Ace;
 			const CardValue straightCardValue2 = CardValue.King;
 			const CardValue straightCardValue3 = CardValue.Queen;
 			const CardValue straightCardValue4 = CardValue.Jack;
 
-			card1.Stub(x => x.Value).Return(CardValue.Seven);
-			card2.Stub(x => x.Value).Return(straightCardValue3);
-			card3.Stub(x => x.Value).Return(straightCardValue2);
-			card4.Stub(x => x.Value).Return(CardValue.Two);
-			card5.Stub(x => x.Value).Return(straightCardValue4);
-			card6.Stub(x => x.Value).Return(straightCardValue1);
-			card7.Stub(x => x.Value).Return(CardValue.Three);
+			var cardValues = new List<CardValue>
+			{
+				CardValue.Seven,
+				straightCardValue3,
+				straightCardValue2,
+				CardValue.Two,
+				straightCardValue4,
+				straightCardValue1,
+				CardValue.Three
+			};
 
 			//act
-			var actual = _instance.GetStraightValues(cards);
+			var actual = _instance.GetStraightValues(cardValues);
 
 			//assert
 			Assert.That(actual, Has.Count.EqualTo(4));
@@ -562,33 +523,23 @@ namespace PokerCalculator.Tests.Unit
 			//Cards Values: K Q 9 7 3 2 A
 
 			//arrange
-			var card1 = MockRepository.GenerateStrictMock<Card>();
-			var card2 = MockRepository.GenerateStrictMock<Card>();
-			var card3 = MockRepository.GenerateStrictMock<Card>();
-			var card4 = MockRepository.GenerateStrictMock<Card>();
-			var card5 = MockRepository.GenerateStrictMock<Card>();
-			var card6 = MockRepository.GenerateStrictMock<Card>();
-			var card7 = MockRepository.GenerateStrictMock<Card>();
-
-			var cards = new List<Card>
-			{
-				card1, card2, card3, card4, card5, card6, card7
-			};
-
 			const CardValue straightCardValue1 = CardValue.Ace;
 			const CardValue straightCardValue2 = CardValue.King;
 			const CardValue straightCardValue3 = CardValue.Queen;
 
-			card1.Stub(x => x.Value).Return(straightCardValue3);
-			card2.Stub(x => x.Value).Return(CardValue.Seven);
-			card3.Stub(x => x.Value).Return(straightCardValue2);
-			card4.Stub(x => x.Value).Return(CardValue.Two);
-			card5.Stub(x => x.Value).Return(straightCardValue1);
-			card6.Stub(x => x.Value).Return(CardValue.Three);
-			card7.Stub(x => x.Value).Return(CardValue.Nine);
+			var cardValues = new List<CardValue>
+			{
+				straightCardValue3,
+				CardValue.Seven,
+				straightCardValue2,
+				CardValue.Two,
+				straightCardValue1,
+				CardValue.Three,
+				CardValue.Nine
+			};
 
 			//act
-			var actual = _instance.GetStraightValues(cards);
+			var actual = _instance.GetStraightValues(cardValues);
 
 			//assert
 			Assert.That(actual, Has.Count.EqualTo(3));

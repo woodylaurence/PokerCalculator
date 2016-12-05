@@ -92,19 +92,19 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// <returns>The straight values.</returns>
 		protected internal virtual List<CardValue> GetStraightValues()
 		{
-			return GetStraightValues(Cards);
+			return GetStraightValues(Cards.Select(x => x.Value).ToList());
 		}
 
 		/// <summary>
 		/// Gets the straight values.
 		/// </summary>
 		/// <returns>The straight values.</returns>
-		/// <param name="cards">Cards.</param>
-		protected internal virtual List<CardValue> GetStraightValues(List<Card> cards)
+		/// <param name="cardValues">Cards.</param>
+		protected internal virtual List<CardValue> GetStraightValues(List<CardValue> cardValues)
 		{
 			var values = Enumerable.Repeat(false, 14).ToList();
-			cards.ForEach(x => {
-				var cardValueAsInt = (int)x.Value;
+			cardValues.ForEach(x => {
+				var cardValueAsInt = (int)x;
 				values[14 - cardValueAsInt] = true;
 			});
 			values[13] = values[0];
