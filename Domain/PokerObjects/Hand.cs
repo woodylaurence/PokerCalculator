@@ -50,6 +50,8 @@ namespace PokerCalculator.Domain.PokerObjects
 
 		#region Instance Methods
 
+		#region AddCard
+
 		/// <summary>
 		/// Adds the card.
 		/// </summary>
@@ -62,24 +64,33 @@ namespace PokerCalculator.Domain.PokerObjects
 			Rank = null;
 		}
 
+		#endregion
+
+		#region CalculateRank
+
 		public virtual HandRank CalculateRank()
 		{
 			var flushValues = GetFlushValues();
-			var straightFlushValues = GetStraightValues(flushValues);
-			if (straightFlushValues.Count >= 5)
-			{
-				var highestStraightFlushValue = straightFlushValues.First();
-				return highestStraightFlushValue == CardValue.Ace
-					   	? HandRank.Create(PokerHand.RoyalFlush)
-						: HandRank.Create(PokerHand.StraightFlush, new List<CardValue> { straightFlushValues.First() });
-			}
-			return HandRank.Create(PokerHand.Flush, flushValues);
-		}
+			if (flushValues.Count >= 5) return GetFlushBasedHandRank(flushValues);
 
-		protected internal virtual bool IsFlush()
-		{
+			var straightValues = GetStraightValues();
+			if (straightValues.Count >= 5) return HandRank.Create(PokerHand.Straight, new List<CardValue> { straightValues.First() });
+
 			throw new NotImplementedException();
 		}
+
+		protected internal virtual HandRank GetFlushBasedHandRank(List<CardValue> flushValues)
+		{
+			var straightFlushValues = GetStraightValues(flushValues);
+			if (straightFlushValues.Count < 5) return HandRank.Create(PokerHand.Flush, flushValues);
+
+			var highestStraightFlushValue = straightFlushValues.First();
+			return highestStraightFlushValue == CardValue.Ace
+						? HandRank.Create(PokerHand.RoyalFlush)
+						: HandRank.Create(PokerHand.StraightFlush, new List<CardValue> { straightFlushValues.First() });
+		}
+
+		#region GetFlushValues
 
 		/// <summary>
 		/// Gets the flush values.
@@ -94,6 +105,10 @@ namespace PokerCalculator.Domain.PokerObjects
 						.OrderByDescending(x => x)
 				        .ToList();
 		}
+
+		#endregion
+
+		#region GetStraightValues
 
 		/// <summary>
 		/// Gets the straight values.
@@ -139,6 +154,10 @@ namespace PokerCalculator.Domain.PokerObjects
 								  .First();
 		}
 
+		#endregion
+
+		#region GetOrderedCardGroups
+
 		protected internal virtual List<KeyValuePair<int, CardValue>> GetOrderedCardGroups()
 		{
 			return Cards.GroupBy(x => x.Value)
@@ -147,6 +166,10 @@ namespace PokerCalculator.Domain.PokerObjects
 						.ThenByDescending(x => x.Value)
 						.ToList();
 		}
+
+		#endregion
+
+		#endregion
 
 		#endregion
 	}

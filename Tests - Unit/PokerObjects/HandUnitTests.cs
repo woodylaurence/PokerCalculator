@@ -286,23 +286,22 @@ namespace PokerCalculator.Tests.Unit
 		#region CalculateRank
 
 		[Test]
-		public void CalculateRank_where_hand_has_flush_and_flush_cards_are_a_straight_and_straight_highest_value_is_ace_SHOULD_return_royal_flush()
+		public void CalculateRank_WHERE_have_five_flush_values_SHOULD_return_result_of_GetFlushBasedHandRank()
 		{
-			//assert
-			var flushValues = new List<CardValue>
+			//arrange
+			var flushCardValues = new List<CardValue>
 			{
-				CardValue.Ten, CardValue.Ace, CardValue.Jack, CardValue.Three, CardValue.Four
+				CardValue.Six,
+				CardValue.King,
+				CardValue.Three,
+				CardValue.Four,
+				CardValue.Nine
 			};
 
-			_instance.Stub(x => x.GetFlushValues()).Return(flushValues);
-			_instance.Stub(x => x.GetStraightValues(flushValues)).Return(new List<CardValue>
-			{
-				CardValue.Ace, CardValue.King, CardValue.Queen, CardValue.Jack, CardValue.Ten
-			});
-
+			_instance.Stub(x => x.GetFlushValues()).Return(flushCardValues);
 
 			var expected = MockRepository.GenerateStrictMock<HandRank>();
-			HandRank.MethodObject.Stub(x => x.CreateSlave(PokerHand.RoyalFlush, null)).Return(expected);
+			_instance.Stub(x => x.GetFlushBasedHandRank(flushCardValues)).Return(expected);
 
 			//act
 			var actual = _instance.CalculateRank();
@@ -312,15 +311,109 @@ namespace PokerCalculator.Tests.Unit
 		}
 
 		[Test]
-		public void CalculateRank_where_hand_has_flush_and_flush_cards_are_a_straight_and_straight_highest_value_is_not_ace_SHOULD_return_straight_flush()
+		public void CalculateRank_WHERE_have_more_than_five_flush_values_SHOULD_return_result_of_GetFlushBasedHandRank()
 		{
-			//assert
-			var flushValues = new List<CardValue>
+			//arrange
+			var flushCardValues = new List<CardValue>
 			{
-				CardValue.Ten, CardValue.Ace, CardValue.Jack, CardValue.Three, CardValue.Four
+				CardValue.Three,
+				CardValue.Jack,
+				CardValue.Two,
+				CardValue.Seven,
+				CardValue.Four,
+				CardValue.Ace
 			};
 
-			_instance.Stub(x => x.GetFlushValues()).Return(flushValues);
+			_instance.Stub(x => x.GetFlushValues()).Return(flushCardValues);
+
+			var expected = MockRepository.GenerateStrictMock<HandRank>();
+			_instance.Stub(x => x.GetFlushBasedHandRank(flushCardValues)).Return(expected);
+
+			//act
+			var actual = _instance.CalculateRank();
+
+			//assert
+			Assert.That(actual, Is.EqualTo(expected));
+		}
+
+		[Test]
+		public void CalculateRank_WHERE_have_less_than_five_flush_values_but_five_straight_valus_SHOULD_return_straight_hand_rank()
+		{
+			//arrange
+			var flushCardValues = new List<CardValue> { CardValue.Three, CardValue.Jack };
+			_instance.Stub(x => x.GetFlushValues()).Return(flushCardValues);
+
+			const CardValue highestStraightValue = CardValue.King;
+			var straightValues = new List<CardValue>
+			{
+				highestStraightValue, CardValue.Three, CardValue.Jack, CardValue.Seven, CardValue.Two
+			};
+			_instance.Stub(x => x.GetStraightValues()).Return(straightValues);
+
+			var expected = MockRepository.GenerateStrictMock<HandRank>();
+			HandRank.MethodObject.Stub(x => x.CreateSlave(PokerHand.Straight, new List<CardValue> { highestStraightValue })).Return(expected);
+
+			//act
+			var actual = _instance.CalculateRank();
+
+			//assert
+			Assert.That(actual, Is.EqualTo(expected));
+		}
+
+		[Test]
+		public void CalculateRank_WHERE_have_less_than_five_flush_values_but_more_than_five_straight_valus_SHOULD_return_straight_hand_rank()
+		{
+			//arrange
+			var flushCardValues = new List<CardValue> { CardValue.Three, CardValue.Jack };
+			_instance.Stub(x => x.GetFlushValues()).Return(flushCardValues);
+
+			const CardValue highestStraightValue = CardValue.Ace;
+			var straightValues = new List<CardValue>
+			{
+				highestStraightValue, CardValue.Three, CardValue.King, CardValue.Six, CardValue.Eight, CardValue.Queen
+			};
+			_instance.Stub(x => x.GetStraightValues()).Return(straightValues);
+
+			var expected = MockRepository.GenerateStrictMock<HandRank>();
+			HandRank.MethodObject.Stub(x => x.CreateSlave(PokerHand.Straight, new List<CardValue> { highestStraightValue })).Return(expected);
+
+			//act
+			var actual = _instance.CalculateRank();
+
+			//assert
+			Assert.That(actual, Is.EqualTo(expected));
+		}
+
+		#endregion
+
+		#region GetFlushBasedHandRank
+
+		[Test]
+		public void GetFlushBasedHandRank_WHERE_hand_has_flush_and_flush_cards_are_a_straight_and_straight_highest_value_is_ace_SHOULD_return_royal_flush()
+		{
+			//assert
+			var flushValues = new List<CardValue> { CardValue.Three, CardValue.Four };
+
+			_instance.Stub(x => x.GetStraightValues(flushValues)).Return(new List<CardValue>
+			{
+				CardValue.Ace, CardValue.King, CardValue.Queen, CardValue.Jack, CardValue.Ten
+			});
+
+			var expected = MockRepository.GenerateStrictMock<HandRank>();
+			HandRank.MethodObject.Stub(x => x.CreateSlave(PokerHand.RoyalFlush, null)).Return(expected);
+
+			//act
+			var actual = _instance.GetFlushBasedHandRank(flushValues);
+
+			//assert
+			Assert.That(actual, Is.EqualTo(expected));
+		}
+
+		[Test]
+		public void GetFlushBasedHandRank_WHERE_hand_has_flush_and_flush_cards_are_a_straight_and_straight_highest_value_is_not_ace_SHOULD_return_straight_flush()
+		{
+			//assert
+			var flushValues = new List<CardValue> { CardValue.Ten, CardValue.Ace };
 
 			const CardValue highestStraightValue = CardValue.Seven;
 			_instance.Stub(x => x.GetStraightValues(flushValues)).Return(new List<CardValue>
@@ -332,22 +425,18 @@ namespace PokerCalculator.Tests.Unit
 			HandRank.MethodObject.Stub(x => x.CreateSlave(PokerHand.StraightFlush, new List<CardValue> { highestStraightValue })).Return(expected);
 
 			//act
-			var actual = _instance.CalculateRank();
+			var actual = _instance.GetFlushBasedHandRank(flushValues);
 
 			//assert
 			Assert.That(actual, Is.EqualTo(expected));
 		}
 
 		[Test]
-		public void CalculateRank_where_hand_has_flush_and_flush_cards_are_not_a_straight_SHOULD_return_flush()
+		public void GetFlushBasedHandRank_WHERE_hand_has_flush_and_flush_cards_are_not_a_straight_SHOULD_return_flush()
 		{
 			//assert
-			var flushValues = new List<CardValue>
-			{
-				CardValue.Ten, CardValue.Ace, CardValue.Jack, CardValue.Three, CardValue.Four
-			};
+			var flushValues = new List<CardValue> { CardValue.Ten, CardValue.Three };
 
-			_instance.Stub(x => x.GetFlushValues()).Return(flushValues);
 			_instance.Stub(x => x.GetStraightValues(flushValues)).Return(new List<CardValue>
 			{
 				CardValue.Nine, CardValue.Two
@@ -357,7 +446,7 @@ namespace PokerCalculator.Tests.Unit
 			HandRank.MethodObject.Stub(x => x.CreateSlave(PokerHand.Flush, flushValues)).Return(expected);
 
 			//act
-			var actual = _instance.CalculateRank();
+			var actual = _instance.GetFlushBasedHandRank(flushValues);
 
 			//assert
 			Assert.That(actual, Is.EqualTo(expected));
@@ -469,14 +558,6 @@ namespace PokerCalculator.Tests.Unit
 			//Cards Values: K 10 9 5 4 3 2 
 
 			//arrange
-			var card1 = MockRepository.GenerateStrictMock<Card>();
-			var card2 = MockRepository.GenerateStrictMock<Card>();
-			var card3 = MockRepository.GenerateStrictMock<Card>();
-			var card4 = MockRepository.GenerateStrictMock<Card>();
-			var card5 = MockRepository.GenerateStrictMock<Card>();
-			var card6 = MockRepository.GenerateStrictMock<Card>();
-			var card7 = MockRepository.GenerateStrictMock<Card>();
-
 			const CardValue straightCardValue1 = CardValue.Five;
 			const CardValue straightCardValue2 = CardValue.Four;
 			const CardValue straightCardValue3 = CardValue.Three;

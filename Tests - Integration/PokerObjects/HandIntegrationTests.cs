@@ -258,7 +258,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			Assert.That(actual.PokerHand, Is.EqualTo(PokerHand.StraightFlush));
 
 			Assert.That(actual.KickerCardValues, Has.Count.EqualTo(1));
-			Assert.That(actual.KickerCardValues[0], Is.EqualTo(CardValue.Ace));
+			Assert.That(actual.KickerCardValues[0], Is.EqualTo(CardValue.Jack));
 
 		}
 
