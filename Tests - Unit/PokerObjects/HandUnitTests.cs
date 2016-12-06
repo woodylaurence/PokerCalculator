@@ -487,13 +487,16 @@ namespace PokerCalculator.Tests.Unit
 				new KeyValuePair<int, CardValue>(2, CardValue.Nine)
 			});
 
+			var expected = MockRepository.GenerateStrictMock<HandRank>();
+			HandRank.MethodObject.Stub(x => 
+			        x.CreateSlave(PokerHand.FourOfAKind, new List<CardValue> { fourOfAKindCardValue }))
+			    .Return(expected);
+
 			//act
 			var actual = _instance.GetMultiCardOrHighCardHandRank();
 
 			//assert
-			Assert.That(actual.PokerHand, Is.EqualTo(PokerHand.FourOfAKind));
-			Assert.That(actual.KickerCardValues, Has.Count.EqualTo(1));
-			Assert.That(actual.KickerCardValues[0], Is.EqualTo(fourOfAKindCardValue));
+			Assert.That(actual, Is.EqualTo(expected));
 		}
 
 		[Test]
@@ -578,29 +581,98 @@ namespace PokerCalculator.Tests.Unit
 		[Test]
 		public void GetFullHouseOrThreeOfAKindHandRank_WHERE_have_three_of_a_kind_SHOULD_return_three_of_a_kind_with_kicker_of_three_of_a_kind_value()
 		{
+			//arrange
+			const CardValue threeOfAKindValue = CardValue.Eight;
+			var cardGroups = new List<KeyValuePair<int, CardValue>>
+			{
+				new KeyValuePair<int, CardValue>(3, threeOfAKindValue),
+				new KeyValuePair<int, CardValue>(1, CardValue.Ten)
+			};
+
+			var expected = MockRepository.GenerateStrictMock<HandRank>();
+			HandRank.MethodObject.Stub(x =>
+			        x.CreateSlave(PokerHand.ThreeOfAKind, new List<CardValue> { threeOfAKindValue }))
+				.Return(expected);
+
+			//act
+			var actual = _instance.GetFullHouseOrThreeOfAKindHandRank(cardGroups);
+
 			//assert
-			Assert.Fail("Unwritten Test");
+			Assert.That(actual, Is.EqualTo(expected));
 		}
 
 		[Test]
 		public void GetFullHouseOrThreeOfAKindHandRank_WHERE_have_three_of_a_kind_and_pair_SHOULD_return_full_house_with_kickers_set_to_three_of_a_kind_and_pair_values()
 		{
+			//arrange
+			const CardValue threeOfAKindValue = CardValue.Four;
+			const CardValue pairValue = CardValue.Jack;
+			var cardGroups = new List<KeyValuePair<int, CardValue>>
+			{
+				new KeyValuePair<int, CardValue>(3, threeOfAKindValue),
+				new KeyValuePair<int, CardValue>(2, pairValue),
+				new KeyValuePair<int, CardValue>(1, CardValue.Ace)
+			};
+
+			var expected = MockRepository.GenerateStrictMock<HandRank>();
+			HandRank.MethodObject.Stub(x =>
+			        x.CreateSlave(PokerHand.FullHouse, new List<CardValue> { threeOfAKindValue, pairValue }))
+				.Return(expected);
+
+			//act
+			var actual = _instance.GetFullHouseOrThreeOfAKindHandRank(cardGroups);
+
 			//assert
-			Assert.Fail("Unwritten Test");
+			Assert.That(actual, Is.EqualTo(expected));
 		}
 
 		[Test]
 		public void GetFullHouseOrThreeOfAKindHandRank_WHERE_have_three_of_a_kind_and_pairs_SHOULD_return_full_house_with_kickers_set_to_three_of_a_kind_and_highest_pair_values()
 		{
+			const CardValue threeOfAKindValue = CardValue.Four;
+			const CardValue firstPairValue = CardValue.Jack;
+			const CardValue secondPairValue = CardValue.Three;
+			var cardGroups = new List<KeyValuePair<int, CardValue>>
+			{
+				new KeyValuePair<int, CardValue>(3, threeOfAKindValue),
+				new KeyValuePair<int, CardValue>(2, firstPairValue),
+				new KeyValuePair<int, CardValue>(2, secondPairValue)
+			};
+
+			var expected = MockRepository.GenerateStrictMock<HandRank>();
+			HandRank.MethodObject.Stub(x =>
+			        x.CreateSlave(PokerHand.FullHouse, new List<CardValue> { threeOfAKindValue, firstPairValue }))
+				.Return(expected);
+
+			//act
+			var actual = _instance.GetFullHouseOrThreeOfAKindHandRank(cardGroups);
+
 			//assert
-			Assert.Fail("Unwritten Test");
+			Assert.That(actual, Is.EqualTo(expected));
 		}
 
 		[Test]
 		public void GetFullHouseOrThreeOfAKindHandRank_WHERE_have_two_three_of_a_kinds_SHOULD_return_full_house_with_kickers_set_to_highest_three_of_a_kind_and_lower_three_of_a_kind()
 		{
+			const CardValue firstThreeOfAKindValue = CardValue.Queen;
+			const CardValue secondThreeOfAKindValue = CardValue.Two;
+			var cardGroups = new List<KeyValuePair<int, CardValue>>
+			{
+				new KeyValuePair<int, CardValue>(3, firstThreeOfAKindValue),
+				new KeyValuePair<int, CardValue>(3, secondThreeOfAKindValue),
+				new KeyValuePair<int, CardValue>(1, CardValue.Ace)
+			};
+
+			var expected = MockRepository.GenerateStrictMock<HandRank>();
+			HandRank.MethodObject.Stub(x =>
+			        x.CreateSlave(PokerHand.FullHouse, new List<CardValue> { firstThreeOfAKindValue, secondThreeOfAKindValue }))
+				.Return(expected);
+
+			//act
+			var actual = _instance.GetFullHouseOrThreeOfAKindHandRank(cardGroups);
+
 			//assert
-			Assert.Fail("Unwritten Test");
+			Assert.That(actual, Is.EqualTo(expected));
 		}
 
 		#endregion

@@ -295,7 +295,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		#region Four of a Kind
 
 		[Test]
-		public void CalculateHandRank_WHERE_four_of_a_kind_SHOULD_return_four_of_a_kind_with_primary_value_set_to_four_of_a_kind_value_and_kickers_set_to_()
+		public void CalculateHandRank_WHERE_four_of_a_kind_SHOULD_return_four_of_a_kind_with_primary_value_set_to_four_of_a_kind_value()
 		{
 			//	 FOUR OF A KIND	 -	 OTHERS
 			// {10C 10D 10H 10S} - {3S 9D 6H}
@@ -318,9 +318,8 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			//assert
 			Assert.That(actual.PokerHand, Is.EqualTo(PokerHand.FourOfAKind));
 
-			Assert.That(actual.KickerCardValues, Has.Count.EqualTo(2));
+			Assert.That(actual.KickerCardValues, Has.Count.EqualTo(1));
 			Assert.That(actual.KickerCardValues[0], Is.EqualTo(CardValue.Ten));
-			Assert.That(actual.KickerCardValues[1], Is.EqualTo(CardValue.King));
 		}
 
 		[Test]
@@ -347,9 +346,8 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			//assert
 			Assert.That(actual.PokerHand, Is.EqualTo(PokerHand.FourOfAKind));
 
-			Assert.That(actual.KickerCardValues, Has.Count.EqualTo(2));
+			Assert.That(actual.KickerCardValues, Has.Count.EqualTo(1));
 			Assert.That(actual.KickerCardValues[0], Is.EqualTo(CardValue.Ten));
-			Assert.That(actual.KickerCardValues[1], Is.EqualTo(CardValue.King));
 		}
 
 		#endregion
@@ -717,7 +715,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			Assert.That(actual.PokerHand, Is.EqualTo(PokerHand.ThreeOfAKind));
 
 			Assert.That(actual.KickerCardValues, Has.Count.EqualTo(1));
-			Assert.That(actual.KickerCardValues, Is.EqualTo(CardValue.Six));
+			Assert.That(actual.KickerCardValues[0], Is.EqualTo(CardValue.Six));
 		}
 
 		#endregion
