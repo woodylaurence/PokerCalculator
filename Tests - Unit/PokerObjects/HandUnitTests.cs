@@ -116,8 +116,8 @@ namespace PokerCalculator.Tests.Unit
 		public void CreateSlave_WHERE_more_than_seven_cards_in_supplied_cards_SHOULD_throw_error()
 		{
 			//arrange
-			var cards = new List<Card> 
-			{ 
+			var cards = new List<Card>
+			{
 				MockRepository.GenerateStrictMock<Card>(),
 				MockRepository.GenerateStrictMock<Card>(),
 				MockRepository.GenerateStrictMock<Card>(),
@@ -184,9 +184,9 @@ namespace PokerCalculator.Tests.Unit
 			//assert
 			Assert.That(actual.Cards, Is.Not.SameAs(cards));
 			Assert.That(actual.Cards, Has.Count.EqualTo(3));
-			Assert.That(actual.Cards [0], Is.EqualTo(card1));
-			Assert.That(actual.Cards [1], Is.EqualTo(card2));
-			Assert.That(actual.Cards [2], Is.EqualTo(card3));
+			Assert.That(actual.Cards[0], Is.EqualTo(card1));
+			Assert.That(actual.Cards[1], Is.EqualTo(card2));
+			Assert.That(actual.Cards[2], Is.EqualTo(card3));
 		}
 
 		#endregion
@@ -470,6 +470,107 @@ namespace PokerCalculator.Tests.Unit
 
 			//assert
 			Assert.That(actual, Is.EqualTo(expected));
+		}
+
+		#endregion
+
+		#region GetMultiCardOrHighCardHandRank
+
+		[Test]
+		public void GetMultiCardOrHighCardHandRank_WHERE_first_group_has_a_group_of_four_cards_SHOULD_return_four_of_a_kind()
+		{
+			//arrange
+			const CardValue fourOfAKindCardValue = CardValue.Jack;
+			_instance.Stub(x => x.GetOrderedCardGroups()).Return(new List<KeyValuePair<int, CardValue>>
+			{
+				new KeyValuePair<int, CardValue>(4, fourOfAKindCardValue),
+				new KeyValuePair<int, CardValue>(2, CardValue.Nine)
+			});
+
+			//act
+			var actual = _instance.GetMultiCardOrHighCardHandRank();
+
+			//assert
+			Assert.That(actual.PokerHand, Is.EqualTo(PokerHand.FourOfAKind));
+			Assert.That(actual.KickerCardValues, Has.Count.EqualTo(1));
+			Assert.That(actual.KickerCardValues[0], Is.EqualTo(fourOfAKindCardValue));
+		}
+
+		[Test]
+		public void GetMultiCardOrHighCardHandRank_WHERE_first_group_has_a_group_of_three_cards_SHOULD_return_result_of_GetFullHouseOrThreeOfAKindHandRank()
+		{
+			//arrange
+			var cardGroups = new List<KeyValuePair<int, CardValue>>
+			{
+				new KeyValuePair<int, CardValue>(3, CardValue.King),
+				new KeyValuePair<int, CardValue>(1, CardValue.Seven)
+			};
+			_instance.Stub(x => x.GetOrderedCardGroups()).Return(cardGroups);
+
+			var expected = MockRepository.GenerateStrictMock<HandRank>();
+			_instance.Stub(x => x.GetFullHouseOrThreeOfAKindHandRank(cardGroups)).Return(expected);
+
+			//act
+			var actual = _instance.GetMultiCardOrHighCardHandRank();
+
+			//assert
+			Assert.That(actual, Is.EqualTo(expected));
+		}
+
+		[Test]
+		public void GetMultiCardOrHighCardHandRank_WHERE_first_group_has_a_group_of_two_cards_SHOULD_return_result_of_GetPairBasedHandRank()
+		{
+			//arrange
+			var cardGroups = new List<KeyValuePair<int, CardValue>>
+			{
+				new KeyValuePair<int, CardValue>(2, CardValue.Three),
+				new KeyValuePair<int, CardValue>(1, CardValue.Ace)
+			};
+			_instance.Stub(x => x.GetOrderedCardGroups()).Return(cardGroups);
+
+			var expected = MockRepository.GenerateStrictMock<HandRank>();
+			_instance.Stub(x => x.GetPairBasedHandRank(cardGroups)).Return(expected);
+
+			//act
+			var actual = _instance.GetMultiCardOrHighCardHandRank();
+
+			//assert
+			Assert.That(actual, Is.EqualTo(expected));
+		}
+
+		[Test]
+		public void GetMultiCardOrHighCardHandRank_WHERE_first_group_has_a_group_of_one_card_SHOULD_return_result_of_GetHighCardHandRank()
+		{
+			//arrange
+			var cardGroups = new List<KeyValuePair<int, CardValue>>
+			{
+				new KeyValuePair<int, CardValue>(1, CardValue.Seven),
+				new KeyValuePair<int, CardValue>(1, CardValue.Two)
+			};
+			_instance.Stub(x => x.GetOrderedCardGroups()).Return(cardGroups);
+
+			var expected = MockRepository.GenerateStrictMock<HandRank>();
+			_instance.Stub(x => x.GetHighCardHandRank(cardGroups)).Return(expected);
+
+			//act
+			var actual = _instance.GetMultiCardOrHighCardHandRank();
+
+			//assert
+			Assert.That(actual, Is.EqualTo(expected));
+		}
+
+		[Test]
+		public void GetMultiCardOrHighCardHandRank_WHERE_first_group_has_a_group_of_zero_cards_SHOULD_throw_exception()
+		{
+			//arrange
+			_instance.Stub(x => x.GetOrderedCardGroups()).Return(new List<KeyValuePair<int, CardValue>>
+			{
+				new KeyValuePair<int, CardValue>(0, CardValue.Seven)
+			});
+
+			//act + assert
+			var actualException = Assert.Throws<Exception>(() => _instance.GetMultiCardOrHighCardHandRank());
+			Assert.That(actualException.Message, Is.EqualTo("Unexpected Card group"));
 		}
 
 		#endregion

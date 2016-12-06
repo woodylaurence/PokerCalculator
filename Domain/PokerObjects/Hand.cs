@@ -2,8 +2,6 @@
 using System;
 using System.Linq;
 using PokerCalculator.Domain.PokerEnums;
-using System.Runtime.InteropServices;
-using System.Net;
 
 namespace PokerCalculator.Domain.PokerObjects
 {
@@ -97,9 +95,26 @@ namespace PokerCalculator.Domain.PokerObjects
 
 		#region GetMultiCardOrHighCardRank
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
 		protected internal virtual HandRank GetMultiCardOrHighCardHandRank()
 		{
-			throw new NotImplementedException();
+			var cardGroups = GetOrderedCardGroups();
+			switch (cardGroups.First().Key)
+			{
+				case 4:
+					return HandRank.Create(PokerHand.FourOfAKind, new List<CardValue> { cardGroups.First().Value });
+				case 3:
+					return GetFullHouseOrThreeOfAKindHandRank(cardGroups);
+				case 2:
+					return GetPairBasedHandRank(cardGroups);
+				case 1:
+					return GetHighCardHandRank(cardGroups);
+				default:
+					throw new Exception("Unexpected Card group");
+			}
 		}
 
 		protected internal virtual HandRank GetFullHouseOrThreeOfAKindHandRank(List<KeyValuePair<int, CardValue>> cardGroups)
