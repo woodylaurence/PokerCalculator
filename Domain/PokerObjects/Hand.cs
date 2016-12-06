@@ -76,9 +76,14 @@ namespace PokerCalculator.Domain.PokerObjects
 			var straightValues = GetStraightValues();
 			if (straightValues.Count >= 5) return HandRank.Create(PokerHand.Straight, new List<CardValue> { straightValues.First() });
 
-			throw new NotImplementedException();
+			return GetMultiCardOrHighCardHandRank();
 		}
 
+		/// <summary>
+		/// Gets the flush based hand rank.
+		/// </summary>
+		/// <returns>The flush based hand rank.</returns>
+		/// <param name="flushValues">Flush values.</param>
 		protected internal virtual HandRank GetFlushBasedHandRank(List<CardValue> flushValues)
 		{
 			var straightFlushValues = GetStraightValues(flushValues);
@@ -89,6 +94,30 @@ namespace PokerCalculator.Domain.PokerObjects
 						? HandRank.Create(PokerHand.RoyalFlush)
 						: HandRank.Create(PokerHand.StraightFlush, new List<CardValue> { straightFlushValues.First() });
 		}
+
+		#region GetMultiCardOrHighCardRank
+
+		protected internal virtual HandRank GetMultiCardOrHighCardHandRank()
+		{
+			throw new NotImplementedException();
+		}
+
+		protected internal virtual HandRank GetFullHouseOrThreeOfAKindHandRank(List<KeyValuePair<int, CardValue>> cardGroups)
+		{
+			throw new NotImplementedException();
+		}
+
+		protected internal virtual HandRank GetPairBasedHandRank(List<KeyValuePair<int, CardValue>> cardGroups)
+		{
+			throw new NotImplementedException();
+		}
+
+		protected internal virtual HandRank GetHighCardHandRank(List<KeyValuePair<int, CardValue>> cardGroups)
+		{
+			throw new NotImplementedException();
+		}
+
+		#endregion
 
 		#region GetFlushValues
 
@@ -158,6 +187,10 @@ namespace PokerCalculator.Domain.PokerObjects
 
 		#region GetOrderedCardGroups
 
+		/// <summary>
+		/// Gets the ordered card groups.
+		/// </summary>
+		/// <returns>The ordered card groups.</returns>
 		protected internal virtual List<KeyValuePair<int, CardValue>> GetOrderedCardGroups()
 		{
 			return Cards.GroupBy(x => x.Value)

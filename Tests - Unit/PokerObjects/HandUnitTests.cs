@@ -384,6 +384,26 @@ namespace PokerCalculator.Tests.Unit
 			Assert.That(actual, Is.EqualTo(expected));
 		}
 
+		[Test]
+		public void CalculateRank_WHERE_have_less_than_five_flush_values_and_less_than_five_straight_valus_SHOULD_return_result_of_GetMultiCardOrHighCardHandRank()
+		{
+			//arrange
+			var flushCardValues = new List<CardValue> { CardValue.Three, CardValue.Jack };
+			_instance.Stub(x => x.GetFlushValues()).Return(flushCardValues);
+
+			var straightValues = new List<CardValue> { CardValue.King, CardValue.Six };
+			_instance.Stub(x => x.GetStraightValues()).Return(straightValues);
+
+			var expected = MockRepository.GenerateStrictMock<HandRank>();
+			_instance.Stub(x => x.GetMultiCardOrHighCardHandRank()).Return(expected);
+
+			//act
+			var actual = _instance.CalculateRank();
+
+			//assert
+			Assert.That(actual, Is.EqualTo(expected));
+		}
+
 		#endregion
 
 		#region GetFlushBasedHandRank
