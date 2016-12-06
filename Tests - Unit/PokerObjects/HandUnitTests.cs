@@ -573,6 +573,38 @@ namespace PokerCalculator.Tests.Unit
 			Assert.That(actualException.Message, Is.EqualTo("Unexpected Card group"));
 		}
 
+		#region GetFullHouseOrThreeOfAKindHandRank
+
+		[Test]
+		public void GetFullHouseOrThreeOfAKindHandRank_WHERE_have_three_of_a_kind_SHOULD_return_three_of_a_kind_with_kicker_of_three_of_a_kind_value()
+		{
+			//assert
+			Assert.Fail("Unwritten Test");
+		}
+
+		[Test]
+		public void GetFullHouseOrThreeOfAKindHandRank_WHERE_have_three_of_a_kind_and_pair_SHOULD_return_full_house_with_kickers_set_to_three_of_a_kind_and_pair_values()
+		{
+			//assert
+			Assert.Fail("Unwritten Test");
+		}
+
+		[Test]
+		public void GetFullHouseOrThreeOfAKindHandRank_WHERE_have_three_of_a_kind_and_pairs_SHOULD_return_full_house_with_kickers_set_to_three_of_a_kind_and_highest_pair_values()
+		{
+			//assert
+			Assert.Fail("Unwritten Test");
+		}
+
+		[Test]
+		public void GetFullHouseOrThreeOfAKindHandRank_WHERE_have_two_three_of_a_kinds_SHOULD_return_full_house_with_kickers_set_to_highest_three_of_a_kind_and_lower_three_of_a_kind()
+		{
+			//assert
+			Assert.Fail("Unwritten Test");
+		}
+
+		#endregion
+
 		#endregion
 
 		#region GetFlushValues
