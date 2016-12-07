@@ -752,6 +752,84 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 
 		#endregion
 
+		#region GetPairBasedHandRank
+
+		[Test]
+		public void GetPairBasedHandRank_WHERE_hand_has_pair_but_nothing_else_SHOULD_return_pair_with_single_kicker_value_of_pair_value()
+		{
+			//arrange
+			const CardValue pairValue = CardValue.Seven;
+			var cardGroups = new List<KeyValuePair<int, CardValue>>
+			{
+				new KeyValuePair<int, CardValue>(2, pairValue)
+			};
+
+			var expected = MockRepository.GenerateStrictMock<HandRank>();
+			HandRank.MethodObject.Stub(x => x.CreateSlave(PokerHand.Pair, new List<CardValue> {pairValue})).Return(expected);
+
+			//act
+			var actual = _instance.GetPairBasedHandRank(cardGroups);
+
+			//assert
+			Assert.That(actual, Is.EqualTo(expected));
+		}
+
+		[Test]
+		public void GetPairBasedHandRank_WHERE_hand_has_pair_and_single_other_card_SHOULD_return_pair_with_kicker_value_of_pair_value_and_then_remaining_card_value()
+		{
+			//arrange
+			const CardValue pairValue = CardValue.Seven;
+			const CardValue highestRemainingCardValue = CardValue.Eight;
+			var cardGroups = new List<KeyValuePair<int, CardValue>>
+			{
+				new KeyValuePair<int, CardValue>(2, pairValue),
+				new KeyValuePair<int, CardValue>(1, highestRemainingCardValue)
+			};
+
+			var expected = MockRepository.GenerateStrictMock<HandRank>();
+			HandRank.MethodObject.Stub(x => x.CreateSlave(PokerHand.Pair, new List<CardValue> { pairValue, highestRemainingCardValue })).Return(expected);
+
+			//act
+			var actual = _instance.GetPairBasedHandRank(cardGroups);
+
+			//assert
+			Assert.That(actual, Is.EqualTo(expected));
+		}
+
+		[Test]
+		public void GetPairBasedHandRank_WHERE_hand_has_pair_and_multiple_other_cards_SHOULD_return_pair_with_kicker_value_of_pair_value_and_then_three_highest_remaining_card_values()
+		{
+			//arrange
+			const CardValue pairValue = CardValue.Seven;
+			const CardValue highestRemainingCardValue = CardValue.King;
+			const CardValue secondHighestRemainingCardValue = CardValue.Eight;
+			const CardValue thirdHighestRemainingCardValue = CardValue.Four;
+			var cardGroups = new List<KeyValuePair<int, CardValue>>
+			{
+				new KeyValuePair<int, CardValue>(2, pairValue),
+				new KeyValuePair<int, CardValue>(1, highestRemainingCardValue),
+				new KeyValuePair<int, CardValue>(1, secondHighestRemainingCardValue),
+				new KeyValuePair<int, CardValue>(1, thirdHighestRemainingCardValue),
+				new KeyValuePair<int, CardValue>(1, CardValue.Two)
+			};
+
+			var expected = MockRepository.GenerateStrictMock<HandRank>();
+			HandRank.MethodObject.Stub(x =>
+					x.CreateSlave(PokerHand.Pair, new List<CardValue>
+					{
+						pairValue, highestRemainingCardValue, secondHighestRemainingCardValue, thirdHighestRemainingCardValue
+					}))
+				.Return(expected);
+
+			//act
+			var actual = _instance.GetPairBasedHandRank(cardGroups);
+
+			//assert
+			Assert.That(actual, Is.EqualTo(expected));
+		}
+
+		#endregion
+
 		#endregion
 
 		#region GetFlushValues

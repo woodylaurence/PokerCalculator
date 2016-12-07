@@ -129,6 +129,9 @@ namespace PokerCalculator.Domain.PokerObjects
 
 		protected internal virtual HandRank GetPairBasedHandRank(List<KeyValuePair<int, CardValue>> cardGroups)
 		{
+			var pairKickerValues = new List<CardValue> { cardGroups[0].Value };
+			pairKickerValues.AddRange(cardGroups.Skip(1).Select(x => x.Value).OrderByDescending(x => x).Take(3));
+			return HandRank.Create(PokerHand.Pair, pairKickerValues);
 			throw new NotImplementedException();
 		}
 
