@@ -318,10 +318,11 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			//assert
 			Assert.That(actual.PokerHand, Is.EqualTo(PokerHand.FourOfAKind));
 
-			Assert.That(actual.KickerCardValues, Has.Count.EqualTo(1));
+			Assert.That(actual.KickerCardValues, Has.Count.EqualTo(2));
 			Assert.That(actual.KickerCardValues[0], Is.EqualTo(CardValue.Ten));
+			Assert.That(actual.KickerCardValues[1], Is.EqualTo(CardValue.Three));
 		}
-
+		
 		[Test]
 		public void CalculateHandRank_WHERE_four_of_a_kind_and_higher_three_of_a_kind_SHOULD_return_four_of_a_kind_with_primary_value_set_to_four_of_a_kind_value()
 		{
@@ -346,8 +347,9 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			//assert
 			Assert.That(actual.PokerHand, Is.EqualTo(PokerHand.FourOfAKind));
 
-			Assert.That(actual.KickerCardValues, Has.Count.EqualTo(1));
+			Assert.That(actual.KickerCardValues, Has.Count.EqualTo(2));
 			Assert.That(actual.KickerCardValues[0], Is.EqualTo(CardValue.Ten));
+			Assert.That(actual.KickerCardValues[1], Is.EqualTo(CardValue.King));
 		}
 
 		#endregion
@@ -691,7 +693,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		#region Three of a Kind
 
 		[Test]
-		public void CalculateHandRank_WHERE_three_of_a_kind_SHOULD_return_ThreeOfAKind_with_primary_value_set_to_triple_value()
+		public void CalculateHandRank_WHERE_three_of_a_kind_SHOULD_return_ThreeOfAKind_with_primary_value_set_to_triple_value_and_secondary_value_set_to_highest_remaining_card_value_and_third_value_set_to_second_highest_remaining_card_value()
 		{
 			// THREE OF A KIND	-  	  OTHERS
 			//   {6H 6S 6C}  	- {QC 7D 4H 3S}
@@ -714,8 +716,10 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			//assert
 			Assert.That(actual.PokerHand, Is.EqualTo(PokerHand.ThreeOfAKind));
 
-			Assert.That(actual.KickerCardValues, Has.Count.EqualTo(1));
+			Assert.That(actual.KickerCardValues, Has.Count.EqualTo(3));
 			Assert.That(actual.KickerCardValues[0], Is.EqualTo(CardValue.Six));
+			Assert.That(actual.KickerCardValues[1], Is.EqualTo(CardValue.Queen));
+			Assert.That(actual.KickerCardValues[2], Is.EqualTo(CardValue.Seven));
 		}
 
 		#endregion
