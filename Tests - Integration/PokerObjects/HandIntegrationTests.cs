@@ -298,7 +298,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		public void CalculateHandRank_WHERE_four_of_a_kind_SHOULD_return_four_of_a_kind_with_primary_value_set_to_four_of_a_kind_value()
 		{
 			//	 FOUR OF A KIND	 -	 OTHERS
-			// {10C 10D 10H 10S} - {3S 9D 6H}
+			// {10C 10D 10H 10S} - {9D 6H 3S}
 
 			//arrange
 			_instance = Hand.Create(new List<Card>
@@ -320,7 +320,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 
 			Assert.That(actual.KickerCardValues, Has.Count.EqualTo(2));
 			Assert.That(actual.KickerCardValues[0], Is.EqualTo(CardValue.Ten));
-			Assert.That(actual.KickerCardValues[1], Is.EqualTo(CardValue.Three));
+			Assert.That(actual.KickerCardValues[1], Is.EqualTo(CardValue.Nine));
 		}
 		
 		[Test]
@@ -738,9 +738,9 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 				Card.Create(CardValue.Six ,CardSuit.Clubs),
 				Card.Create(CardValue.Queen ,CardSuit.Hearts),
 				Card.Create(CardValue.Ace ,CardSuit.Hearts),
-				Card.Create(CardValue.Six ,CardSuit.Clubs),
+				Card.Create(CardValue.Three ,CardSuit.Spades),
 				Card.Create(CardValue.Queen ,CardSuit.Clubs),
-				Card.Create(CardValue.Six ,CardSuit.Clubs),
+				Card.Create(CardValue.Six ,CardSuit.Diamonds),
 				Card.Create(CardValue.Ace ,CardSuit.Spades)
 			});
 
@@ -770,7 +770,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 				Card.Create(CardValue.Queen ,CardSuit.Clubs),
 				Card.Create(CardValue.Queen ,CardSuit.Hearts),
 				Card.Create(CardValue.Three ,CardSuit.Hearts),
-				Card.Create(CardValue.Six ,CardSuit.Clubs),
+				Card.Create(CardValue.Six ,CardSuit.Diamonds),
 				Card.Create(CardValue.Three ,CardSuit.Spades)
 			});
 
