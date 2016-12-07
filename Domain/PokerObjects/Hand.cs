@@ -105,8 +105,7 @@ namespace PokerCalculator.Domain.PokerObjects
 			switch (cardGroups.First().Key)
 			{
 				case 4:
-					throw new NotImplementedException();
-					return HandRank.Create(PokerHand.FourOfAKind, new List<CardValue> { cardGroups.First().Value });
+					return GetFourOfAKindHandRank(cardGroups);
 				case 3:
 					return GetFullHouseOrThreeOfAKindHandRank(cardGroups);
 				case 2:
@@ -118,21 +117,49 @@ namespace PokerCalculator.Domain.PokerObjects
 			}
 		}
 
+		/// <summary>
+		/// Gets the four of AK ind hand rank.
+		/// </summary>
+		/// <returns>The four of AK ind hand rank.</returns>
+		/// <param name="cardGroups">Card groups.</param>
+		protected internal virtual HandRank GetFourOfAKindHandRank(List<KeyValuePair<int, CardValue>> cardGroups)
+		{
+			var fourOfAKindKickerValues = new List<CardValue> { cardGroups[0].Value };
+			fourOfAKindKickerValues.AddRange(cardGroups.Skip(1).Select(x => x.Value).OrderByDescending(x => x).Take(1));
+			return HandRank.Create(PokerHand.FourOfAKind, fourOfAKindKickerValues);
+		}
+
+		/// <summary>
+		/// Gets the full house or three of AK ind hand rank.
+		/// </summary>
+		/// <returns>The full house or three of AK ind hand rank.</returns>
+		/// <param name="cardGroups">Card groups.</param>
 		protected internal virtual HandRank GetFullHouseOrThreeOfAKindHandRank(List<KeyValuePair<int, CardValue>> cardGroups)
 		{
 			if (cardGroups.Count > 1 && cardGroups[1].Key > 1) return HandRank.Create(PokerHand.FullHouse, new List<CardValue> {cardGroups[0].Value, cardGroups[1].Value});
 
-			var threeOfAKindKickerValues = new List<CardValue> {cardGroups[0].Value};
+			var threeOfAKindKickerValues = new List<CardValue> { cardGroups[0].Value };
 			threeOfAKindKickerValues.AddRange(cardGroups.Skip(1).Select(x => x.Value).OrderByDescending(x => x).Take(2));
 			return HandRank.Create(PokerHand.ThreeOfAKind, threeOfAKindKickerValues);
 		}
 
+		/// <summary>
+		/// Gets the pair based hand rank.
+		/// </summary>
+		/// <returns>The pair based hand rank.</returns>
+		/// <param name="cardGroups">Card groups.</param>
 		protected internal virtual HandRank GetPairBasedHandRank(List<KeyValuePair<int, CardValue>> cardGroups)
 		{
+			if (cardGroups.Count > 1 && cardGroups[1].Key > 1)
+			{
+				var twoPairKickerValues = new List<CardValue> { cardGroups[0].Value, cardGroups[1].Value };
+				twoPairKickerValues.AddRange(cardGroups.Skip(2).Select(x => x.Value).OrderByDescending(x => x).Take(1));
+				return HandRank.Create(PokerHand.TwoPair, twoPairKickerValues);
+			}
+
 			var pairKickerValues = new List<CardValue> { cardGroups[0].Value };
 			pairKickerValues.AddRange(cardGroups.Skip(1).Select(x => x.Value).OrderByDescending(x => x).Take(3));
 			return HandRank.Create(PokerHand.Pair, pairKickerValues);
-			throw new NotImplementedException();
 		}
 
 		protected internal virtual HandRank GetHighCardHandRank(List<KeyValuePair<int, CardValue>> cardGroups)
