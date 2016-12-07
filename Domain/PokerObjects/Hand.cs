@@ -105,6 +105,7 @@ namespace PokerCalculator.Domain.PokerObjects
 			switch (cardGroups.First().Key)
 			{
 				case 4:
+					throw new NotImplementedException();
 					return HandRank.Create(PokerHand.FourOfAKind, new List<CardValue> { cardGroups.First().Value });
 				case 3:
 					return GetFullHouseOrThreeOfAKindHandRank(cardGroups);
@@ -119,9 +120,11 @@ namespace PokerCalculator.Domain.PokerObjects
 
 		protected internal virtual HandRank GetFullHouseOrThreeOfAKindHandRank(List<KeyValuePair<int, CardValue>> cardGroups)
 		{
-			return (cardGroups.Count > 1 && cardGroups[1].Key > 1)
-					? HandRank.Create(PokerHand.FullHouse, new List<CardValue> { cardGroups[0].Value, cardGroups[1].Value })
-					: HandRank.Create(PokerHand.ThreeOfAKind, new List<CardValue> { cardGroups[0].Value });
+			if (cardGroups.Count > 1 && cardGroups[1].Key > 1) return HandRank.Create(PokerHand.FullHouse, new List<CardValue> {cardGroups[0].Value, cardGroups[1].Value});
+
+			var threeOfAKindKickerValues = new List<CardValue> {cardGroups[0].Value};
+			threeOfAKindKickerValues.AddRange(cardGroups.Skip(1).Select(x => x.Value).OrderByDescending(x => x).Take(2));
+			return HandRank.Create(PokerHand.ThreeOfAKind, threeOfAKindKickerValues);
 		}
 
 		protected internal virtual HandRank GetPairBasedHandRank(List<KeyValuePair<int, CardValue>> cardGroups)
