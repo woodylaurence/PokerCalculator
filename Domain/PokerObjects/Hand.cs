@@ -162,9 +162,14 @@ namespace PokerCalculator.Domain.PokerObjects
 			return HandRank.Create(PokerHand.Pair, pairKickerValues);
 		}
 
+		/// <summary>
+		/// Gets the high card hand rank.
+		/// </summary>
+		/// <returns>The high card hand rank.</returns>
+		/// <param name="cardGroups">Card groups.</param>
 		protected internal virtual HandRank GetHighCardHandRank(List<KeyValuePair<int, CardValue>> cardGroups)
 		{
-			throw new NotImplementedException();
+			return HandRank.Create(PokerHand.HighCard, cardGroups.Select(x => x.Value).OrderByDescending(x => x).Take(5).ToList());
 		}
 
 		#endregion
