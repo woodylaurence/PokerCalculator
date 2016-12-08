@@ -5,7 +5,7 @@ using PokerCalculator.Domain.PokerEnums;
 namespace PokerCalculator.Tests.Integration.PokerObjects
 {
 	[TestFixture]
-	public class CardIntegrationTests
+	public class CardIntegrationTests : LocalTestBase
 	{
 		#region Create
 

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace PokerCalculator.Tests.Integration.PokerObjects
 {
 	[TestFixture]
-	public class HandRankIntegrationTests
+	public class HandRankIntegrationTests : LocalTestBase
 	{
 		#region Create
 

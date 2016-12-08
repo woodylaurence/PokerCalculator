@@ -4,7 +4,7 @@ using System.Linq;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 
-namespace PokerCalculator.Domain
+namespace PokerCalculator.Domain.HandRankCalculator
 {
 	public class HandRankCalculator : IHandRankCalculator
 	{
@@ -34,6 +34,73 @@ namespace PokerCalculator.Domain
 						? HandRank.Create(PokerHand.RoyalFlush)
 						: HandRank.Create(PokerHand.StraightFlush, new List<CardValue> { straightFlushValues.First() });
 		}
+
+		#region GetFlushValues
+
+		/// <summary>
+		/// Gets the flush values.
+		/// </summary>
+		/// <returns>The flush values.</returns>
+		protected internal virtual List<CardValue> GetFlushValues(List<Card> cards)
+		{
+			return cards.GroupBy(x => x.Suit)
+						.OrderByDescending(x => x.Count())
+						.First()
+						.Select(x => x.Value)
+						.OrderByDescending(x => x)
+						.ToList();
+		}
+
+		#endregion
+
+		#region GetStraightValues
+
+		/// <summary>
+		/// Gets the straight values.
+		/// </summary>
+		/// <returns>The straight values.</returns>
+		protected internal virtual List<CardValue> GetStraightValues(List<Card> cards)
+		{
+			return GetStraightValues(cards.Select(x => x.Value).ToList());
+		}
+
+		/// <summary>
+		/// Gets the straight values.
+		/// </summary>
+		/// <returns>The straight values.</returns>
+		/// <param name="cardValues">Cards.</param>
+		protected internal virtual List<CardValue> GetStraightValues(List<CardValue> cardValues)
+		{
+			var values = Enumerable.Repeat(false, 14).ToList();
+			cardValues.ForEach(x =>
+			{
+				var cardValueAsInt = (int)x;
+				values[14 - cardValueAsInt] = true;
+			});
+			values[13] = values[0];
+
+			var listOfStraights = new List<List<CardValue>>();
+			var straight = new List<CardValue>();
+			if (values[0]) straight.Add((CardValue)Enum.Parse(typeof(CardValue), "14"));
+
+			for (var i = 1; i < 14; i++)
+			{
+				var cardValue = i == 13 ? CardValue.Ace : (CardValue)Enum.Parse(typeof(CardValue), (14 - i).ToString());
+				if (values[i]) straight.Add(cardValue);
+				else
+				{
+					listOfStraights.Add(straight);
+					straight = new List<CardValue>();
+				}
+			}
+
+			if (straight.Any()) listOfStraights.Add(straight);
+			return listOfStraights.OrderByDescending(x => x.Count)
+								  .ThenByDescending(x => x.FirstOrDefault())
+								  .First();
+		}
+
+		#endregion
 
 		#region GetMultiCardOrHighCardRank
 
@@ -114,75 +181,6 @@ namespace PokerCalculator.Domain
 			return HandRank.Create(PokerHand.HighCard, cardGroups.Select(x => x.Value).OrderByDescending(x => x).Take(5).ToList());
 		}
 
-		#endregion
-
-		#region GetFlushValues
-
-		/// <summary>
-		/// Gets the flush values.
-		/// </summary>
-		/// <returns>The flush values.</returns>
-		protected internal virtual List<CardValue> GetFlushValues(List<Card> cards)
-		{
-			return cards.GroupBy(x => x.Suit)
-						.OrderByDescending(x => x.Count())
-						.First()
-						.Select(x => x.Value)
-						.OrderByDescending(x => x)
-						.ToList();
-		}
-
-		#endregion
-
-		#region GetStraightValues
-
-		/// <summary>
-		/// Gets the straight values.
-		/// </summary>
-		/// <returns>The straight values.</returns>
-		protected internal virtual List<CardValue> GetStraightValues(List<Card> cards)
-		{
-			return GetStraightValues(cards.Select(x => x.Value).ToList());
-		}
-
-		/// <summary>
-		/// Gets the straight values.
-		/// </summary>
-		/// <returns>The straight values.</returns>
-		/// <param name="cardValues">Cards.</param>
-		protected internal virtual List<CardValue> GetStraightValues(List<CardValue> cardValues)
-		{
-			var values = Enumerable.Repeat(false, 14).ToList();
-			cardValues.ForEach(x =>
-			{
-				var cardValueAsInt = (int)x;
-				values[14 - cardValueAsInt] = true;
-			});
-			values[13] = values[0];
-
-			var listOfStraights = new List<List<CardValue>>();
-			var straight = new List<CardValue>();
-			if (values[0]) straight.Add((CardValue)Enum.Parse(typeof(CardValue), "14"));
-
-			for (var i = 1; i < 14; i++)
-			{
-				var cardValue = i == 13 ? CardValue.Ace : (CardValue)Enum.Parse(typeof(CardValue), (14 - i).ToString());
-				if (values[i]) straight.Add(cardValue);
-				else
-				{
-					listOfStraights.Add(straight);
-					straight = new List<CardValue>();
-				}
-			}
-
-			if (straight.Any()) listOfStraights.Add(straight);
-			return listOfStraights.OrderByDescending(x => x.Count)
-								  .ThenByDescending(x => x.FirstOrDefault())
-								  .First();
-		}
-
-		#endregion
-
 		#region GetOrderedCardGroups
 
 		/// <summary>
@@ -197,6 +195,8 @@ namespace PokerCalculator.Domain
 						.ThenByDescending(x => x.Value)
 						.ToList();
 		}
+
+		#endregion
 
 		#endregion
 	}

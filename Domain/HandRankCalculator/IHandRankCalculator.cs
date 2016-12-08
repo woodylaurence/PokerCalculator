@@ -1,6 +1,6 @@
 ﻿using PokerCalculator.Domain.PokerObjects;
 
-namespace PokerCalculator.Domain
+namespace PokerCalculator.Domain.HandRankCalculator
 {
 	public interface IHandRankCalculator
 	{

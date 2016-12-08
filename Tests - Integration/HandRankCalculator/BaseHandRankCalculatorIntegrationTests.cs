@@ -1,22 +1,16 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
-using PokerCalculator.Domain;
+using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 
-namespace PokerCalculator.Tests.Integration
+namespace PokerCalculator.Tests.Integration.HandRankCalculator
 {
 	[TestFixture]
-	public class HandRankCalculatorIntegrationTests
+	public abstract class BaseHandRankCalculatorIntegrationTests : LocalTestBase
 	{
-		private HandRankCalculator _instance;
+		protected IHandRankCalculator _instance;
 		private Hand _hand;
-
-		[SetUp]
-		public void Setup()
-		{
-			_instance = new HandRankCalculator();
-		}
 
 		#region CalculateHandRank
 

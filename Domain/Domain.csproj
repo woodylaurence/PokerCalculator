@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -41,12 +41,9 @@
     <Compile Include="VisibleTo.cs" />
     <Compile Include="CardComparer.cs" />
     <Compile Include="PokerObjects\HandRank.cs" />
-    <Compile Include="IHandRankCalculator.cs" />
-    <Compile Include="HandRankCalculator.cs" />
+    <Compile Include="HandRankCalculator\IHandRankCalculator.cs" />
+    <Compile Include="HandRankCalculator\HandRankCalculator.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="PokerObjects\" />
-    <Folder Include="PokerEnums\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

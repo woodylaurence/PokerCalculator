@@ -1,13 +1,12 @@
 ﻿using NUnit.Framework;
 using PokerCalculator.Domain;
-using System.Security.Policy;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 
 namespace PokerCalculator.Tests.Integration
 {
 	[TestFixture]
-	public class CardComparerIntegrationTests
+	public class CardComparerIntegrationTests : LocalTestBase
 	{
 		private CardComparer _instance;
 
