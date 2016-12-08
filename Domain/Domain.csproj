@@ -41,6 +41,8 @@
     <Compile Include="VisibleTo.cs" />
     <Compile Include="CardComparer.cs" />
     <Compile Include="PokerObjects\HandRank.cs" />
+    <Compile Include="IHandRankCalculator.cs" />
+    <Compile Include="HandRankCalculator.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="PokerObjects\" />

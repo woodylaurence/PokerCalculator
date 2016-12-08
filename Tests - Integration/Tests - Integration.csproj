@@ -39,6 +39,7 @@
     <Compile Include="PokerObjects\HandIntegrationTests.cs" />
     <Compile Include="CardComparerIntegrationTests.cs" />
     <Compile Include="PokerObjects\HandRankIntegrationTests.cs" />
+    <Compile Include="HandRankCalculatorIntegrationTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
