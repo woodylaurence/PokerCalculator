@@ -5,6 +5,7 @@ using Rhino.Mocks;
 using PokerCalculator.Domain.PokerObjects;
 using System;
 using PokerCalculator.Domain.HandRankCalculator;
+using PokerCalculator.Tests.Shared;
 
 namespace PokerCalculator.Tests.Unit
 {

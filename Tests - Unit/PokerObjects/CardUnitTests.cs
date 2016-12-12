@@ -2,9 +2,7 @@
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Domain.PokerEnums;
 using Rhino.Mocks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using PokerCalculator.Tests.Shared;
 
 namespace PokerCalculator.Tests.Unit.PokerObjects
 {
@@ -58,19 +56,5 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		}
 
 		#endregion
-	}
-
-	public static class CardTestCases
-	{
-		public static IEnumerable<TestCaseData> AllCardsTestCaseData
-		{
-			get
-			{
-				var cardSuits = Enum.GetValues(typeof(CardSuit)).Cast<CardSuit>().ToList();
-				var cardValues = Enum.GetValues(typeof(CardValue)).Cast<CardValue>().ToList();
-
-				return cardSuits.SelectMany(cardSuit => cardValues.Select(cardValue => new TestCaseData(cardValue, cardSuit)));
-			}
-		}
 	}
 }

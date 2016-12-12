@@ -3,6 +3,7 @@ using Rhino.Mocks;
 using PokerCalculator.Domain;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Domain.PokerEnums;
+using PokerCalculator.Tests.Shared;
 
 namespace PokerCalculator.Tests.Unit
 {
@@ -127,7 +128,7 @@ namespace PokerCalculator.Tests.Unit
 
 		#endregion
 
-		#region
+		#region GetHashCode
 
 		[Test]
 		public new void GetHashCode()

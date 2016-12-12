@@ -3,7 +3,7 @@ using CommonServiceLocator.WindsorAdapter.Unofficial;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 
-namespace PokerCalculator.Tests.Unit
+namespace PokerCalculator.Tests.Shared
 {
 	[TestFixture]
 	public class AbstractUnitTestBase
@@ -14,6 +14,7 @@ namespace PokerCalculator.Tests.Unit
 		public void Setup()
 		{
 			WindsorContainer = SetupWindsorContainer();
+			RegisterComponentsToWindsor(WindsorContainer);
 		}
 
 		protected internal virtual IWindsorContainer SetupWindsorContainer()
@@ -21,6 +22,11 @@ namespace PokerCalculator.Tests.Unit
 			var container = new WindsorContainer();
 			ServiceLocator.SetLocatorProvider(() => new WindsorServiceLocator(container));
 			return container;
+		}
+
+		protected internal virtual void RegisterComponentsToWindsor(IWindsorContainer windsorContainer)
+		{
+			
 		}
 	}
 }

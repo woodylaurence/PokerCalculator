@@ -3,6 +3,7 @@ using PokerCalculator.Domain.PokerObjects;
 using Rhino.Mocks;
 using PokerCalculator.Domain.PokerEnums;
 using System.Collections.Generic;
+using PokerCalculator.Tests.Shared;
 
 namespace PokerCalculator.Tests.Unit.PokerObjects
 {

@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace PokerCalculator.Domain.PokerObjects
 {
-	public class Deck
+	public class Deck : List<Card>
 	{
 		public static Deck Create()
 		{

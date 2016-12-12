@@ -5,6 +5,7 @@ using NUnit.Framework;
 using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
+using PokerCalculator.Tests.Shared;
 using Rhino.Mocks;
 
 namespace PokerCalculator.Tests.Unit.PokerObjects

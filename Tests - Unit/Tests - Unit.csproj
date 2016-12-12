@@ -54,7 +54,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbstractUnitTestBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PokerObjects\CardUnitTests.cs" />
     <Compile Include="PokerObjects\HandUnitTests.cs" />
@@ -70,6 +69,10 @@
     <ProjectReference Include="..\Domain\Domain.csproj">
       <Project>{059495E2-3B00-4184-BAE8-B50FF4787166}</Project>
       <Name>Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tests - Shared\Tests - Shared.csproj">
+      <Project>{a303ca74-8d43-45e0-be0e-0a039cff30da}</Project>
+      <Name>Tests - Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
