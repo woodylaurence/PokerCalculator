@@ -2,7 +2,6 @@
 using NUnit.Framework;
 using PokerCalculator.Domain.PokerEnums;
 using Rhino.Mocks;
-using PokerCalculator.Domain;
 using PokerCalculator.Domain.PokerObjects;
 using System;
 using PokerCalculator.Domain.HandRankCalculator;
@@ -10,13 +9,13 @@ using PokerCalculator.Domain.HandRankCalculator;
 namespace PokerCalculator.Tests.Unit
 {
 	[TestFixture]
-	public class HandRankCalculatorUnitTests
+	public class HandRankCalculatorUnitTests : AbstractUnitTestBase
 	{
 		private HandRankCalculator _instance;
 		private Hand _hand;
 
 		[SetUp]
-		public void Setup()
+		public new void Setup()
 		{
 			_instance = MockRepository.GeneratePartialMock<HandRankCalculator>();
 			_hand = MockRepository.GenerateStrictMock<Hand>();

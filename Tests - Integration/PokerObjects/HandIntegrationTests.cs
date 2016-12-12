@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using Castle.MicroKernel.Registration;
 using NUnit.Framework;
+using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 
@@ -11,9 +13,11 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		Hand _instance;
 		
 		[SetUp]
-		public void Setup()
+		public new void Setup()
 		{
 			_instance = Hand.Create();
+
+			WindsorContainer.Register(Component.For<IHandRankCalculator>().ImplementedBy<Domain.HandRankCalculator.HandRankCalculator>());
 		}
 
 		#region Properties and Fields
@@ -30,7 +34,6 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 
 			//assert
 			Assert.That(actual, Is.EqualTo(handRank));
-
 		}
 
 		[Test]

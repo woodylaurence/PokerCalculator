@@ -11,7 +11,7 @@ namespace PokerCalculator.Tests.Integration
 		private CardComparer _instance;
 
 		[SetUp]
-		public void Setup()
+		public new void Setup()
 		{
 			_instance = new CardComparer();
 		}

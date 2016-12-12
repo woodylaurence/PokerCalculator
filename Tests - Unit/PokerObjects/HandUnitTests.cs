@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Castle.MicroKernel.Registration;
 using NUnit.Framework;
+using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using Rhino.Mocks;
@@ -8,14 +10,18 @@ using Rhino.Mocks;
 namespace PokerCalculator.Tests.Unit.PokerObjects
 {
 	[TestFixture]
-	public class HandUnitTests
+	public class HandUnitTests : AbstractUnitTestBase
 	{
 		Hand _instance;
+		private IHandRankCalculator _handRankCalculator;
 
 		[SetUp]
-		public void Setup()
+		public new void Setup()
 		{
 			_instance = MockRepository.GeneratePartialMock<Hand>();
+
+			_handRankCalculator = MockRepository.GenerateStrictMock<IHandRankCalculator>();
+			WindsorContainer.Register(Component.For<IHandRankCalculator>().Instance(_handRankCalculator));
 
 			Hand.MethodObject = MockRepository.GenerateStrictMock<Hand>();
 			HandRank.MethodObject = MockRepository.GenerateStrictMock<HandRank>();
@@ -42,8 +48,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 
 			//assert
 			Assert.That(actual, Is.EqualTo(handRank));
-			Assert.Fail("Fix this test!");
-			//_instance.AssertWasNotCalled(x => x.CalculateRank());
+			_handRankCalculator.AssertWasNotCalled(x => x.CalculateHandRank(_instance));
 		}
 
 		[Test]
@@ -53,12 +58,10 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			_instance.Stub(x => x._rank).Return(null).Repeat.Once();
 
 			var handRank = MockRepository.GenerateStrictMock<HandRank>();
-			Assert.Fail("Fix this test!");
-			//_instance.Stub(x => x.CalculateRank()).Return(handRank);
+			_handRankCalculator.Stub(x => x.CalculateHandRank(_instance)).Return(handRank);
 
 			_instance.Expect(x => x._rank = handRank);
-			_instance.Stub(x => x._rank).Return(handRank).Repeat.Once();
-
+			
 			//act
 			var actual = _instance.Rank;
 

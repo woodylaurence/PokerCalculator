@@ -7,12 +7,12 @@ using System.Collections.Generic;
 namespace PokerCalculator.Tests.Unit.PokerObjects
 {
 	[TestFixture]
-	public class HandRankUnitTests
+	public class HandRankUnitTests : AbstractUnitTestBase
 	{
 		HandRank _instance;
 
 		[SetUp]
-		public void Setup()
+		public new void Setup()
 		{
 			_instance = MockRepository.GeneratePartialMock<HandRank>();
 

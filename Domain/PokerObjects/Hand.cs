@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System;
 using System.Linq;
+using Microsoft.Practices.ServiceLocation;
+using PokerCalculator.Domain.HandRankCalculator;
 
 namespace PokerCalculator.Domain.PokerObjects
 {
@@ -15,12 +17,7 @@ namespace PokerCalculator.Domain.PokerObjects
 		protected internal virtual HandRank _rank { get; set; }
 		public virtual HandRank Rank
 		{
-			get
-			{
-				throw new NotImplementedException();
-				//if (_rank == null) _rank = CalculateRank();
-				//return _rank;
-			}
+			get { return _rank ?? (_rank = ServiceLocator.Current.GetInstance<IHandRankCalculator>().CalculateHandRank(this)); }
 			set { _rank = value; }
 		}
 

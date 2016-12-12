@@ -2,18 +2,17 @@
 using Rhino.Mocks;
 using PokerCalculator.Domain;
 using PokerCalculator.Domain.PokerObjects;
-using System.Security.Cryptography.X509Certificates;
 using PokerCalculator.Domain.PokerEnums;
 
 namespace PokerCalculator.Tests.Unit
 {
 	[TestFixture]
-	public class CardComparerUnitTests
+	public class CardComparerUnitTests : AbstractUnitTestBase
 	{
 		CardComparer _instance;
 
 		[SetUp]
-		public void Setup()
+		public new void Setup()
 		{
 			_instance = MockRepository.GeneratePartialMock<CardComparer>();
 		}

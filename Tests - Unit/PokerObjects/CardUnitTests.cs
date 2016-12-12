@@ -9,12 +9,12 @@ using System.Linq;
 namespace PokerCalculator.Tests.Unit.PokerObjects
 {
 	[TestFixture]
-	public class CardUnitTests
+	public class CardUnitTests : AbstractUnitTestBase
 	{
 		Card _instance;
 
 		[SetUp]
-		public void Setup()
+		public new void Setup()
 		{
 			_instance = MockRepository.GeneratePartialMock<Card>();
 
