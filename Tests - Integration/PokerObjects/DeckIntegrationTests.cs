@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System.Linq;
+using NUnit.Framework;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
 
@@ -16,10 +17,58 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			var actual = Deck.Create();
 
 			//assert
-			Assert.That(actual, Has.Count.EqualTo(52));
-			Assert.That(actual.TrueForAll(x => CardTestCases.AllCards.Contains(x)));
-			Assert.That(CardTestCases.AllCards.TrueForAll(x => actual.Contains(x)));
-			Assert.Fail("Something about ordering of the deck");
+			Assert.That(actual.Cards, Has.Count.EqualTo(52));
+
+			var allCards = CardTestCases.AllCards;
+			for (var i = 0; i < 52; i++)
+			{
+				Assert.That(actual.Cards[i], Is.EqualTo(allCards[i]).Using(CardComparer));
+			}
+		}
+
+		#endregion
+
+		#region CreateShuffledDeck
+
+		[Test]
+		public void CreateShuffledDeck()
+		{
+			//act
+			var actual = Deck.CreateShuffledDeck();
+
+			//assert
+			Assert.That(actual.Cards, Has.Count.EqualTo(52));
+			Assert.That(actual.Cards.TrueForAll(x => CardTestCases.AllCards.Contains(x, CardComparer)));
+			Assert.That(CardTestCases.AllCards.TrueForAll(x => actual.Cards.Contains(x, CardComparer)));
+		}
+
+		#endregion
+
+		#region Shuffle
+
+		[Test]
+		public void Shuffle()
+		{
+			//arrange
+			var instance = Deck.Create();
+			var originalCards = instance.Cards.ToList();
+
+			//act
+			instance.Shuffle();
+
+			//assert
+			Assert.That(instance.Cards.TrueForAll(x => originalCards.Contains(x, CardComparer)));
+			Assert.That(originalCards.TrueForAll(x => instance.Cards.Contains(x, CardComparer)));
+
+			var numCardsInSameOrderAsBefore = 0;
+			var orderedCards = CardTestCases.AllCards;
+			for (var i = 0; i < 52; i++)
+			{
+				if (CardComparer.Equals(instance.Cards[i], orderedCards[i])) numCardsInSameOrderAsBefore++;
+			}
+
+			//Represents roughly 1/300,000,000 chance
+			Assert.That(numCardsInSameOrderAsBefore, Is.LessThanOrEqualTo(5));
 		}
 
 		#endregion

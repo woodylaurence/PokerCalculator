@@ -54,6 +54,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MyRandomUnitTests.cs" />
+    <Compile Include="PokerObjects\DeckUnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PokerObjects\CardUnitTests.cs" />
     <Compile Include="PokerObjects\HandUnitTests.cs" />
