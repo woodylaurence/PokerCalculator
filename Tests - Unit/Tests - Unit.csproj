@@ -61,7 +61,7 @@
     <Compile Include="PokerObjects\HandUnitTests.cs" />
     <Compile Include="CardComparerUnitTests.cs" />
     <Compile Include="PokerObjects\HandRankUnitTests.cs" />
-    <Compile Include="HandRankCalculatorUnitTests.cs" />
+    <Compile Include="HandRankCalculator\HandRankCalculatorUnitTests.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -76,6 +76,9 @@
       <Project>{a303ca74-8d43-45e0-be0e-0a039cff30da}</Project>
       <Name>Tests - Shared</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="HandRankCalculator\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

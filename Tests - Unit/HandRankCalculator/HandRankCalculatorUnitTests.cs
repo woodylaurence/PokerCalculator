@@ -7,7 +7,7 @@ using System;
 using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Tests.Shared;
 
-namespace PokerCalculator.Tests.Unit
+namespace PokerCalculator.Tests.Unit.HandRankCalculator
 {
 	[TestFixture]
 	public class HandRankCalculatorUnitTests : AbstractUnitTestBase
