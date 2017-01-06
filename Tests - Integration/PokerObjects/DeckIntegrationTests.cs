@@ -72,5 +72,45 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		}
 
 		#endregion
+
+		#region TakeRandomCard
+
+		[Test]
+		public void TakeRandomCard()
+		{
+			//arrange
+			var instance = Deck.Create();
+
+			//act
+			var actual = instance.TakeRandomCard();
+
+			//assert
+			Assert.That(instance.Cards, Has.Count.EqualTo(51));
+			Assert.That(instance.Cards, Has.None.EqualTo(actual).Using(CardComparer));
+		}
+
+		#endregion
+
+		#region GetRandomCards
+
+		[Test]
+		public void GetRandomCards()
+		{
+			//arrange
+			var instance = Deck.Create();
+
+			//act
+			var actual = instance.GetRandomCards(3);
+
+			//assert
+			Assert.That(actual, Has.Count.EqualTo(3));
+
+			Assert.That(instance.Cards, Has.Count.EqualTo(52));
+			Assert.That(instance.Cards, Has.Some.EqualTo(actual[0]).Using(CardComparer));
+			Assert.That(instance.Cards, Has.Some.EqualTo(actual[1]).Using(CardComparer));
+			Assert.That(instance.Cards, Has.Some.EqualTo(actual[2]).Using(CardComparer));
+		}
+
+		#endregion
 	}
 }

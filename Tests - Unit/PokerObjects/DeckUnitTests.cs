@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 using PokerCalculator.Domain;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
 using Rhino.Mocks;
+using System.Security.Cryptography;
 
 namespace PokerCalculator.Tests.Unit.PokerObjects
 {
@@ -202,6 +204,104 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 
 			//assert
 			_instance.VerifyAllExpectations();
+		}
+
+		#endregion
+
+		#region TakeRandomCard
+
+		[Test]
+		public void TakeRandomCard_WHERE_no_more_cards_left_in_deck_SHOULD_throw_error()
+		{
+			//arrange
+			_instance.Stub(x => x.Cards).Return(new List<Card>());
+
+			//act + assert
+			var actualException = Assert.Throws<Exception>(() =>_instance.TakeRandomCard());
+			Assert.That(actualException.Message, Is.EqualTo("No cards left in Deck to take."));
+		}
+
+		[Test]
+		public void TakeRandomCard()
+		{
+			//arrange
+			var card1 = MockRepository.GenerateStrictMock<Card>();
+			var card2 = MockRepository.GenerateStrictMock<Card>();
+			var card3 = MockRepository.GenerateStrictMock<Card>();
+			var card4 = MockRepository.GenerateStrictMock<Card>();
+			var card5 = MockRepository.GenerateStrictMock<Card>();
+
+
+			var cardsInDeck = new List<Card> { card1, card2, card3, card4, card5 };
+			_instance.Stub(x => x.Cards).Return(cardsInDeck);
+
+			MyRandom.MethodObject.Stub(x => x.GenerateRandomNumberSlave(5)).Return(3);
+
+			//act
+			var actual = _instance.TakeRandomCard();
+
+			//assert
+			Assert.That(actual, Is.EqualTo(card4));
+
+			Assert.That(cardsInDeck, Has.Count.EqualTo(4));
+			Assert.That(cardsInDeck, Has.Some.EqualTo(card1));
+			Assert.That(cardsInDeck, Has.Some.EqualTo(card2));
+			Assert.That(cardsInDeck, Has.Some.EqualTo(card3));
+			Assert.That(cardsInDeck, Has.Some.EqualTo(card5));
+			Assert.That(cardsInDeck, Has.None.EqualTo(card4));
+		}
+
+		#endregion
+
+		#region GetRandomCards
+
+		[Test]
+		public void GetRandomCards_WHERE_not_enough_cards_left_in_deck()
+		{
+			//arrange
+			_instance.Stub(x => x.Cards).Return(new List<Card>
+			{
+				MockRepository.GenerateStrictMock<Card>(),
+				MockRepository.GenerateStrictMock<Card>()
+			});
+
+			//act + assert
+			var actualException = Assert.Throws<Exception>(() => _instance.GetRandomCards(3));
+			Assert.That(actualException.Message, Is.EqualTo("Cannot get more cards than there are left in the Deck."));
+		}
+
+		[Test]
+		public void GetRandomCards()
+		{
+			//arrange
+			var card1 = MockRepository.GenerateStrictMock<Card>();
+			var card2 = MockRepository.GenerateStrictMock<Card>();
+			var card3 = MockRepository.GenerateStrictMock<Card>();
+			var card4 = MockRepository.GenerateStrictMock<Card>();
+			var card5 = MockRepository.GenerateStrictMock<Card>();
+
+			var cardsInDeck = new List<Card> { card1, card2, card3, card4, card5 };
+			_instance.Stub(x => x.Cards).Return(cardsInDeck);
+
+			MyRandom.MethodObject.Stub(x => x.GenerateRandomNumberSlave(5)).Return(2);
+			MyRandom.MethodObject.Stub(x => x.GenerateRandomNumberSlave(4)).Return(2);
+			MyRandom.MethodObject.Stub(x => x.GenerateRandomNumberSlave(3)).Return(0);
+
+			//act
+			var actual = _instance.GetRandomCards(3);
+
+			//assert
+			Assert.That(actual, Has.Count.EqualTo(3));
+			Assert.That(actual, Has.Some.EqualTo(card1));
+			Assert.That(actual, Has.Some.EqualTo(card3));
+			Assert.That(actual, Has.Some.EqualTo(card4));
+
+			Assert.That(cardsInDeck, Has.Count.EqualTo(5));
+			Assert.That(cardsInDeck, Has.Some.EqualTo(card1));
+			Assert.That(cardsInDeck, Has.Some.EqualTo(card2));
+			Assert.That(cardsInDeck, Has.Some.EqualTo(card3));
+			Assert.That(cardsInDeck, Has.Some.EqualTo(card4));
+			Assert.That(cardsInDeck, Has.Some.EqualTo(card5));
 		}
 
 		#endregion

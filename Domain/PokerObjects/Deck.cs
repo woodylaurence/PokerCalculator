@@ -76,9 +76,55 @@ namespace PokerCalculator.Domain.PokerObjects
 
 		#region Shuffle
 
+		/// <summary>
+		/// Shuffle this instance.
+		/// </summary>
 		public virtual void Shuffle()
 		{
 			Cards = Cards.OrderBy(x => MyRandom.GenerateRandomNumber(5000)).ToList();
+		}
+
+		#endregion
+
+		#region TakeRandomCard
+
+		/// <summary>
+		/// Takes the random card.
+		/// </summary>
+		/// <returns>The random card.</returns>
+		public virtual Card TakeRandomCard()
+		{
+			if (Cards.Any() == false) throw new Exception("No cards left in Deck to take.");
+
+			var indexOfCardToTake = MyRandom.GenerateRandomNumber(Cards.Count);
+			var cardToTake = Cards[indexOfCardToTake];
+			Cards.Remove(cardToTake);
+			return cardToTake;
+		}
+
+		#endregion
+
+		#region GetRandomCards
+
+		/// <summary>
+		/// Gets the random cards.
+		/// </summary>
+		/// <returns>The random cards.</returns>
+		/// <param name="numCardsToTake">Number cards to take.</param>
+		public virtual List<Card> GetRandomCards(int numCardsToTake)
+		{
+			if (numCardsToTake > Cards.Count) throw new Exception("Cannot get more cards than there are left in the Deck.");
+
+			var cardsToTake = new List<Card>();
+			var cardsLeftInDeckToSelectFrom = Cards.ToList();
+			for (var i = 0; i < numCardsToTake; i++)
+			{
+				var indexOfCardToTake = MyRandom.GenerateRandomNumber(cardsLeftInDeckToSelectFrom.Count);
+				var cardToTake = cardsLeftInDeckToSelectFrom[indexOfCardToTake];
+				cardsToTake.Add(cardToTake);
+				cardsLeftInDeckToSelectFrom.Remove(cardToTake);
+			}
+			return cardsToTake;
 		}
 
 		#endregion
