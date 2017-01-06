@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using NUnit.Framework;
+using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
 
@@ -69,6 +70,25 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 
 			//Represents roughly 1/300,000,000 chance
 			Assert.That(numCardsInSameOrderAsBefore, Is.LessThanOrEqualTo(5));
+		}
+
+		#endregion
+
+		#region RemoveCard
+
+		[Test]
+		public void RemoveCard()
+		{
+			//arrange
+			var instance = Deck.Create();
+			var cardToRemove = Card.Create(CardValue.Jack, CardSuit.Spades);
+
+			//act
+			instance.RemoveCard(cardToRemove);
+
+			//assert
+			Assert.That(instance.Cards, Has.Count.EqualTo(51));
+			Assert.That(instance.Cards, Has.None.EqualTo(cardToRemove));
 		}
 
 		#endregion

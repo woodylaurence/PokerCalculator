@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using PokerCalculator.Domain.PokerEnums;
+using Microsoft.Practices.ServiceLocation;
 
 namespace PokerCalculator.Domain.PokerObjects
 {
@@ -72,7 +73,7 @@ namespace PokerCalculator.Domain.PokerObjects
 
 		#endregion
 
-		#region Instance Methods
+		#region Instance Methods 
 
 		#region Shuffle
 
@@ -82,6 +83,21 @@ namespace PokerCalculator.Domain.PokerObjects
 		public virtual void Shuffle()
 		{
 			Cards = Cards.OrderBy(x => MyRandom.GenerateRandomNumber(5000)).ToList();
+		}
+
+		#endregion
+
+		#region RemoveCard
+
+		/// <summary>
+		/// Removes the card.
+		/// </summary>
+		/// <param name="cardToRemove">Card to remove.</param>
+		public virtual void RemoveCard(Card cardToRemove)
+		{
+			var cardToRemoveInDeck = Cards.FirstOrDefault(x => new CardComparer().Equals(x, cardToRemove));
+			if (cardToRemoveInDeck == null) throw new Exception("Cannot remove Card, it is not in Deck.");
+			Cards.Remove(cardToRemoveInDeck);
 		}
 
 		#endregion

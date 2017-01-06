@@ -6,7 +6,6 @@ using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
 using Rhino.Mocks;
-using System.Security.Cryptography;
 
 namespace PokerCalculator.Tests.Unit.PokerObjects
 {
@@ -204,6 +203,63 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 
 			//assert
 			_instance.VerifyAllExpectations();
+		}
+
+		#endregion
+
+		#region RemoveCard
+
+		[Test]
+		public void RemoveCard_WHERE_card_is_not_in_deck_SHOULD_throw_error()
+		{
+			//arrange
+			var cardToRemove = MockRepository.GenerateStrictMock<Card>();
+
+			var card1InDeck = MockRepository.GenerateStrictMock<Card>();
+			var card2InDeck = MockRepository.GenerateStrictMock<Card>();
+			_instance.Stub(x => x.Cards).Return(new List<Card> { card1InDeck, card2InDeck });
+
+			cardToRemove.Stub(x => x.Value).Return(CardValue.Two);
+			cardToRemove.Stub(x => x.Suit).Return(CardSuit.Clubs);
+
+			card1InDeck.Stub(x => x.Value).Return(CardValue.Two);
+			card1InDeck.Stub(x => x.Suit).Return(CardSuit.Diamonds);
+
+			card2InDeck.Stub(x => x.Value).Return(CardValue.Seven);
+			card2InDeck.Stub(x => x.Suit).Return(CardSuit.Clubs);
+
+			//act + assert
+			var actualException = Assert.Throws<Exception>(() => _instance.RemoveCard(cardToRemove));
+			Assert.That(actualException.Message, Is.EqualTo("Cannot remove Card, it is not in Deck."));
+		}
+
+		[Test]
+		public void RemoveCard()
+		{
+			//arrange
+			var cardToRemove = MockRepository.GenerateStrictMock<Card>();
+
+			var card1InDeck = MockRepository.GenerateStrictMock<Card>();
+			var card2InDeck = MockRepository.GenerateStrictMock<Card>();
+			var cardsInDeck = new List<Card> { card1InDeck, card2InDeck };
+			_instance.Stub(x => x.Cards).Return(cardsInDeck);
+
+			cardToRemove.Stub(x => x.Value).Return(CardValue.Two);
+			cardToRemove.Stub(x => x.Suit).Return(CardSuit.Clubs);
+
+			card1InDeck.Stub(x => x.Value).Return(CardValue.Seven);
+			card1InDeck.Stub(x => x.Suit).Return(CardSuit.Hearts);
+
+			card2InDeck.Stub(x => x.Value).Return(CardValue.Two);
+			card2InDeck.Stub(x => x.Suit).Return(CardSuit.Clubs);
+
+			//act
+			_instance.RemoveCard(cardToRemove);
+
+			//assert
+			Assert.That(cardsInDeck, Has.Count.EqualTo(1));
+			Assert.That(cardsInDeck, Has.Some.EqualTo(card1InDeck));
+			Assert.That(cardsInDeck, Has.None.EqualTo(card2InDeck));
 		}
 
 		#endregion
