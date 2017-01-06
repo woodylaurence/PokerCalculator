@@ -4,7 +4,6 @@ using PokerCalculator.Domain.PokerEnums;
 using Rhino.Mocks;
 using PokerCalculator.Domain.PokerObjects;
 using System;
-using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Tests.Shared;
 
 namespace PokerCalculator.Tests.Unit.HandRankCalculator
@@ -12,13 +11,13 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 	[TestFixture]
 	public class HandRankCalculatorUnitTests : AbstractUnitTestBase
 	{
-		private HandRankCalculator _instance;
+		private Domain.HandRankCalculator.HandRankCalculator _instance;
 		private Hand _hand;
 
 		[SetUp]
 		public new void Setup()
 		{
-			_instance = MockRepository.GeneratePartialMock<HandRankCalculator>();
+			_instance = MockRepository.GeneratePartialMock<Domain.HandRankCalculator.HandRankCalculator>();
 			_hand = MockRepository.GenerateStrictMock<Hand>();
 
 			HandRank.MethodObject = MockRepository.GenerateStrictMock<HandRank>();
