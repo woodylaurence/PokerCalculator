@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace PokerCalculator
+namespace PokerCalculator.App
 {
-	class MainClass
+	internal class Program
 	{
 		public static void Main(string[] args)
 		{

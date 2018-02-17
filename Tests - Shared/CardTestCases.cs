@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PokerCalculator.Tests.Shared
 {
 	public static class CardTestCases
 	{
-		public static IEnumerable<TestCaseData> AllCardsTestCaseData
-		{
-			get
-			{
-				return AllCards.Select(x => new TestCaseData(x.Value, x.Suit));
-			}
-		}
+		public static IEnumerable<TestCaseData> AllCardsTestCaseData => AllCards.Select(x => new TestCaseData(x.Value, x.Suit));
 
 		public static List<Card> AllCards
 		{
