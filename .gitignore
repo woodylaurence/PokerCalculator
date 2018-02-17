@@ -28,6 +28,9 @@ tarballs/
 test-results/
 Thumbs.db
 
+# Visual Studio 2015/2017 cache/options directory
+*.vs/
+
 #Mac bundle stuff
 *.dmg
 *.app

@@ -1,5 +1,4 @@
 ﻿using PokerCalculator.Domain.PokerEnums;
-using System;
 
 namespace PokerCalculator.Domain.PokerObjects
 {

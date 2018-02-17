@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using Castle.MicroKernel.Registration;
+﻿using Castle.MicroKernel.Registration;
 using NUnit.Framework;
 using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
 using Rhino.Mocks;
+using System;
+using System.Collections.Generic;
 
 namespace PokerCalculator.Tests.Unit.PokerObjects
 {
@@ -62,7 +62,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			_handRankCalculator.Stub(x => x.CalculateHandRank(_instance)).Return(handRank);
 
 			_instance.Expect(x => x._rank = handRank);
-			
+
 			//act
 			var actual = _instance.Rank;
 
@@ -136,7 +136,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 
 			//act + assert
 			var actualException = Assert.Throws<ArgumentException>(() => _instance.CreateSlave(cards));
-			Assert.That(actualException.Message, Is.EqualTo("A Hand cannot contain more than seven cards\nParameter name: cards"));
+			Assert.That(actualException.Message, Is.EqualTo("A Hand cannot contain more than seven cards\r\nParameter name: cards"));
 			Assert.That(actualException.ParamName, Is.EqualTo("cards"));
 		}
 
@@ -162,7 +162,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 
 			//act + assert
 			var actualException = Assert.Throws<ArgumentException>(() => _instance.CreateSlave(cards));
-			Assert.That(actualException.Message, Is.EqualTo("A Hand cannot contain duplicate cards\nParameter name: cards"));
+			Assert.That(actualException.Message, Is.EqualTo("A Hand cannot contain duplicate cards\r\nParameter name: cards"));
 			Assert.That(actualException.ParamName, Is.EqualTo("cards"));
 		}
 

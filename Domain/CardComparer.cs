@@ -1,6 +1,5 @@
-﻿using System;
+﻿using PokerCalculator.Domain.PokerObjects;
 using System.Collections.Generic;
-using PokerCalculator.Domain.PokerObjects;
 
 namespace PokerCalculator.Domain
 {
