@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using PokerCalculator.Domain;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
 using Rhino.Mocks;
+using System;
+using System.Collections.Generic;
 
 namespace PokerCalculator.Tests.Unit.PokerObjects
 {
@@ -15,13 +15,16 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		private Deck _instance;
 
 		[SetUp]
-		public new void Setup()
+		public override void Setup()
 		{
+			base.Setup();
+
 			_instance = MockRepository.GeneratePartialMock<Deck>();
 
 			Deck.MethodObject = MockRepository.GenerateStrictMock<Deck>();
 			Card.MethodObject = MockRepository.GenerateStrictMock<Card>();
 			MyRandom.MethodObject = MockRepository.GenerateStrictMock<MyRandom>();
+			Utilities.MethodObject = MockRepository.GenerateStrictMock<Utilities>();
 		}
 
 		[TearDown]
@@ -30,7 +33,10 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			Deck.MethodObject = new Deck();
 			Card.MethodObject = new Card();
 			MyRandom.MethodObject = new MyRandom();
+			Utilities.MethodObject = new Utilities();
 		}
+
+		#region Static Methods
 
 		#region Create
 
@@ -52,8 +58,11 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void CreateSlave()
 		{
 			//arrange
-			_instance.Stub(x => x.GetAllCardSuits()).Return(new List<CardSuit> { CardSuit.Clubs, CardSuit.Hearts });
-			_instance.Stub(x => x.GetAllCardValues()).Return(new List<CardValue> { CardValue.Eight, CardValue.King });
+			var cardSuits = new List<CardSuit> { CardSuit.Clubs, CardSuit.Hearts };
+			Utilities.MethodObject.Stub(x => x.GetEnumValuesSlave<CardSuit>()).Return(cardSuits);
+
+			var cardValues = new List<CardValue> { CardValue.Eight, CardValue.King };
+			Utilities.MethodObject.Stub(x => x.GetEnumValuesSlave<CardValue>()).Return(cardValues);
 
 			var card1 = MockRepository.GenerateStrictMock<Card>();
 			Card.MethodObject.Stub(x => x.CreateSlave(CardValue.Eight, CardSuit.Clubs)).Return(card1);
@@ -77,51 +86,6 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			Assert.That(actual.Cards, Has.Some.EqualTo(card3));
 			Assert.That(actual.Cards, Has.Some.EqualTo(card4));
 		}
-
-		#region GetAllCardSuits
-
-		[Test]
-		public void GetAllCardSuits()
-		{
-			//act
-			var actual = _instance.GetAllCardSuits();
-
-			//assert
-			Assert.That(actual, Has.Count.EqualTo(4));
-			Assert.That(actual, Has.Some.EqualTo(CardSuit.Spades));
-			Assert.That(actual, Has.Some.EqualTo(CardSuit.Hearts));
-			Assert.That(actual, Has.Some.EqualTo(CardSuit.Diamonds));
-			Assert.That(actual, Has.Some.EqualTo(CardSuit.Clubs));
-		}
-
-		#endregion
-
-		#region GetAllCardValues
-
-		[Test]
-		public void GetAllCardValues()
-		{
-			//act
-			var actual = _instance.GetAllCardValues();
-
-			//assert
-			Assert.That(actual, Has.Count.EqualTo(13));
-			Assert.That(actual, Has.Some.EqualTo(CardValue.Ace));
-			Assert.That(actual, Has.Some.EqualTo(CardValue.King));
-			Assert.That(actual, Has.Some.EqualTo(CardValue.Queen));
-			Assert.That(actual, Has.Some.EqualTo(CardValue.Jack));
-			Assert.That(actual, Has.Some.EqualTo(CardValue.Ten));
-			Assert.That(actual, Has.Some.EqualTo(CardValue.Nine));
-			Assert.That(actual, Has.Some.EqualTo(CardValue.Eight));
-			Assert.That(actual, Has.Some.EqualTo(CardValue.Seven));
-			Assert.That(actual, Has.Some.EqualTo(CardValue.Six));
-			Assert.That(actual, Has.Some.EqualTo(CardValue.Five));
-			Assert.That(actual, Has.Some.EqualTo(CardValue.Four));
-			Assert.That(actual, Has.Some.EqualTo(CardValue.Three));
-			Assert.That(actual, Has.Some.EqualTo(CardValue.Two));
-		}
-
-		#endregion
 
 		#endregion
 
@@ -159,6 +123,10 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 
 		#endregion
 
+		#endregion
+
+		#region Instance Methods
+
 		#region Shuffle
 
 		[Test]
@@ -193,10 +161,10 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			MyRandom.MethodObject.Stub(x => x.GenerateRandomNumberSlave(5000)).Return(fourthRandomNumber).Repeat.Once();
 
 			_instance.Expect(x => x.Cards = Arg<List<Card>>.Matches(y => y.Count == 4 &&
-			                                                             y[0] == card4 &&
-			                                                             y[1] == card2 &&
-			                                                             y[2] == card1 &&
-			                                                             y[3] == card3));
+																		 y[0] == card4 &&
+																		 y[1] == card2 &&
+																		 y[2] == card1 &&
+																		 y[3] == card3));
 
 			//act
 			_instance.Shuffle();
@@ -273,7 +241,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			_instance.Stub(x => x.Cards).Return(new List<Card>());
 
 			//act + assert
-			var actualException = Assert.Throws<Exception>(() =>_instance.TakeRandomCard());
+			var actualException = Assert.Throws<Exception>(() => _instance.TakeRandomCard());
 			Assert.That(actualException.Message, Is.EqualTo("No cards left in Deck to take."));
 		}
 
@@ -359,6 +327,8 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			Assert.That(cardsInDeck, Has.Some.EqualTo(card4));
 			Assert.That(cardsInDeck, Has.Some.EqualTo(card5));
 		}
+
+		#endregion
 
 		#endregion
 	}

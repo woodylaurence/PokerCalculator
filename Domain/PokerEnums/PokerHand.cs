@@ -2,7 +2,6 @@
 {
 	public enum PokerHand
 	{
-		Invalid,
 		HighCard,
 		Pair,
 		TwoPair,
