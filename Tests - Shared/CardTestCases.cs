@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
+using PokerCalculator.Domain;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,9 +15,8 @@ namespace PokerCalculator.Tests.Shared
 		{
 			get
 			{
-				var cardSuits = Enum.GetValues(typeof(CardSuit)).Cast<CardSuit>().ToList();
-				var cardValues = Enum.GetValues(typeof(CardValue)).Cast<CardValue>().ToList();
-
+				var cardSuits = Utilities.GetEnumValues<CardSuit>();
+				var cardValues = Utilities.GetEnumValues<CardValue>();
 				return cardSuits.SelectMany(cardSuit => cardValues.Select(cardValue => Card.Create(cardValue, cardSuit))).ToList();
 			}
 		}

@@ -11,7 +11,7 @@ namespace PokerCalculator.Tests.Shared
 		protected internal IWindsorContainer WindsorContainer { get; set; }
 
 		[SetUp]
-		public void Setup()
+		public virtual void Setup()
 		{
 			WindsorContainer = SetupWindsorContainer();
 			RegisterComponentsToWindsor(WindsorContainer);
@@ -26,7 +26,7 @@ namespace PokerCalculator.Tests.Shared
 
 		protected internal virtual void RegisterComponentsToWindsor(IWindsorContainer windsorContainer)
 		{
-			
+
 		}
 	}
 }

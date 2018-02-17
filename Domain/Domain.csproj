@@ -45,6 +45,7 @@
     <Compile Include="PokerEnums\CardValue.cs" />
     <Compile Include="PokerEnums\CardSuit.cs" />
     <Compile Include="PokerEnums\PokerHand.cs" />
+    <Compile Include="Utilities.cs" />
     <Compile Include="VisibleTo.cs" />
     <Compile Include="CardComparer.cs" />
     <Compile Include="PokerObjects\HandRank.cs" />

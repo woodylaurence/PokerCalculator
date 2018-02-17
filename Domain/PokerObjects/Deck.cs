@@ -1,8 +1,7 @@
-﻿using System;
+﻿using PokerCalculator.Domain.PokerEnums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using PokerCalculator.Domain.PokerEnums;
-using Microsoft.Practices.ServiceLocation;
 
 namespace PokerCalculator.Domain.PokerObjects
 {
@@ -23,34 +22,16 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// 
 		/// </summary>
 		/// <returns></returns>
-		public static Deck Create() { return MethodObject.CreateSlave();}
+		public static Deck Create() { return MethodObject.CreateSlave(); }
 		protected internal virtual Deck CreateSlave()
 		{
-			var cardSuits = GetAllCardSuits();
-			var cardValues = GetAllCardValues();
+			var cardSuits = Utilities.GetEnumValues<CardSuit>();
+			var cardValues = Utilities.GetEnumValues<CardValue>();
 
 			return new Deck
 			{
 				Cards = cardSuits.SelectMany(suit => cardValues.Select(value => Card.Create(value, suit))).ToList()
 			};
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <returns></returns>
-		protected internal virtual List<CardSuit> GetAllCardSuits()
-		{
-			return Enum.GetValues(typeof(CardSuit)).Cast<CardSuit>().ToList();
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <returns></returns>
-		protected internal virtual List<CardValue> GetAllCardValues()
-		{
-			return Enum.GetValues(typeof(CardValue)).Cast<CardValue>().ToList();
 		}
 
 		#endregion
