@@ -1,5 +1,5 @@
-﻿using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿using NUnit.Framework;
+using System.Reflection;
 
 // Information about this assembly is defined by the following attributes.
 // Change them to the values specific to your project.
@@ -24,4 +24,6 @@ using System.Runtime.CompilerServices;
 
 //[assembly: AssemblyDelaySign(false)]
 //[assembly: AssemblyKeyFile("")]
+
+[assembly: Parallelizable(ParallelScope.Fixtures)]
 

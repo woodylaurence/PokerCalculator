@@ -1,5 +1,5 @@
 ﻿using Castle.Windsor;
-using CommonServiceLocator.WindsorAdapter.Unofficial;
+using CommonServiceLocator.WindsorAdapter;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
 
