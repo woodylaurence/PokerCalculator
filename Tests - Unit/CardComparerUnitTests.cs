@@ -1,9 +1,9 @@
 ﻿using NUnit.Framework;
-using Rhino.Mocks;
 using PokerCalculator.Domain;
-using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Domain.PokerEnums;
+using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
+using Rhino.Mocks;
 
 namespace PokerCalculator.Tests.Unit
 {
@@ -34,7 +34,7 @@ namespace PokerCalculator.Tests.Unit
 		public void Equals_WHERE_first_card_is_null_and_second_is_not_SHOULD_return_false()
 		{
 			//arrange
-			var card = MockRepository.GenerateStrictMock<Card>();
+			var card = new Card(CardValue.Jack, CardSuit.Spades);
 
 			//act
 			var actual = _instance.Equals(null, card);
@@ -47,7 +47,7 @@ namespace PokerCalculator.Tests.Unit
 		public void Equals_WHERE_second_card_is_null_and_first_is_not_SHOULD_return_false()
 		{
 			//arrange
-			var card = MockRepository.GenerateStrictMock<Card>();
+			var card = new Card(CardValue.Jack, CardSuit.Spades);
 
 			//act
 			var actual = _instance.Equals(card, null);
@@ -60,7 +60,7 @@ namespace PokerCalculator.Tests.Unit
 		public void Equals_WHERE_cards_are_same_value_in_memory_SHOULD_return_true()
 		{
 			//arrange
-			var card = MockRepository.GenerateStrictMock<Card>();
+			var card = new Card(CardValue.Jack, CardSuit.Spades);
 
 			//act
 			var actual = _instance.Equals(card, card);
@@ -73,11 +73,8 @@ namespace PokerCalculator.Tests.Unit
 		public void Equals_WHERE_values_are_different_SHOULD_return_false()
 		{
 			//arrange
-			var card1 = MockRepository.GenerateStrictMock<Card>();
-			var card2 = MockRepository.GenerateStrictMock<Card>();
-
-			card1.Stub(x => x.Value).Return(CardValue.Five);
-			card2.Stub(x => x.Value).Return(CardValue.Nine);
+			var card1 = new Card(CardValue.Five, CardSuit.Spades);
+			var card2 = new Card(CardValue.Nine, CardSuit.Spades);
 
 			//act
 			var actual = _instance.Equals(card1, card2);
@@ -90,14 +87,8 @@ namespace PokerCalculator.Tests.Unit
 		public void Equals_WHERE_suits_are_different_SHOULD_return_false()
 		{
 			//arrange
-			var card1 = MockRepository.GenerateStrictMock<Card>();
-			var card2 = MockRepository.GenerateStrictMock<Card>();
-
-			card1.Stub(x => x.Value).Return(CardValue.Four);
-			card2.Stub(x => x.Value).Return(CardValue.Four);
-
-			card1.Stub(x => x.Suit).Return(CardSuit.Clubs);
-			card2.Stub(x => x.Suit).Return(CardSuit.Diamonds);
+			var card1 = new Card(CardValue.Four, CardSuit.Clubs);
+			var card2 = new Card(CardValue.Four, CardSuit.Diamonds);
 
 			//act
 			var actual = _instance.Equals(card1, card2);
@@ -110,14 +101,8 @@ namespace PokerCalculator.Tests.Unit
 		public void Equals_WHERE_values_and_suits_are_the_same_SHOULD_return_true()
 		{
 			//arrange
-			var card1 = MockRepository.GenerateStrictMock<Card>();
-			var card2 = MockRepository.GenerateStrictMock<Card>();
-
-			card1.Stub(x => x.Value).Return(CardValue.Ten);
-			card2.Stub(x => x.Value).Return(CardValue.Ten);
-
-			card1.Stub(x => x.Suit).Return(CardSuit.Spades);
-			card2.Stub(x => x.Suit).Return(CardSuit.Spades);
+			var card1 = new Card(CardValue.Ten, CardSuit.Spades);
+			var card2 = new Card(CardValue.Ten, CardSuit.Spades);
 
 			//act
 			var actual = _instance.Equals(card1, card2);
@@ -134,13 +119,10 @@ namespace PokerCalculator.Tests.Unit
 		public new void GetHashCode()
 		{
 			//arrange
-			var card = MockRepository.GenerateStrictMock<Card>();
-
-			card.Stub(x => x.Value).Return(CardValue.Queen);
-			card.Stub(x => x.Suit).Return(CardSuit.Hearts);
+			var card = new Card(CardValue.Queen, CardSuit.Hearts);
 
 			//act
-			var actual = _instance.GetHashCode();
+			var actual = _instance.GetHashCode(card);
 
 			//assert
 			Assert.That(actual, Is.Not.Null);

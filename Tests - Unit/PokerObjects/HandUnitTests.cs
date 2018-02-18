@@ -107,7 +107,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void Create_WHERE_supplying_cards_SHOULD_call_slave_with_supplied_cards()
 		{
 			//arrange
-			var cards = new List<Card> { MockRepository.GenerateStrictMock<Card>() };
+			var cards = new List<Card> { new Card(CardValue.Queen, CardSuit.Spades) };
 			Hand.MethodObject.Expect(x => x.CreateSlave(cards)).Return(_instance);
 
 			//act
@@ -124,14 +124,14 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			//arrange
 			var cards = new List<Card>
 			{
-				MockRepository.GenerateStrictMock<Card>(),
-				MockRepository.GenerateStrictMock<Card>(),
-				MockRepository.GenerateStrictMock<Card>(),
-				MockRepository.GenerateStrictMock<Card>(),
-				MockRepository.GenerateStrictMock<Card>(),
-				MockRepository.GenerateStrictMock<Card>(),
-				MockRepository.GenerateStrictMock<Card>(),
-				MockRepository.GenerateStrictMock<Card>()
+				new Card(CardValue.Ace, CardSuit.Diamonds),
+				new Card(CardValue.Two, CardSuit.Hearts),
+				new Card(CardValue.Four, CardSuit.Spades),
+				new Card(CardValue.Ace, CardSuit.Spades),
+				new Card(CardValue.Nine, CardSuit.Diamonds),
+				new Card(CardValue.Eight, CardSuit.Clubs),
+				new Card(CardValue.King, CardSuit.Diamonds),
+				new Card(CardValue.Three, CardSuit.Clubs)
 			};
 
 			//act + assert
@@ -144,19 +144,11 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void CreateSlave_WHERE_cards_contains_duplicates_SHOULD_throw_error()
 		{
 			//arrange
-			var duplicatedCard1 = MockRepository.GenerateStrictMock<Card>();
-			var duplicatedCard2 = MockRepository.GenerateStrictMock<Card>();
-			var card3 = MockRepository.GenerateStrictMock<Card>();
-
 			const CardValue cardValue = CardValue.Nine;
 			const CardSuit cardSuit = CardSuit.Clubs;
-			duplicatedCard1.Stub(x => x.Value).Return(cardValue);
-			duplicatedCard2.Stub(x => x.Value).Return(cardValue);
-			card3.Stub(x => x.Value).Return(CardValue.Eight);
-
-			duplicatedCard1.Stub(x => x.Suit).Return(cardSuit);
-			duplicatedCard2.Stub(x => x.Suit).Return(cardSuit);
-			card3.Stub(x => x.Suit).Return(CardSuit.Hearts);
+			var duplicatedCard1 = new Card(cardValue, cardSuit);
+			var duplicatedCard2 = new Card(cardValue, cardSuit);
+			var card3 = new Card(CardValue.Eight, CardSuit.Hearts);
 
 			var cards = new List<Card> { duplicatedCard1, card3, duplicatedCard2 };
 
@@ -170,19 +162,11 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void CreateSlave_SHOULD_copy_supplied_cards_to_Cards_property()
 		{
 			//arrange
-			var card1 = MockRepository.GenerateStrictMock<Card>();
-			var card2 = MockRepository.GenerateStrictMock<Card>();
-			var card3 = MockRepository.GenerateStrictMock<Card>();
+			var card1 = new Card(CardValue.Six, CardSuit.Hearts);
+			var card2 = new Card(CardValue.Ten, CardSuit.Diamonds);
+			var card3 = new Card(CardValue.Ace, CardSuit.Diamonds);
 
 			var cards = new List<Card> { card1, card2, card3 };
-
-			card1.Stub(x => x.Value).Return(CardValue.Six);
-			card2.Stub(x => x.Value).Return(CardValue.Ten);
-			card3.Stub(x => x.Value).Return(CardValue.Ace);
-
-			card1.Stub(x => x.Suit).Return(CardSuit.Hearts);
-			card2.Stub(x => x.Suit).Return(CardSuit.Diamonds);
-			card3.Stub(x => x.Suit).Return(CardSuit.Diamonds);
 
 			//act
 			var actual = _instance.CreateSlave(cards);
@@ -203,16 +187,17 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void AddCard_WHERE_hand_already_has_seven_cards_SHOULD_throw_exception()
 		{
 			//arrange
-			var cardToAdd = MockRepository.GenerateStrictMock<Card>();
+			var cardToAdd = new Card(CardValue.Ace, CardSuit.Diamonds);
 			_instance.Stub(x => x.Cards).Return(new List<Card>
 			{
-				MockRepository.GenerateStrictMock<Card>(),
-				MockRepository.GenerateStrictMock<Card>(),
-				MockRepository.GenerateStrictMock<Card>(),
-				MockRepository.GenerateStrictMock<Card>(),
-				MockRepository.GenerateStrictMock<Card>(),
-				MockRepository.GenerateStrictMock<Card>(),
-				MockRepository.GenerateStrictMock<Card>()
+
+				new Card(CardValue.Two, CardSuit.Hearts),
+				new Card(CardValue.Four, CardSuit.Spades),
+				new Card(CardValue.Ace, CardSuit.Spades),
+				new Card(CardValue.Nine, CardSuit.Diamonds),
+				new Card(CardValue.Eight, CardSuit.Clubs),
+				new Card(CardValue.King, CardSuit.Diamonds),
+				new Card(CardValue.Three, CardSuit.Clubs)
 			});
 
 			//act + assert
@@ -224,17 +209,11 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void AddCard_WHERE_hand_already_contains_card_SHOULD_throw_exception()
 		{
 			//arrange
-			var cardToAdd = MockRepository.GenerateStrictMock<Card>();
-			var cardInHand = MockRepository.GenerateStrictMock<Card>();
-			_instance.Stub(x => x.Cards).Return(new List<Card> { cardInHand });
-
 			const CardValue value = CardValue.Eight;
-			cardToAdd.Stub(x => x.Value).Return(value);
-			cardInHand.Stub(x => x.Value).Return(value);
-
 			const CardSuit suit = CardSuit.Diamonds;
-			cardToAdd.Stub(x => x.Suit).Return(suit);
-			cardInHand.Stub(x => x.Suit).Return(suit);
+			var cardToAdd = new Card(value, suit);
+			var cardInHand = new Card(value, suit);
+			_instance.Stub(x => x.Cards).Return(new List<Card> { cardInHand });
 
 			//act + assert
 			var actualException = Assert.Throws<Exception>(() => _instance.AddCard(cardToAdd));
@@ -245,7 +224,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void AddCard_WHERE_hand_initially_has_no_cards_SHOULD_add_hand_to_card_and_reset_rank()
 		{
 			//arrange
-			var cardToAdd = MockRepository.GenerateStrictMock<Card>();
+			var cardToAdd = new Card(CardValue.Six, CardSuit.Diamonds);
 			var cards = new List<Card>();
 			_instance.Stub(x => x.Cards).Return(cards).Repeat.Times(3);
 
@@ -264,18 +243,13 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void AddCard_WHERE_hand_has_some_cards_SHOULD_add_card_to_hand_along_with_other_cards_and_reset_rank()
 		{
 			//arrange
-			var cardToAdd = MockRepository.GenerateStrictMock<Card>();
-			var cardInHand = MockRepository.GenerateStrictMock<Card>();
+			var cardToAdd = new Card(CardValue.Four, CardSuit.Diamonds);
+			var cardInHand = new Card(CardValue.Nine, CardSuit.Hearts);
+
 			var cards = new List<Card> { cardInHand };
 			_instance.Stub(x => x.Cards).Return(cards).Repeat.Times(3);
 
 			_instance.Expect(x => x.Rank = null);
-
-			cardToAdd.Stub(x => x.Value).Return(CardValue.Four);
-			cardInHand.Stub(x => x.Value).Return(CardValue.Nine);
-
-			cardToAdd.Stub(x => x.Suit).Return(CardSuit.Diamonds);
-			cardInHand.Stub(x => x.Suit).Return(CardSuit.Hearts);
 
 			//act
 			_instance.AddCard(cardToAdd);

@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
+using System.Collections.Generic;
 
 namespace PokerCalculator.Tests.Integration.HandRankCalculator
 {
@@ -25,13 +25,13 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//arrange
 			_hand = Hand.Create(new List<Card>
 			{
-				Card.Create(CardValue.Ace, CardSuit.Spades),
-				Card.Create(CardValue.Jack, CardSuit.Spades),
-				Card.Create(CardValue.Seven, CardSuit.Hearts),
-				Card.Create(CardValue.Ten, CardSuit.Spades),
-				Card.Create(CardValue.Queen, CardSuit.Spades),
-				Card.Create(CardValue.King, CardSuit.Spades),
-				Card.Create(CardValue.Four, CardSuit.Hearts)
+				new Card(CardValue.Ace, CardSuit.Spades),
+				new Card(CardValue.Jack, CardSuit.Spades),
+				new Card(CardValue.Seven, CardSuit.Hearts),
+				new Card(CardValue.Ten, CardSuit.Spades),
+				new Card(CardValue.Queen, CardSuit.Spades),
+				new Card(CardValue.King, CardSuit.Spades),
+				new Card(CardValue.Four, CardSuit.Hearts)
 			});
 
 			//act
@@ -55,13 +55,13 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//arrange
 			_hand = Hand.Create(new List<Card>
 			{
-				Card.Create(CardValue.Four, CardSuit.Hearts),
-				Card.Create(CardValue.Six, CardSuit.Hearts),
-				Card.Create(CardValue.Seven, CardSuit.Hearts),
-				Card.Create(CardValue.Eight, CardSuit.Hearts),
-				Card.Create(CardValue.Ten, CardSuit.Spades),
-				Card.Create(CardValue.Five, CardSuit.Hearts),
-				Card.Create(CardValue.Two, CardSuit.Clubs)
+				new Card(CardValue.Four, CardSuit.Hearts),
+				new Card(CardValue.Six, CardSuit.Hearts),
+				new Card(CardValue.Seven, CardSuit.Hearts),
+				new Card(CardValue.Eight, CardSuit.Hearts),
+				new Card(CardValue.Ten, CardSuit.Spades),
+				new Card(CardValue.Five, CardSuit.Hearts),
+				new Card(CardValue.Two, CardSuit.Clubs)
 			});
 
 			//act
@@ -83,13 +83,13 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//arrange
 			_hand = Hand.Create(new List<Card>
 			{
-				Card.Create(CardValue.Ten, CardSuit.Hearts),
-				Card.Create(CardValue.Seven, CardSuit.Hearts),
-				Card.Create(CardValue.Ace, CardSuit.Hearts),
-				Card.Create(CardValue.Nine, CardSuit.Hearts),
-				Card.Create(CardValue.Jack, CardSuit.Hearts),
-				Card.Create(CardValue.Eight, CardSuit.Hearts),
-				Card.Create(CardValue.Four, CardSuit.Hearts)
+				new Card(CardValue.Ten, CardSuit.Hearts),
+				new Card(CardValue.Seven, CardSuit.Hearts),
+				new Card(CardValue.Ace, CardSuit.Hearts),
+				new Card(CardValue.Nine, CardSuit.Hearts),
+				new Card(CardValue.Jack, CardSuit.Hearts),
+				new Card(CardValue.Eight, CardSuit.Hearts),
+				new Card(CardValue.Four, CardSuit.Hearts)
 			});
 
 			//act
@@ -112,13 +112,13 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//arrange
 			_hand = Hand.Create(new List<Card>
 			{
-				Card.Create(CardValue.Ten, CardSuit.Hearts),
-				Card.Create(CardValue.Seven, CardSuit.Hearts),
-				Card.Create(CardValue.Queen, CardSuit.Clubs),
-				Card.Create(CardValue.Nine, CardSuit.Hearts),
-				Card.Create(CardValue.Jack, CardSuit.Hearts),
-				Card.Create(CardValue.Eight, CardSuit.Hearts),
-				Card.Create(CardValue.Two, CardSuit.Diamonds)
+				new Card(CardValue.Ten, CardSuit.Hearts),
+				new Card(CardValue.Seven, CardSuit.Hearts),
+				new Card(CardValue.Queen, CardSuit.Clubs),
+				new Card(CardValue.Nine, CardSuit.Hearts),
+				new Card(CardValue.Jack, CardSuit.Hearts),
+				new Card(CardValue.Eight, CardSuit.Hearts),
+				new Card(CardValue.Two, CardSuit.Diamonds)
 			});
 
 			//act
@@ -144,13 +144,13 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//arrange
 			_hand = Hand.Create(new List<Card>
 			{
-				Card.Create(CardValue.Nine, CardSuit.Diamonds),
-				Card.Create(CardValue.Ten, CardSuit.Hearts),
-				Card.Create(CardValue.Ten, CardSuit.Spades),
-				Card.Create(CardValue.Three, CardSuit.Spades),
-				Card.Create(CardValue.Ten, CardSuit.Diamonds),
-				Card.Create(CardValue.Ten, CardSuit.Clubs),
-				Card.Create(CardValue.Six, CardSuit.Hearts)
+				new Card(CardValue.Nine, CardSuit.Diamonds),
+				new Card(CardValue.Ten, CardSuit.Hearts),
+				new Card(CardValue.Ten, CardSuit.Spades),
+				new Card(CardValue.Three, CardSuit.Spades),
+				new Card(CardValue.Ten, CardSuit.Diamonds),
+				new Card(CardValue.Ten, CardSuit.Clubs),
+				new Card(CardValue.Six, CardSuit.Hearts)
 			});
 
 			//act
@@ -173,13 +173,13 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//arrange
 			_hand = Hand.Create(new List<Card>
 			{
-				Card.Create(CardValue.King, CardSuit.Hearts),
-				Card.Create(CardValue.Ten, CardSuit.Hearts),
-				Card.Create(CardValue.Ten, CardSuit.Spades),
-				Card.Create(CardValue.King, CardSuit.Spades),
-				Card.Create(CardValue.Ten, CardSuit.Diamonds),
-				Card.Create(CardValue.Ten, CardSuit.Clubs),
-				Card.Create(CardValue.King, CardSuit.Clubs)
+				new Card(CardValue.King, CardSuit.Hearts),
+				new Card(CardValue.Ten, CardSuit.Hearts),
+				new Card(CardValue.Ten, CardSuit.Spades),
+				new Card(CardValue.King, CardSuit.Spades),
+				new Card(CardValue.Ten, CardSuit.Diamonds),
+				new Card(CardValue.Ten, CardSuit.Clubs),
+				new Card(CardValue.King, CardSuit.Clubs)
 			});
 
 			//act
@@ -206,13 +206,13 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//arrange
 			_hand = Hand.Create(new List<Card>
 			{
-				Card.Create(CardValue.Seven, CardSuit.Clubs),
-				Card.Create(CardValue.Four, CardSuit.Clubs),
-				Card.Create(CardValue.Seven, CardSuit.Hearts),
-				Card.Create(CardValue.Nine, CardSuit.Diamonds),
-				Card.Create(CardValue.Two, CardSuit.Clubs),
-				Card.Create(CardValue.Two, CardSuit.Hearts),
-				Card.Create(CardValue.Seven, CardSuit.Diamonds)
+				new Card(CardValue.Seven, CardSuit.Clubs),
+				new Card(CardValue.Four, CardSuit.Clubs),
+				new Card(CardValue.Seven, CardSuit.Hearts),
+				new Card(CardValue.Nine, CardSuit.Diamonds),
+				new Card(CardValue.Two, CardSuit.Clubs),
+				new Card(CardValue.Two, CardSuit.Hearts),
+				new Card(CardValue.Seven, CardSuit.Diamonds)
 			});
 
 			//act
@@ -235,13 +235,13 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//arrange
 			_hand = Hand.Create(new List<Card>
 			{
-				Card.Create(CardValue.Eight, CardSuit.Clubs),
-				Card.Create(CardValue.Four, CardSuit.Clubs),
-				Card.Create(CardValue.Ten, CardSuit.Spades),
-				Card.Create(CardValue.Eight, CardSuit.Spades),
-				Card.Create(CardValue.Four, CardSuit.Diamonds),
-				Card.Create(CardValue.Eight, CardSuit.Hearts),
-				Card.Create(CardValue.Ten, CardSuit.Clubs)
+				new Card(CardValue.Eight, CardSuit.Clubs),
+				new Card(CardValue.Four, CardSuit.Clubs),
+				new Card(CardValue.Ten, CardSuit.Spades),
+				new Card(CardValue.Eight, CardSuit.Spades),
+				new Card(CardValue.Four, CardSuit.Diamonds),
+				new Card(CardValue.Eight, CardSuit.Hearts),
+				new Card(CardValue.Ten, CardSuit.Clubs)
 			});
 
 			//act
@@ -264,13 +264,13 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//arrange
 			_hand = Hand.Create(new List<Card>
 			{
-				Card.Create(CardValue.Eight, CardSuit.Clubs),
-				Card.Create(CardValue.Ace, CardSuit.Diamonds),
-				Card.Create(CardValue.Ten, CardSuit.Spades),
-				Card.Create(CardValue.Eight, CardSuit.Spades),
-				Card.Create(CardValue.Ten, CardSuit.Diamonds),
-				Card.Create(CardValue.Eight, CardSuit.Hearts),
-				Card.Create(CardValue.Ten, CardSuit.Clubs)
+				new Card(CardValue.Eight, CardSuit.Clubs),
+				new Card(CardValue.Ace, CardSuit.Diamonds),
+				new Card(CardValue.Ten, CardSuit.Spades),
+				new Card(CardValue.Eight, CardSuit.Spades),
+				new Card(CardValue.Ten, CardSuit.Diamonds),
+				new Card(CardValue.Eight, CardSuit.Hearts),
+				new Card(CardValue.Ten, CardSuit.Clubs)
 			});
 
 			//act
@@ -293,13 +293,13 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//arrange
 			_hand = Hand.Create(new List<Card>
 			{
-				Card.Create(CardValue.Eight, CardSuit.Clubs),
-				Card.Create(CardValue.Ten, CardSuit.Spades),
-				Card.Create(CardValue.Eight, CardSuit.Spades),
-				Card.Create(CardValue.Ten, CardSuit.Diamonds),
-				Card.Create(CardValue.Eight, CardSuit.Hearts),
-				Card.Create(CardValue.Five, CardSuit.Diamonds),
-				Card.Create(CardValue.Ten, CardSuit.Clubs)
+				new Card(CardValue.Eight, CardSuit.Clubs),
+				new Card(CardValue.Ten, CardSuit.Spades),
+				new Card(CardValue.Eight, CardSuit.Spades),
+				new Card(CardValue.Ten, CardSuit.Diamonds),
+				new Card(CardValue.Eight, CardSuit.Hearts),
+				new Card(CardValue.Five, CardSuit.Diamonds),
+				new Card(CardValue.Ten, CardSuit.Clubs)
 			});
 
 			//act
@@ -326,13 +326,13 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//arrange
 			_hand = Hand.Create(new List<Card>
 			{
-				Card.Create(CardValue.King, CardSuit.Clubs),
-				Card.Create(CardValue.Two, CardSuit.Clubs),
-				Card.Create(CardValue.Four, CardSuit.Spades),
-				Card.Create(CardValue.Seven, CardSuit.Clubs),
-				Card.Create(CardValue.Three, CardSuit.Clubs),
-				Card.Create(CardValue.Ace, CardSuit.Diamonds),
-				Card.Create(CardValue.Nine, CardSuit.Clubs)
+				new Card(CardValue.King, CardSuit.Clubs),
+				new Card(CardValue.Two, CardSuit.Clubs),
+				new Card(CardValue.Four, CardSuit.Spades),
+				new Card(CardValue.Seven, CardSuit.Clubs),
+				new Card(CardValue.Three, CardSuit.Clubs),
+				new Card(CardValue.Ace, CardSuit.Diamonds),
+				new Card(CardValue.Nine, CardSuit.Clubs)
 			});
 
 			//act
@@ -358,13 +358,13 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//arrange
 			_hand = Hand.Create(new List<Card>
 			{
-				Card.Create(CardValue.Six, CardSuit.Clubs),
-				Card.Create(CardValue.Nine, CardSuit.Clubs),
-				Card.Create(CardValue.Eight, CardSuit.Diamonds),
-				Card.Create(CardValue.Jack, CardSuit.Spades),
-				Card.Create(CardValue.Ten, CardSuit.Clubs),
-				Card.Create(CardValue.Two, CardSuit.Clubs),
-				Card.Create(CardValue.Seven, CardSuit.Clubs)
+				new Card(CardValue.Six, CardSuit.Clubs),
+				new Card(CardValue.Nine, CardSuit.Clubs),
+				new Card(CardValue.Eight, CardSuit.Diamonds),
+				new Card(CardValue.Jack, CardSuit.Spades),
+				new Card(CardValue.Ten, CardSuit.Clubs),
+				new Card(CardValue.Two, CardSuit.Clubs),
+				new Card(CardValue.Seven, CardSuit.Clubs)
 			});
 
 			//act
@@ -390,13 +390,13 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//arrange
 			_hand = Hand.Create(new List<Card>
 			{
-				Card.Create(CardValue.Seven, CardSuit.Clubs),
-				Card.Create(CardValue.Ten, CardSuit.Diamonds),
-				Card.Create(CardValue.Ten, CardSuit.Clubs),
-				Card.Create(CardValue.Ten, CardSuit.Hearts),
-				Card.Create(CardValue.Five, CardSuit.Clubs),
-				Card.Create(CardValue.Eight, CardSuit.Clubs),
-				Card.Create(CardValue.Ace, CardSuit.Clubs)
+				new Card(CardValue.Seven, CardSuit.Clubs),
+				new Card(CardValue.Ten, CardSuit.Diamonds),
+				new Card(CardValue.Ten, CardSuit.Clubs),
+				new Card(CardValue.Ten, CardSuit.Hearts),
+				new Card(CardValue.Five, CardSuit.Clubs),
+				new Card(CardValue.Eight, CardSuit.Clubs),
+				new Card(CardValue.Ace, CardSuit.Clubs)
 			});
 
 			//act
@@ -426,13 +426,13 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//arrange
 			_hand = Hand.Create(new List<Card>
 			{
-				Card.Create(CardValue.Queen, CardSuit.Diamonds),
-				Card.Create(CardValue.Two, CardSuit.Diamonds),
-				Card.Create(CardValue.King, CardSuit.Spades),
-				Card.Create(CardValue.Nine, CardSuit.Clubs),
-				Card.Create(CardValue.Six, CardSuit.Hearts),
-				Card.Create(CardValue.Jack, CardSuit.Hearts),
-				Card.Create(CardValue.Ten, CardSuit.Clubs)
+				new Card(CardValue.Queen, CardSuit.Diamonds),
+				new Card(CardValue.Two, CardSuit.Diamonds),
+				new Card(CardValue.King, CardSuit.Spades),
+				new Card(CardValue.Nine, CardSuit.Clubs),
+				new Card(CardValue.Six, CardSuit.Hearts),
+				new Card(CardValue.Jack, CardSuit.Hearts),
+				new Card(CardValue.Ten, CardSuit.Clubs)
 			});
 
 			//act
@@ -454,13 +454,13 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//arrange
 			_hand = Hand.Create(new List<Card>
 			{
-				Card.Create(CardValue.Three, CardSuit.Spades),
-				Card.Create(CardValue.Two, CardSuit.Hearts),
-				Card.Create(CardValue.Ace, CardSuit.Clubs),
-				Card.Create(CardValue.Ten, CardSuit.Diamonds),
-				Card.Create(CardValue.Five, CardSuit.Hearts),
-				Card.Create(CardValue.Seven, CardSuit.Hearts),
-				Card.Create(CardValue.Four, CardSuit.Diamonds)
+				new Card(CardValue.Three, CardSuit.Spades),
+				new Card(CardValue.Two, CardSuit.Hearts),
+				new Card(CardValue.Ace, CardSuit.Clubs),
+				new Card(CardValue.Ten, CardSuit.Diamonds),
+				new Card(CardValue.Five, CardSuit.Hearts),
+				new Card(CardValue.Seven, CardSuit.Hearts),
+				new Card(CardValue.Four, CardSuit.Diamonds)
 			});
 
 			//act
@@ -482,13 +482,13 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//arrange
 			_hand = Hand.Create(new List<Card>
 			{
-				Card.Create(CardValue.Nine, CardSuit.Hearts),
-				Card.Create(CardValue.Eight, CardSuit.Diamonds),
-				Card.Create(CardValue.Six, CardSuit.Spades),
-				Card.Create(CardValue.Four, CardSuit.Clubs),
-				Card.Create(CardValue.Ten, CardSuit.Diamonds),
-				Card.Create(CardValue.Seven, CardSuit.Hearts),
-				Card.Create(CardValue.Five, CardSuit.Hearts)
+				new Card(CardValue.Nine, CardSuit.Hearts),
+				new Card(CardValue.Eight, CardSuit.Diamonds),
+				new Card(CardValue.Six, CardSuit.Spades),
+				new Card(CardValue.Four, CardSuit.Clubs),
+				new Card(CardValue.Ten, CardSuit.Diamonds),
+				new Card(CardValue.Seven, CardSuit.Hearts),
+				new Card(CardValue.Five, CardSuit.Hearts)
 			});
 
 			//act
@@ -510,13 +510,13 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//arrange
 			_hand = Hand.Create(new List<Card>
 			{
-				Card.Create(CardValue.Six, CardSuit.Diamonds),
-				Card.Create(CardValue.Five, CardSuit.Hearts),
-				Card.Create(CardValue.Seven, CardSuit.Hearts),
-				Card.Create(CardValue.Six, CardSuit.Hearts),
-				Card.Create(CardValue.Four, CardSuit.Clubs),
-				Card.Create(CardValue.Six, CardSuit.Spades),
-				Card.Create(CardValue.Eight, CardSuit.Diamonds)
+				new Card(CardValue.Six, CardSuit.Diamonds),
+				new Card(CardValue.Five, CardSuit.Hearts),
+				new Card(CardValue.Seven, CardSuit.Hearts),
+				new Card(CardValue.Six, CardSuit.Hearts),
+				new Card(CardValue.Four, CardSuit.Clubs),
+				new Card(CardValue.Six, CardSuit.Spades),
+				new Card(CardValue.Eight, CardSuit.Diamonds)
 			});
 
 			//act
@@ -542,13 +542,13 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//arrange
 			_hand = Hand.Create(new List<Card>
 			{
-				Card.Create(CardValue.Six ,CardSuit.Hearts),
-				Card.Create(CardValue.Seven ,CardSuit.Diamonds),
-				Card.Create(CardValue.Four ,CardSuit.Hearts),
-				Card.Create(CardValue.Six ,CardSuit.Spades),
-				Card.Create(CardValue.Queen ,CardSuit.Diamonds),
-				Card.Create(CardValue.Three ,CardSuit.Spades),
-				Card.Create(CardValue.Six ,CardSuit.Clubs)
+				new Card(CardValue.Six ,CardSuit.Hearts),
+				new Card(CardValue.Seven ,CardSuit.Diamonds),
+				new Card(CardValue.Four ,CardSuit.Hearts),
+				new Card(CardValue.Six ,CardSuit.Spades),
+				new Card(CardValue.Queen ,CardSuit.Diamonds),
+				new Card(CardValue.Three ,CardSuit.Spades),
+				new Card(CardValue.Six ,CardSuit.Clubs)
 			});
 
 			//act
@@ -576,13 +576,13 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//arrange
 			_hand = Hand.Create(new List<Card>
 			{
-				Card.Create(CardValue.Six ,CardSuit.Clubs),
-				Card.Create(CardValue.Queen ,CardSuit.Hearts),
-				Card.Create(CardValue.Ace ,CardSuit.Hearts),
-				Card.Create(CardValue.Three ,CardSuit.Spades),
-				Card.Create(CardValue.Queen ,CardSuit.Clubs),
-				Card.Create(CardValue.Six ,CardSuit.Diamonds),
-				Card.Create(CardValue.Ace ,CardSuit.Spades)
+				new Card(CardValue.Six ,CardSuit.Clubs),
+				new Card(CardValue.Queen ,CardSuit.Hearts),
+				new Card(CardValue.Ace ,CardSuit.Hearts),
+				new Card(CardValue.Three ,CardSuit.Spades),
+				new Card(CardValue.Queen ,CardSuit.Clubs),
+				new Card(CardValue.Six ,CardSuit.Diamonds),
+				new Card(CardValue.Ace ,CardSuit.Spades)
 			});
 
 			//act
@@ -606,13 +606,13 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//arrange
 			_hand = Hand.Create(new List<Card>
 			{
-				Card.Create(CardValue.Six ,CardSuit.Clubs),
-				Card.Create(CardValue.Ace ,CardSuit.Spades),
-				Card.Create(CardValue.Queen ,CardSuit.Clubs),
-				Card.Create(CardValue.Queen ,CardSuit.Hearts),
-				Card.Create(CardValue.Three ,CardSuit.Hearts),
-				Card.Create(CardValue.Six ,CardSuit.Diamonds),
-				Card.Create(CardValue.Three ,CardSuit.Spades)
+				new Card(CardValue.Six ,CardSuit.Clubs),
+				new Card(CardValue.Ace ,CardSuit.Spades),
+				new Card(CardValue.Queen ,CardSuit.Clubs),
+				new Card(CardValue.Queen ,CardSuit.Hearts),
+				new Card(CardValue.Three ,CardSuit.Hearts),
+				new Card(CardValue.Six ,CardSuit.Diamonds),
+				new Card(CardValue.Three ,CardSuit.Spades)
 			});
 
 			//act
@@ -636,13 +636,13 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//arrange
 			_hand = Hand.Create(new List<Card>
 			{
-				Card.Create(CardValue.Three ,CardSuit.Spades),
-				Card.Create(CardValue.Queen ,CardSuit.Clubs),
-				Card.Create(CardValue.Three ,CardSuit.Hearts),
-				Card.Create(CardValue.Six ,CardSuit.Clubs),
-				Card.Create(CardValue.Queen ,CardSuit.Hearts),
-				Card.Create(CardValue.Eight ,CardSuit.Diamonds),
-				Card.Create(CardValue.Ace ,CardSuit.Spades)
+				new Card(CardValue.Three ,CardSuit.Spades),
+				new Card(CardValue.Queen ,CardSuit.Clubs),
+				new Card(CardValue.Three ,CardSuit.Hearts),
+				new Card(CardValue.Six ,CardSuit.Clubs),
+				new Card(CardValue.Queen ,CardSuit.Hearts),
+				new Card(CardValue.Eight ,CardSuit.Diamonds),
+				new Card(CardValue.Ace ,CardSuit.Spades)
 			});
 
 			//act
@@ -670,13 +670,13 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//arrange
 			_hand = Hand.Create(new List<Card>
 			{
-				Card.Create(CardValue.Nine, CardSuit.Hearts),
-				Card.Create(CardValue.Six, CardSuit.Clubs),
-				Card.Create(CardValue.Jack, CardSuit.Spades),
-				Card.Create(CardValue.Six, CardSuit.Hearts),
-				Card.Create(CardValue.Three, CardSuit.Spades),
-				Card.Create(CardValue.Ten, CardSuit.Clubs),
-				Card.Create(CardValue.Queen, CardSuit.Clubs)
+				new Card(CardValue.Nine, CardSuit.Hearts),
+				new Card(CardValue.Six, CardSuit.Clubs),
+				new Card(CardValue.Jack, CardSuit.Spades),
+				new Card(CardValue.Six, CardSuit.Hearts),
+				new Card(CardValue.Three, CardSuit.Spades),
+				new Card(CardValue.Ten, CardSuit.Clubs),
+				new Card(CardValue.Queen, CardSuit.Clubs)
 			});
 
 			//act
@@ -705,13 +705,13 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//arrange
 			_hand = Hand.Create(new List<Card>
 			{
-				Card.Create(CardValue.Ten, CardSuit.Clubs),
-				Card.Create(CardValue.Three, CardSuit.Spades),
-				Card.Create(CardValue.Nine, CardSuit.Hearts),
-				Card.Create(CardValue.Queen, CardSuit.Clubs),
-				Card.Create(CardValue.Seven, CardSuit.Clubs),
-				Card.Create(CardValue.Jack, CardSuit.Spades),
-				Card.Create(CardValue.Six, CardSuit.Hearts)
+				new Card(CardValue.Ten, CardSuit.Clubs),
+				new Card(CardValue.Three, CardSuit.Spades),
+				new Card(CardValue.Nine, CardSuit.Hearts),
+				new Card(CardValue.Queen, CardSuit.Clubs),
+				new Card(CardValue.Seven, CardSuit.Clubs),
+				new Card(CardValue.Jack, CardSuit.Spades),
+				new Card(CardValue.Six, CardSuit.Hearts)
 			});
 
 			//act

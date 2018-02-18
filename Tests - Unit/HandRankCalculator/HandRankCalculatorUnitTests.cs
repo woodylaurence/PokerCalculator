@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using PokerCalculator.Domain.PokerEnums;
-using Rhino.Mocks;
 using PokerCalculator.Domain.PokerObjects;
-using System;
 using PokerCalculator.Tests.Shared;
+using Rhino.Mocks;
+using System;
+using System.Collections.Generic;
 
 namespace PokerCalculator.Tests.Unit.HandRankCalculator
 {
@@ -35,7 +35,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 		public void CalculateHandRank_WHERE_have_five_flush_values_SHOULD_return_result_of_GetFlushBasedHandRank()
 		{
 			//arrange
-			var cards = new List<Card> { MockRepository.GenerateStrictMock<Card>() };
+			var cards = new List<Card> { new Card(CardValue.Queen, CardSuit.Diamonds) };
 			_hand.Stub(x => x.Cards).Return(cards);
 
 			var flushCardValues = new List<CardValue>
@@ -63,7 +63,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 		public void CalculateHandRank_WHERE_have_more_than_five_flush_values_SHOULD_return_result_of_GetFlushBasedHandRank()
 		{
 			//arrange
-			var cards = new List<Card> { MockRepository.GenerateStrictMock<Card>() };
+			var cards = new List<Card> { new Card(CardValue.Queen, CardSuit.Diamonds) };
 			_hand.Stub(x => x.Cards).Return(cards);
 
 			var flushCardValues = new List<CardValue>
@@ -92,7 +92,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 		public void CalculateHandRank_WHERE_have_less_than_five_flush_values_but_five_straight_valus_SHOULD_return_straight_hand_rank()
 		{
 			//arrange
-			var cards = new List<Card> { MockRepository.GenerateStrictMock<Card>() };
+			var cards = new List<Card> { new Card(CardValue.Queen, CardSuit.Diamonds) };
 			_hand.Stub(x => x.Cards).Return(cards);
 
 			var flushCardValues = new List<CardValue> { CardValue.Three, CardValue.Jack };
@@ -119,7 +119,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 		public void CalculateHandRank_WHERE_have_less_than_five_flush_values_but_more_than_five_straight_valus_SHOULD_return_straight_hand_rank()
 		{
 			//arrange
-			var cards = new List<Card> { MockRepository.GenerateStrictMock<Card>() };
+			var cards = new List<Card> { new Card(CardValue.Queen, CardSuit.Diamonds) };
 			_hand.Stub(x => x.Cards).Return(cards);
 
 			var flushCardValues = new List<CardValue> { CardValue.Three, CardValue.Jack };
@@ -146,7 +146,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 		public void CalculateHandRank_WHERE_have_less_than_five_flush_values_and_less_than_five_straight_valus_SHOULD_return_result_of_GetMultiCardOrHighCardHandRank()
 		{
 			//arrange
-			var cards = new List<Card> { MockRepository.GenerateStrictMock<Card>() };
+			var cards = new List<Card> { new Card(CardValue.Queen, CardSuit.Diamonds) };
 			_hand.Stub(x => x.Cards).Return(cards);
 
 			var flushCardValues = new List<CardValue> { CardValue.Three, CardValue.Jack };
@@ -241,7 +241,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 		public void GetMultiCardOrHighCardHandRank_WHERE_first_group_has_a_group_of_four_cards_SHOULD_return_result_of_GetFourOfAKindHandRank()
 		{
 			//arrange
-			var cards = new List<Card> { MockRepository.GenerateStrictMock<Card>() };
+			var cards = new List<Card> { new Card(CardValue.Queen, CardSuit.Diamonds) };
 
 			var cardGroups = new List<KeyValuePair<int, CardValue>>
 			{
@@ -264,7 +264,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 		public void GetMultiCardOrHighCardHandRank_WHERE_first_group_has_a_group_of_three_cards_SHOULD_return_result_of_GetFullHouseOrThreeOfAKindHandRank()
 		{
 			//arrange
-			var cards = new List<Card> { MockRepository.GenerateStrictMock<Card>() };
+			var cards = new List<Card> { new Card(CardValue.Queen, CardSuit.Diamonds) };
 
 			var cardGroups = new List<KeyValuePair<int, CardValue>>
 			{
@@ -287,7 +287,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 		public void GetMultiCardOrHighCardHandRank_WHERE_first_group_has_a_group_of_two_cards_SHOULD_return_result_of_GetPairBasedHandRank()
 		{
 			//arrange
-			var cards = new List<Card> { MockRepository.GenerateStrictMock<Card>() };
+			var cards = new List<Card> { new Card(CardValue.Queen, CardSuit.Diamonds) };
 			var cardGroups = new List<KeyValuePair<int, CardValue>>
 			{
 				new KeyValuePair<int, CardValue>(2, CardValue.Three),
@@ -309,7 +309,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 		public void GetMultiCardOrHighCardHandRank_WHERE_first_group_has_a_group_of_one_card_SHOULD_return_result_of_GetHighCardHandRank()
 		{
 			//arrange
-			var cards = new List<Card> { MockRepository.GenerateStrictMock<Card>() };
+			var cards = new List<Card> { new Card(CardValue.Queen, CardSuit.Diamonds) };
 			_hand.Stub(x => x.Cards).Return(cards);
 
 			var cardGroups = new List<KeyValuePair<int, CardValue>>
@@ -333,7 +333,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 		public void GetMultiCardOrHighCardHandRank_WHERE_first_group_has_a_group_of_zero_cards_SHOULD_throw_exception()
 		{
 			//arrange
-			var cards = new List<Card> { MockRepository.GenerateStrictMock<Card>() };
+			var cards = new List<Card> { new Card(CardValue.Queen, CardSuit.Diamonds) };
 
 			_instance.Stub(x => x.GetOrderedCardGroups(cards)).Return(new List<KeyValuePair<int, CardValue>>
 			{
@@ -798,35 +798,18 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 		public void GetFlushValues_SHOULD_group_cards_together_by_suit_and_return_list_of_card_values_ordered_by_value_descending_for_suit_with_most_cards()
 		{
 			//arrange
-			var card1 = MockRepository.GenerateStrictMock<Card>();
-			var card2 = MockRepository.GenerateStrictMock<Card>();
-			var card3 = MockRepository.GenerateStrictMock<Card>();
-			var card4 = MockRepository.GenerateStrictMock<Card>();
-			var card5 = MockRepository.GenerateStrictMock<Card>();
-			var card6 = MockRepository.GenerateStrictMock<Card>();
+			const CardValue card1Value = CardValue.Six;
+			const CardValue card3Value = CardValue.Four;
+			const CardValue card5Value = CardValue.Nine;
+
+			var card1 = new Card(card1Value, CardSuit.Clubs);
+			var card2 = new Card(CardValue.Ace, CardSuit.Hearts);
+			var card3 = new Card(card3Value, CardSuit.Clubs);
+			var card4 = new Card(CardValue.Jack, CardSuit.Diamonds);
+			var card5 = new Card(card5Value, CardSuit.Clubs);
+			var card6 = new Card(CardValue.Two, CardSuit.Diamonds);
 
 			var cards = new List<Card> { card1, card2, card3, card4, card5, card6 };
-
-			const CardValue card1Value = CardValue.Six;
-			card1.Stub(x => x.Suit).Return(CardSuit.Clubs);
-			card1.Stub(x => x.Value).Return(card1Value);
-
-			card2.Stub(x => x.Suit).Return(CardSuit.Hearts);
-			card2.Stub(x => x.Value).Return(CardValue.Ace);
-
-			const CardValue card3Value = CardValue.Four;
-			card3.Stub(x => x.Suit).Return(CardSuit.Clubs);
-			card3.Stub(x => x.Value).Return(card3Value);
-
-			card4.Stub(x => x.Suit).Return(CardSuit.Diamonds);
-			card4.Stub(x => x.Value).Return(CardValue.Jack);
-
-			const CardValue card5Value = CardValue.Nine;
-			card5.Stub(x => x.Suit).Return(CardSuit.Clubs);
-			card5.Stub(x => x.Value).Return(card5Value);
-
-			card6.Stub(x => x.Suit).Return(CardSuit.Diamonds);
-			card6.Stub(x => x.Value).Return(CardValue.Two);
 
 			//act
 			var actual = _instance.GetFlushValues(cards);
@@ -845,11 +828,9 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 		[Test]
 		public void GetStraightValues_without_card_list_SHOULD_pass_hand_cards_to_GetStraightValues()
 		{
-			var cardInHand = MockRepository.GenerateStrictMock<Card>();
-			var cards = new List<Card> { cardInHand };
-
 			const CardValue cardValue = CardValue.Seven;
-			cardInHand.Stub(x => x.Value).Return(cardValue);
+			var cardInHand = new Card(cardValue, CardSuit.Diamonds);
+			var cards = new List<Card> { cardInHand };
 
 			var expected = new List<CardValue> { CardValue.Nine };
 			_instance.Expect(x => x.GetStraightValues(new List<CardValue> { cardValue })).Return(expected);
@@ -1056,16 +1037,6 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 		public void GetOrderedCardGroups_WHERE_no_multi_cards_SHOULD_return_groups_of_one_ordered_by_card_value_descending()
 		{
 			//arrange
-			var card1 = MockRepository.GenerateStrictMock<Card>();
-			var card2 = MockRepository.GenerateStrictMock<Card>();
-			var card3 = MockRepository.GenerateStrictMock<Card>();
-			var card4 = MockRepository.GenerateStrictMock<Card>();
-			var card5 = MockRepository.GenerateStrictMock<Card>();
-			var card6 = MockRepository.GenerateStrictMock<Card>();
-			var card7 = MockRepository.GenerateStrictMock<Card>();
-
-			var cards = new List<Card> { card1, card2, card3, card4, card5, card6, card7 };
-
 			const CardValue card1Value = CardValue.Eight;
 			const CardValue card2Value = CardValue.Four;
 			const CardValue card3Value = CardValue.King;
@@ -1074,13 +1045,15 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 			const CardValue card6Value = CardValue.Seven;
 			const CardValue card7Value = CardValue.Two;
 
-			card1.Stub(x => x.Value).Return(card1Value);
-			card2.Stub(x => x.Value).Return(card2Value);
-			card3.Stub(x => x.Value).Return(card3Value);
-			card4.Stub(x => x.Value).Return(card4Value);
-			card5.Stub(x => x.Value).Return(card5Value);
-			card6.Stub(x => x.Value).Return(card6Value);
-			card7.Stub(x => x.Value).Return(card7Value);
+			var card1 = new Card(card1Value, CardSuit.Diamonds);
+			var card2 = new Card(card2Value, CardSuit.Hearts);
+			var card3 = new Card(card3Value, CardSuit.Spades);
+			var card4 = new Card(card4Value, CardSuit.Hearts);
+			var card5 = new Card(card5Value, CardSuit.Spades);
+			var card6 = new Card(card6Value, CardSuit.Clubs);
+			var card7 = new Card(card7Value, CardSuit.Clubs);
+
+			var cards = new List<Card> { card1, card2, card3, card4, card5, card6, card7 };
 
 			//act
 			var actual = _instance.GetOrderedCardGroups(cards);
@@ -1113,26 +1086,18 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 		public void GetOrderedCardGroups_WHERE_have_a_three_of_a_kind_and_pair_SHOULD_return_groups_of_multi_cards_ordered_by_descending_quantity()
 		{
 			//arrange
-			var card1 = MockRepository.GenerateStrictMock<Card>();
-			var card2 = MockRepository.GenerateStrictMock<Card>();
-			var card3 = MockRepository.GenerateStrictMock<Card>();
-			var card4 = MockRepository.GenerateStrictMock<Card>();
-			var card5 = MockRepository.GenerateStrictMock<Card>();
-			var card6 = MockRepository.GenerateStrictMock<Card>();
-
-			var cards =new List<Card> { card1, card2, card3, card4, card5, card6 };
-
 			const CardValue threeOfAKindCardValue = CardValue.Nine;
 			const CardValue pairCardValue = CardValue.Jack;
 			const CardValue highCardValue = CardValue.King;
 
+			var card1 = new Card(highCardValue, CardSuit.Spades);
+			var card2 = new Card(threeOfAKindCardValue, CardSuit.Diamonds);
+			var card3 = new Card(pairCardValue, CardSuit.Hearts);
+			var card4 = new Card(threeOfAKindCardValue, CardSuit.Clubs);
+			var card5 = new Card(pairCardValue, CardSuit.Spades);
+			var card6 = new Card(threeOfAKindCardValue, CardSuit.Hearts);
 
-			card1.Stub(x => x.Value).Return(highCardValue);
-			card2.Stub(x => x.Value).Return(threeOfAKindCardValue);
-			card3.Stub(x => x.Value).Return(pairCardValue);
-			card4.Stub(x => x.Value).Return(threeOfAKindCardValue);
-			card5.Stub(x => x.Value).Return(pairCardValue);
-			card6.Stub(x => x.Value).Return(threeOfAKindCardValue);
+			var cards = new List<Card> { card1, card2, card3, card4, card5, card6 };
 
 			//act
 			var actual = _instance.GetOrderedCardGroups(cards);
@@ -1153,26 +1118,18 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 		public void GetOrderedCardGroups_WHERE_have_three_pairs_SHOULD_return_groups_of_multi_cards_ordered_by_descending_value()
 		{
 			//arrange
-			var card1 = MockRepository.GenerateStrictMock<Card>();
-			var card2 = MockRepository.GenerateStrictMock<Card>();
-			var card3 = MockRepository.GenerateStrictMock<Card>();
-			var card4 = MockRepository.GenerateStrictMock<Card>();
-			var card5 = MockRepository.GenerateStrictMock<Card>();
-			var card6 = MockRepository.GenerateStrictMock<Card>();
-
-			var cards = new List<Card> { card1, card2, card3, card4, card5, card6 };
-
 			const CardValue pair1CardValue = CardValue.Nine;
 			const CardValue pair2CardValue = CardValue.Jack;
 			const CardValue pair3CardValue = CardValue.King;
 
+			var card1 = new Card(pair3CardValue, CardSuit.Clubs);
+			var card2 = new Card(pair1CardValue, CardSuit.Spades);
+			var card3 = new Card(pair2CardValue, CardSuit.Spades);
+			var card4 = new Card(pair1CardValue, CardSuit.Diamonds);
+			var card5 = new Card(pair2CardValue, CardSuit.Hearts);
+			var card6 = new Card(pair3CardValue, CardSuit.Hearts);
 
-			card1.Stub(x => x.Value).Return(pair3CardValue);
-			card2.Stub(x => x.Value).Return(pair1CardValue);
-			card3.Stub(x => x.Value).Return(pair2CardValue);
-			card4.Stub(x => x.Value).Return(pair1CardValue);
-			card5.Stub(x => x.Value).Return(pair2CardValue);
-			card6.Stub(x => x.Value).Return(pair3CardValue);
+			var cards = new List<Card> { card1, card2, card3, card4, card5, card6 };
 
 			//act
 			var actual = _instance.GetOrderedCardGroups(cards);

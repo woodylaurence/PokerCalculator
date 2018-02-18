@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
-using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Domain.PokerEnums;
+using PokerCalculator.Domain.PokerObjects;
 
 namespace PokerCalculator.Tests.Integration.PokerObjects
 {
@@ -13,10 +13,10 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		[TestCase(CardValue.Two, CardSuit.Diamonds)]
 		[TestCase(CardValue.Six, CardSuit.Hearts)]
 		[TestCase(CardValue.Queen, CardSuit.Spades)]
-		public void Create(CardValue value, CardSuit suit)
+		public void Constructor(CardValue value, CardSuit suit)
 		{
 			//act
-			var actual = Card.Create(value, suit);
+			var actual = new Card(value, suit);
 
 			//assert
 			Assert.That(actual.Value, Is.EqualTo(value));

@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
+using System.Linq;
 
 namespace PokerCalculator.Tests.Integration.PokerObjects
 {
@@ -81,7 +81,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		{
 			//arrange
 			var instance = Deck.Create();
-			var cardToRemove = Card.Create(CardValue.Jack, CardSuit.Spades);
+			var cardToRemove = new Card(CardValue.Jack, CardSuit.Spades);
 
 			//act
 			instance.RemoveCard(cardToRemove);

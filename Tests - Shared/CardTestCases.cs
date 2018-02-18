@@ -17,7 +17,7 @@ namespace PokerCalculator.Tests.Shared
 			{
 				var cardSuits = Utilities.GetEnumValues<CardSuit>();
 				var cardValues = Utilities.GetEnumValues<CardValue>();
-				return cardSuits.SelectMany(cardSuit => cardValues.Select(cardValue => Card.Create(cardValue, cardSuit))).ToList();
+				return cardSuits.SelectMany(cardSuit => cardValues.Select(cardValue => new Card(cardValue, cardSuit))).ToList();
 			}
 		}
 	}

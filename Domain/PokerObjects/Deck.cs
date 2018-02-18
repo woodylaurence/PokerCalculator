@@ -30,7 +30,7 @@ namespace PokerCalculator.Domain.PokerObjects
 
 			return new Deck
 			{
-				Cards = cardSuits.SelectMany(suit => cardValues.Select(value => Card.Create(value, suit))).ToList()
+				Cards = cardSuits.SelectMany(suit => cardValues.Select(value => new Card(value, suit))).ToList()
 			};
 		}
 
