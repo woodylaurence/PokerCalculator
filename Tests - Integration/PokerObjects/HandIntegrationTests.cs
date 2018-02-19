@@ -10,14 +10,14 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 	[TestFixture]
 	public class HandIntegrationTests : LocalTestBase
 	{
-		Hand _instance;
+		private Hand _instance;
 
 		[SetUp]
 		public new void Setup()
 		{
-			_instance = Hand.Create();
-
 			WindsorContainer.Register(Component.For<IHandRankCalculator>().ImplementedBy<Domain.HandRankCalculator.HandRankCalculator>());
+
+			_instance = new Hand(new List<Card>());
 		}
 
 		#region Properties and Fields
@@ -71,20 +71,10 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		#region Create
 
 		[Test]
-		public void Create_WHERE_no_cards_supplied_SHOULD_create_empty_hand()
-		{
-			//act
-			var actual = Hand.Create();
-
-			//assert
-			Assert.That(actual.Cards, Is.Empty);
-		}
-
-		[Test]
 		public void Create_WHERE_empty_card_list_supplied_SHOULD_create_empty_hand()
 		{
 			//act
-			var actual = Hand.Create(new List<Card>());
+			var actual = new Hand(new List<Card>());
 
 			//assert
 			Assert.That(actual.Cards, Is.Empty);
@@ -99,7 +89,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			var card3 = new Card(CardValue.Eight, CardSuit.Spades);
 
 			//act
-			var actual = Hand.Create(new List<Card> { card1, card2, card3 });
+			var actual = new Hand(new List<Card> { card1, card2, card3 });
 
 			//assert
 			Assert.That(actual.Cards, Has.Count.EqualTo(3));
@@ -117,7 +107,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			var card3 = new Card(CardValue.Eight, CardSuit.Spades);
 
 			var cards = new List<Card> { card1, card2, card3 };
-			var actual = Hand.Create(cards);
+			var actual = new Hand(cards);
 
 			//act
 			var cardAddedAfterHandCreated = new Card(CardValue.Seven, CardSuit.Clubs);

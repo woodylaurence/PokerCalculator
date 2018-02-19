@@ -15,10 +15,14 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 		private Hand _hand;
 
 		[SetUp]
-		public new void Setup()
+		public override void Setup()
 		{
+			base.Setup();
+
+			var cardComparer = MockRepository.GenerateStrictMock<IEqualityComparer<Card>>();
 			_instance = MockRepository.GeneratePartialMock<Domain.HandRankCalculator.HandRankCalculator>();
-			_hand = MockRepository.GenerateStrictMock<Hand>();
+
+			_hand = MockRepository.GenerateStrictMock<Hand>(new List<Card>(), cardComparer, _instance);
 
 			HandRank.MethodObject = MockRepository.GenerateStrictMock<HandRank>();
 		}

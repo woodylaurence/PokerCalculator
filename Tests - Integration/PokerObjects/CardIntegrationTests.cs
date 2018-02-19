@@ -7,7 +7,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 	[TestFixture]
 	public class CardIntegrationTests : LocalTestBase
 	{
-		#region Create
+		#region Constructor
 
 		[TestCase(CardValue.Ace, CardSuit.Clubs)]
 		[TestCase(CardValue.Two, CardSuit.Diamonds)]

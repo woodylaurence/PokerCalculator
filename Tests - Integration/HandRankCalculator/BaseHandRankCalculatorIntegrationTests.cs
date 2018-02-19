@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Castle.MicroKernel.Registration;
+using NUnit.Framework;
 using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
@@ -12,6 +13,14 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 		protected IHandRankCalculator _instance;
 		private Hand _hand;
 
+		[SetUp]
+		public override void Setup()
+		{
+			base.Setup();
+
+			WindsorContainer.Register(Component.For<IHandRankCalculator>().Instance(_instance));
+		}
+
 		#region CalculateHandRank
 
 		#region Royal Flush
@@ -23,7 +32,7 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			// {AS KS QS JS 10S} - {4H} - {7H}
 
 			//arrange
-			_hand = Hand.Create(new List<Card>
+			_hand = new Hand(new List<Card>
 			{
 				new Card(CardValue.Ace, CardSuit.Spades),
 				new Card(CardValue.Jack, CardSuit.Spades),
@@ -53,7 +62,7 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			// {8H 7H 6H 5H 4H} - {10S} - {2C}
 
 			//arrange
-			_hand = Hand.Create(new List<Card>
+			_hand = new Hand(new List<Card>
 			{
 				new Card(CardValue.Four, CardSuit.Hearts),
 				new Card(CardValue.Six, CardSuit.Hearts),
@@ -81,7 +90,7 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			// {JH 10H 9H 8H 7H} - {AH} - {4H}
 
 			//arrange
-			_hand = Hand.Create(new List<Card>
+			_hand = new Hand(new List<Card>
 			{
 				new Card(CardValue.Ten, CardSuit.Hearts),
 				new Card(CardValue.Seven, CardSuit.Hearts),
@@ -110,7 +119,7 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			// {JH 10H 9H 8H 7H} - {QC} - {2D}
 
 			//arrange
-			_hand = Hand.Create(new List<Card>
+			_hand = new Hand(new List<Card>
 			{
 				new Card(CardValue.Ten, CardSuit.Hearts),
 				new Card(CardValue.Seven, CardSuit.Hearts),
@@ -142,7 +151,7 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			// {10C 10D 10H 10S} - {9D 6H 3S}
 
 			//arrange
-			_hand = Hand.Create(new List<Card>
+			_hand = new Hand(new List<Card>
 			{
 				new Card(CardValue.Nine, CardSuit.Diamonds),
 				new Card(CardValue.Ten, CardSuit.Hearts),
@@ -171,7 +180,7 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			// {10C 10D 10H 10S} - {KC KH KS}
 
 			//arrange
-			_hand = Hand.Create(new List<Card>
+			_hand = new Hand(new List<Card>
 			{
 				new Card(CardValue.King, CardSuit.Hearts),
 				new Card(CardValue.Ten, CardSuit.Hearts),
@@ -204,7 +213,7 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			// {7C 7D 7H} {2H 2C} - {9D 4C}
 
 			//arrange
-			_hand = Hand.Create(new List<Card>
+			_hand = new Hand(new List<Card>
 			{
 				new Card(CardValue.Seven, CardSuit.Clubs),
 				new Card(CardValue.Four, CardSuit.Clubs),
@@ -233,7 +242,7 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			// {8C 8S 8H} {10C 10S} - {4D 4C}
 
 			//arrange
-			_hand = Hand.Create(new List<Card>
+			_hand = new Hand(new List<Card>
 			{
 				new Card(CardValue.Eight, CardSuit.Clubs),
 				new Card(CardValue.Four, CardSuit.Clubs),
@@ -262,7 +271,7 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			// {10D 10C 10S} {8C 8S}  - {8H AD}
 
 			//arrange
-			_hand = Hand.Create(new List<Card>
+			_hand = new Hand(new List<Card>
 			{
 				new Card(CardValue.Eight, CardSuit.Clubs),
 				new Card(CardValue.Ace, CardSuit.Diamonds),
@@ -291,7 +300,7 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			// {10D 10C 10S} {8C 8S}  - {8H 5D}
 
 			//arrange
-			_hand = Hand.Create(new List<Card>
+			_hand = new Hand(new List<Card>
 			{
 				new Card(CardValue.Eight, CardSuit.Clubs),
 				new Card(CardValue.Ten, CardSuit.Spades),
@@ -324,7 +333,7 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			// {KC 9C 7C 3C 2C}  - {4S AD}
 
 			//arrange
-			_hand = Hand.Create(new List<Card>
+			_hand = new Hand(new List<Card>
 			{
 				new Card(CardValue.King, CardSuit.Clubs),
 				new Card(CardValue.Two, CardSuit.Clubs),
@@ -356,7 +365,7 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			// {10C 9C 7C 6C 2C}  - {JS 8D}
 
 			//arrange
-			_hand = Hand.Create(new List<Card>
+			_hand = new Hand(new List<Card>
 			{
 				new Card(CardValue.Six, CardSuit.Clubs),
 				new Card(CardValue.Nine, CardSuit.Clubs),
@@ -388,7 +397,7 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			// {AC 10C 8C 7C 5C}  - {10H 10D}
 
 			//arrange
-			_hand = Hand.Create(new List<Card>
+			_hand = new Hand(new List<Card>
 			{
 				new Card(CardValue.Seven, CardSuit.Clubs),
 				new Card(CardValue.Ten, CardSuit.Diamonds),
@@ -424,7 +433,7 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			// {KS QD JH 10C 9C}  - {2D 6H}
 
 			//arrange
-			_hand = Hand.Create(new List<Card>
+			_hand = new Hand(new List<Card>
 			{
 				new Card(CardValue.Queen, CardSuit.Diamonds),
 				new Card(CardValue.Two, CardSuit.Diamonds),
@@ -452,7 +461,7 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			// {5H 4D 3S 2H AC}  - {10D 7H}
 
 			//arrange
-			_hand = Hand.Create(new List<Card>
+			_hand = new Hand(new List<Card>
 			{
 				new Card(CardValue.Three, CardSuit.Spades),
 				new Card(CardValue.Two, CardSuit.Hearts),
@@ -480,7 +489,7 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			// {10D 9H 8D 7H 6S}  - {5H 4C}
 
 			//arrange
-			_hand = Hand.Create(new List<Card>
+			_hand = new Hand(new List<Card>
 			{
 				new Card(CardValue.Nine, CardSuit.Hearts),
 				new Card(CardValue.Eight, CardSuit.Diamonds),
@@ -508,7 +517,7 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			// {8D 7H 6D 5H 4C}  - {6H 6S}
 
 			//arrange
-			_hand = Hand.Create(new List<Card>
+			_hand = new Hand(new List<Card>
 			{
 				new Card(CardValue.Six, CardSuit.Diamonds),
 				new Card(CardValue.Five, CardSuit.Hearts),
@@ -540,7 +549,7 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//   {6H 6S 6C}  	- {QC 7D 4H 3S}
 
 			//arrange
-			_hand = Hand.Create(new List<Card>
+			_hand = new Hand(new List<Card>
 			{
 				new Card(CardValue.Six ,CardSuit.Hearts),
 				new Card(CardValue.Seven ,CardSuit.Diamonds),
@@ -574,7 +583,7 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//   {AH AS} {QC QH}  -  {6C 6D 3S}
 
 			//arrange
-			_hand = Hand.Create(new List<Card>
+			_hand = new Hand(new List<Card>
 			{
 				new Card(CardValue.Six ,CardSuit.Clubs),
 				new Card(CardValue.Queen ,CardSuit.Hearts),
@@ -604,7 +613,7 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//   {QC QH} {6C 6D}  -  {AS 3H 3S}
 
 			//arrange
-			_hand = Hand.Create(new List<Card>
+			_hand = new Hand(new List<Card>
 			{
 				new Card(CardValue.Six ,CardSuit.Clubs),
 				new Card(CardValue.Ace ,CardSuit.Spades),
@@ -634,7 +643,7 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//   {QC QH} {3H 3S}  -  {AS 8D 6C}
 
 			//arrange
-			_hand = Hand.Create(new List<Card>
+			_hand = new Hand(new List<Card>
 			{
 				new Card(CardValue.Three ,CardSuit.Spades),
 				new Card(CardValue.Queen ,CardSuit.Clubs),
@@ -668,7 +677,7 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//   {6H 6C}  -	 {QC JS 10C 9H 3S}
 
 			//arrange
-			_hand = Hand.Create(new List<Card>
+			_hand = new Hand(new List<Card>
 			{
 				new Card(CardValue.Nine, CardSuit.Hearts),
 				new Card(CardValue.Six, CardSuit.Clubs),
@@ -703,7 +712,7 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 			//     {QC}  	-	{JS 10C 9H 7C 6H 3S}
 
 			//arrange
-			_hand = Hand.Create(new List<Card>
+			_hand = new Hand(new List<Card>
 			{
 				new Card(CardValue.Ten, CardSuit.Clubs),
 				new Card(CardValue.Three, CardSuit.Spades),

@@ -1,44 +1,40 @@
-﻿using System.Collections.Generic;
-using System;
-using System.Linq;
-using Microsoft.Practices.ServiceLocation;
+﻿using Microsoft.Practices.ServiceLocation;
 using PokerCalculator.Domain.HandRankCalculator;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PokerCalculator.Domain.PokerObjects
 {
 	public class Hand
 	{
-		internal static Hand MethodObject = new Hand();
-
 		#region Properties and Fields
 
-		public virtual List<Card> Cards { get; set; }
+		private readonly IHandRankCalculator _handRankCalculator;
+		private readonly IEqualityComparer<Card> _cardComparer;
+
+		public virtual List<Card> Cards { get; }
 
 		protected internal virtual HandRank _rank { get; set; }
 		public virtual HandRank Rank
 		{
-			get { return _rank ?? (_rank = ServiceLocator.Current.GetInstance<IHandRankCalculator>().CalculateHandRank(this)); }
-			set { _rank = value; }
+			get => _rank ?? (_rank = _handRankCalculator.CalculateHandRank(this));
+			set => _rank = value;
 		}
 
 		#endregion
 
-		#region Static Methods
+		#region Constructors
 
-		/// <summary>
-		/// Create the specified cards.
-		/// </summary>
-		/// <param name="cards">Cards.</param>
-		public static Hand Create (List<Card> cards = null) { return MethodObject.CreateSlave(cards); }
-		protected internal virtual Hand CreateSlave(List<Card> cards)
+		public Hand(List<Card> cards) : this(cards, ServiceLocator.Current.GetInstance<IEqualityComparer<Card>>(), ServiceLocator.Current.GetInstance<IHandRankCalculator>()) { }
+		public Hand(List<Card> cards, IEqualityComparer<Card> cardComparer, IHandRankCalculator handRankCalculator)
 		{
-			cards = cards ?? new List<Card>();
+			_cardComparer = cardComparer;
+			_handRankCalculator = handRankCalculator;
+
 			if (cards.Count > 7) throw new ArgumentException("A Hand cannot contain more than seven cards", nameof(cards));
-			if (cards.Distinct(new CardComparer()).Count() != cards.Count) throw new ArgumentException("A Hand cannot contain duplicate cards", nameof(cards));
-			return new Hand
-			{
-				Cards = cards.ToList()
-			};
+			if (cards.Distinct(_cardComparer).Count() != cards.Count) throw new ArgumentException("A Hand cannot contain duplicate cards", nameof(cards));
+			Cards = cards.ToList();
 		}
 
 		#endregion
