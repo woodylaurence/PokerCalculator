@@ -1,21 +1,38 @@
-﻿using System.Linq;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
+using System;
+using System.Linq;
 
 namespace PokerCalculator.Tests.Integration.PokerObjects
 {
 	[TestFixture]
 	public class DeckIntegrationTests : LocalTestBase
 	{
-		#region Create
+		#region Constructor
 
 		[Test]
-		public void Create_SHOULD_return_deck_full_of_every_card()
+		public void Constructor_SHOULD_return_deck_full_of_every_card()
 		{
 			//act
-			var actual = Deck.Create();
+			var actual = new Deck();
+
+			//assert
+			Assert.That(actual.Cards, Has.Count.EqualTo(52));
+
+			var allCards = CardTestCases.AllCards;
+			for (var i = 0; i < 52; i++)
+			{
+				Assert.That(actual.Cards[i], Is.EqualTo(allCards[i]).Using(CardComparer));
+			}
+		}
+
+		[Test]
+		public void Constructor_with_random_SHOULD_return_deck_full_of_every_card()
+		{
+			//act
+			var actual = new Deck(new Random(), UtilitiesService);
 
 			//assert
 			Assert.That(actual.Cards, Has.Count.EqualTo(52));
@@ -29,29 +46,13 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 
 		#endregion
 
-		#region CreateShuffledDeck
-
-		[Test]
-		public void CreateShuffledDeck()
-		{
-			//act
-			var actual = Deck.CreateShuffledDeck();
-
-			//assert
-			Assert.That(actual.Cards, Has.Count.EqualTo(52));
-			Assert.That(actual.Cards.TrueForAll(x => CardTestCases.AllCards.Contains(x, CardComparer)));
-			Assert.That(CardTestCases.AllCards.TrueForAll(x => actual.Cards.Contains(x, CardComparer)));
-		}
-
-		#endregion
-
 		#region Shuffle
 
 		[Test]
 		public void Shuffle()
 		{
 			//arrange
-			var instance = Deck.Create();
+			var instance = new Deck();
 			var originalCards = instance.Cards.ToList();
 
 			//act
@@ -80,8 +81,8 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		public void RemoveCard()
 		{
 			//arrange
-			var instance = Deck.Create();
-			var cardToRemove = Card.Create(CardValue.Jack, CardSuit.Spades);
+			var instance = new Deck();
+			var cardToRemove = new Card(CardValue.Jack, CardSuit.Spades);
 
 			//act
 			instance.RemoveCard(cardToRemove);
@@ -99,7 +100,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		public void TakeRandomCard()
 		{
 			//arrange
-			var instance = Deck.Create();
+			var instance = new Deck();
 
 			//act
 			var actual = instance.TakeRandomCard();
@@ -117,7 +118,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		public void GetRandomCards()
 		{
 			//arrange
-			var instance = Deck.Create();
+			var instance = new Deck();
 
 			//act
 			var actual = instance.GetRandomCards(3);

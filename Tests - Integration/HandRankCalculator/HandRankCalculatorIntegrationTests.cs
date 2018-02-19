@@ -6,9 +6,11 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 	public class HandRankCalculatorIntegrationTests : BaseHandRankCalculatorIntegrationTests
 	{
 		[SetUp]
-		public new void Setup()
+		public override void Setup()
 		{
 			_instance = new Domain.HandRankCalculator.HandRankCalculator();
+
+			base.Setup();
 		}
 	}
 }

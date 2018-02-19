@@ -1,7 +1,7 @@
 ﻿using PokerCalculator.Domain.PokerObjects;
 using System.Collections.Generic;
 
-namespace PokerCalculator.Domain
+namespace PokerCalculator.Domain.Helpers
 {
 	public class CardComparer : IEqualityComparer<Card>
 	{

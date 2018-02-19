@@ -5,7 +5,6 @@ using NUnit.Framework;
 
 namespace PokerCalculator.Tests.Shared
 {
-	[TestFixture]
 	public class AbstractUnitTestBase
 	{
 		protected internal IWindsorContainer WindsorContainer { get; set; }

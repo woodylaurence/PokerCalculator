@@ -36,7 +36,7 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MyRandom.cs" />
+    <Compile Include="Helpers\IUtilitiesService.cs" />
     <Compile Include="PokerObjects\PokerOdds.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PokerObjects\Card.cs" />
@@ -45,9 +45,9 @@
     <Compile Include="PokerEnums\CardValue.cs" />
     <Compile Include="PokerEnums\CardSuit.cs" />
     <Compile Include="PokerEnums\PokerHand.cs" />
-    <Compile Include="Utilities.cs" />
+    <Compile Include="Helpers\UtilitiesService.cs" />
     <Compile Include="VisibleTo.cs" />
-    <Compile Include="CardComparer.cs" />
+    <Compile Include="Helpers\CardComparer.cs" />
     <Compile Include="PokerObjects\HandRank.cs" />
     <Compile Include="HandRankCalculator\IHandRankCalculator.cs" />
     <Compile Include="HandRankCalculator\HandRankCalculator.cs" />

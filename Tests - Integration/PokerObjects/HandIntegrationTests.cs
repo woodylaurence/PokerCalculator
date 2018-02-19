@@ -1,23 +1,23 @@
-﻿using System.Collections.Generic;
-using Castle.MicroKernel.Registration;
+﻿using Castle.MicroKernel.Registration;
 using NUnit.Framework;
 using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
+using System.Collections.Generic;
 
 namespace PokerCalculator.Tests.Integration.PokerObjects
 {
 	[TestFixture]
 	public class HandIntegrationTests : LocalTestBase
 	{
-		Hand _instance;
-		
+		private Hand _instance;
+
 		[SetUp]
 		public new void Setup()
 		{
-			_instance = Hand.Create();
-
 			WindsorContainer.Register(Component.For<IHandRankCalculator>().ImplementedBy<Domain.HandRankCalculator.HandRankCalculator>());
+
+			_instance = new Hand(new List<Card>());
 		}
 
 		#region Properties and Fields
@@ -26,7 +26,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		public void Rank_get_WHERE_backing_field_already_set_SHOULD_return_value_of_backing_field()
 		{
 			//arrange
-			var handRank = HandRank.Create(PokerHand.Pair);
+			var handRank = new HandRank(PokerHand.Pair);
 			_instance._rank = handRank;
 
 			//act
@@ -41,8 +41,8 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		{
 			//arrange
 			_instance._rank = null;
-			_instance.AddCard(Card.Create(CardValue.Queen, CardSuit.Diamonds));
-			_instance.AddCard(Card.Create(CardValue.Queen, CardSuit.Clubs));
+			_instance.AddCard(new Card(CardValue.Queen, CardSuit.Diamonds));
+			_instance.AddCard(new Card(CardValue.Queen, CardSuit.Clubs));
 
 			//act
 			var actual = _instance.Rank;
@@ -56,7 +56,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		public void Rank_set_SHOULD_set_backing_field_value()
 		{
 			//arrange
-			var handRank = HandRank.Create(PokerHand.Straight);
+			var handRank = new HandRank(PokerHand.Straight);
 
 			//act
 			_instance.Rank = handRank;
@@ -68,38 +68,28 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 
 		#endregion
 
-		#region Create
+		#region Constructor
 
 		[Test]
-		public void Create_WHERE_no_cards_supplied_SHOULD_create_empty_hand()
+		public void Constructor_WHERE_empty_card_list_supplied_SHOULD_create_empty_hand()
 		{
 			//act
-			var actual = Hand.Create();
+			var actual = new Hand(new List<Card>());
 
 			//assert
 			Assert.That(actual.Cards, Is.Empty);
 		}
 
 		[Test]
-		public void Create_WHERE_empty_card_list_supplied_SHOULD_create_empty_hand()
-		{
-			//act
-			var actual = Hand.Create(new List<Card>());
-
-			//assert
-			Assert.That(actual.Cards, Is.Empty);
-		}
-
-		[Test]
-		public void Create_WHERE_cards_supplied_SHOULD_create_hand_with_those_cards()
+		public void Constructor_WHERE_cards_supplied_SHOULD_create_hand_with_those_cards()
 		{
 			//arrange
-			var card1 = Card.Create(CardValue.Five, CardSuit.Clubs);
-			var card2 = Card.Create(CardValue.Queen, CardSuit.Diamonds);
-			var card3 = Card.Create(CardValue.Eight, CardSuit.Spades);
+			var card1 = new Card(CardValue.Five, CardSuit.Clubs);
+			var card2 = new Card(CardValue.Queen, CardSuit.Diamonds);
+			var card3 = new Card(CardValue.Eight, CardSuit.Spades);
 
 			//act
-			var actual = Hand.Create(new List<Card> { card1, card2, card3 });
+			var actual = new Hand(new List<Card> { card1, card2, card3 });
 
 			//assert
 			Assert.That(actual.Cards, Has.Count.EqualTo(3));
@@ -112,15 +102,15 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		public void Create_SHOULD_assign_new_list_rather_than_doing_memory_copy_to_stop_changes_to_list_later_affecting_hand()
 		{
 			//arrange
-			var card1 = Card.Create(CardValue.Five, CardSuit.Clubs);
-			var card2 = Card.Create(CardValue.Queen, CardSuit.Diamonds);
-			var card3 = Card.Create(CardValue.Eight, CardSuit.Spades);
+			var card1 = new Card(CardValue.Five, CardSuit.Clubs);
+			var card2 = new Card(CardValue.Queen, CardSuit.Diamonds);
+			var card3 = new Card(CardValue.Eight, CardSuit.Spades);
 
 			var cards = new List<Card> { card1, card2, card3 };
-			var actual = Hand.Create(cards);
+			var actual = new Hand(cards);
 
 			//act
-			var cardAddedAfterHandCreated = Card.Create(CardValue.Seven, CardSuit.Clubs);
+			var cardAddedAfterHandCreated = new Card(CardValue.Seven, CardSuit.Clubs);
 			cards.Add(cardAddedAfterHandCreated);
 
 			//assert
@@ -140,8 +130,8 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		public void AddCard_WHERE_hand_is_initially_empty_SHOULD_add_card()
 		{
 			//arrange
-			var cardToAdd = Card.Create(CardValue.Four, CardSuit.Hearts);
-			_instance.Rank = HandRank.Create(PokerHand.Flush);
+			var cardToAdd = new Card(CardValue.Four, CardSuit.Hearts);
+			_instance.Rank = new HandRank(PokerHand.Flush);
 
 			//act
 			_instance.AddCard(cardToAdd);
@@ -156,11 +146,11 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		public void AddCard_WHERE_hand_already_has_cards_SHOULD_add_card_and_maintain_existing_cards()
 		{
 			//arrange
-			var initialCard = Card.Create(CardValue.Ten, CardSuit.Diamonds);
+			var initialCard = new Card(CardValue.Ten, CardSuit.Diamonds);
 			_instance.AddCard(initialCard);
-			_instance.Rank = HandRank.Create(PokerHand.ThreeOfAKind);
+			_instance.Rank = new HandRank(PokerHand.ThreeOfAKind);
 
-			var cardToAdd = Card.Create(CardValue.Seven, CardSuit.Spades);
+			var cardToAdd = new Card(CardValue.Seven, CardSuit.Spades);
 
 			//act
 			_instance.AddCard(cardToAdd);

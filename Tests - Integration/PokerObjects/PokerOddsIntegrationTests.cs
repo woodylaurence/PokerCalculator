@@ -11,7 +11,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		public void Constructor()
 		{
 			//act
-			var actual = new PokerOdds();
+			var actual = new PokerOdds(UtilitiesService);
 
 			//assert
 			Assert.That(actual.WinPercentage, Is.EqualTo(0));

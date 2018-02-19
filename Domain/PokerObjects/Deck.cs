@@ -1,4 +1,6 @@
-﻿using PokerCalculator.Domain.PokerEnums;
+﻿using Microsoft.Practices.ServiceLocation;
+using PokerCalculator.Domain.Helpers;
+using PokerCalculator.Domain.PokerEnums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,48 +11,27 @@ namespace PokerCalculator.Domain.PokerObjects
 	{
 		#region Properties and Fields
 
-		internal static Deck MethodObject = new Deck();
+		private Random _randomInstance { get; }
+		private IUtilitiesService _utilities { get; }
 		public virtual List<Card> Cards { get; set; }
 
 		#endregion
 
-		#region Static and Factory Methods
-
-		#region Create
+		#region Constructor
 
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <returns></returns>
-		public static Deck Create() { return MethodObject.CreateSlave(); }
-		protected internal virtual Deck CreateSlave()
+		public Deck() : this(new Random(), ServiceLocator.Current.GetInstance<IUtilitiesService>()) { }
+		public Deck(Random randomInstance, IUtilitiesService utilitiesService)
 		{
-			var cardSuits = Utilities.GetEnumValues<CardSuit>();
-			var cardValues = Utilities.GetEnumValues<CardValue>();
+			_randomInstance = randomInstance;
+			_utilities = utilitiesService;
 
-			return new Deck
-			{
-				Cards = cardSuits.SelectMany(suit => cardValues.Select(value => Card.Create(value, suit))).ToList()
-			};
+			var cardSuits = utilitiesService.GetEnumValues<CardSuit>();
+			var cardValues = utilitiesService.GetEnumValues<CardValue>();
+			Cards = cardSuits.SelectMany(suit => cardValues.Select(value => new Card(value, suit))).ToList();
 		}
-
-		#endregion
-
-		#region Create Shuffled Deck
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <returns></returns>
-		public static Deck CreateShuffledDeck() { return MethodObject.CreateShuffledDeckSlave(); }
-		protected internal virtual Deck CreateShuffledDeckSlave()
-		{
-			var deck = Create();
-			deck.Shuffle();
-			return deck;
-		}
-
-		#endregion
 
 		#endregion
 
@@ -63,7 +44,7 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// </summary>
 		public virtual void Shuffle()
 		{
-			Cards = Cards.OrderBy(x => MyRandom.GenerateRandomNumber(5000)).ToList();
+			Cards = Cards.OrderBy(x => _randomInstance.Next(5000)).ToList();
 		}
 
 		#endregion
@@ -93,7 +74,7 @@ namespace PokerCalculator.Domain.PokerObjects
 		{
 			if (Cards.Any() == false) throw new Exception("No cards left in Deck to take.");
 
-			var indexOfCardToTake = MyRandom.GenerateRandomNumber(Cards.Count);
+			var indexOfCardToTake = _randomInstance.Next(Cards.Count);
 			var cardToTake = Cards[indexOfCardToTake];
 			Cards.Remove(cardToTake);
 			return cardToTake;
@@ -116,7 +97,7 @@ namespace PokerCalculator.Domain.PokerObjects
 			var cardsLeftInDeckToSelectFrom = Cards.ToList();
 			for (var i = 0; i < numCardsToTake; i++)
 			{
-				var indexOfCardToTake = MyRandom.GenerateRandomNumber(cardsLeftInDeckToSelectFrom.Count);
+				var indexOfCardToTake = _randomInstance.Next(cardsLeftInDeckToSelectFrom.Count);
 				var cardToTake = cardsLeftInDeckToSelectFrom[indexOfCardToTake];
 				cardsToTake.Add(cardToTake);
 				cardsLeftInDeckToSelectFrom.Remove(cardToTake);
