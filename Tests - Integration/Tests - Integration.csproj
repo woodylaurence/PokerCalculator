@@ -61,7 +61,6 @@
     <Compile Include="PokerObjects\CardIntegrationTests.cs" />
     <Compile Include="PokerObjects\HandIntegrationTests.cs" />
     <Compile Include="CardComparerIntegrationTests.cs" />
-    <Compile Include="PokerObjects\HandRankIntegrationTests.cs" />
     <Compile Include="HandRankCalculator\BaseHandRankCalculatorIntegrationTests.cs" />
     <Compile Include="UtilitiesIntegrationTests.cs" />
   </ItemGroup>

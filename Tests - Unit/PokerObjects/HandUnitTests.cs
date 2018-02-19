@@ -25,14 +25,6 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			_handRankCalculator = MockRepository.GenerateStrictMock<IHandRankCalculator>();
 
 			_instance = MockRepository.GeneratePartialMock<Hand>(new List<Card>(), _cardComparer, _handRankCalculator);
-
-			HandRank.MethodObject = MockRepository.GenerateStrictMock<HandRank>();
-		}
-
-		[TearDown]
-		public void TearDown()
-		{
-			HandRank.MethodObject = new HandRank();
 		}
 
 		#region Properties and Fields
@@ -41,7 +33,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void Rank_get_WHERE_backing_field_has_already_been_set_SHOULD_return_value_of_backing_field()
 		{
 			//arrange
-			var handRank = MockRepository.GenerateStrictMock<HandRank>();
+			var handRank = new HandRank(PokerHand.HighCard);
 			_instance.Stub(x => x._rank).Return(handRank);
 
 			//act
@@ -58,7 +50,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			//arrange
 			_instance.Stub(x => x._rank).Return(null).Repeat.Once();
 
-			var handRank = MockRepository.GenerateStrictMock<HandRank>();
+			var handRank = new HandRank(PokerHand.ThreeOfAKind);
 			_handRankCalculator.Stub(x => x.CalculateHandRank(_instance)).Return(handRank);
 
 			_instance.Expect(x => x._rank = handRank);
@@ -75,7 +67,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void Rank_set_SHOULD_set_value_of_backing_field()
 		{
 			//arrange
-			var handRank = MockRepository.GenerateStrictMock<HandRank>();
+			var handRank = new HandRank(PokerHand.FullHouse);
 			_instance.Expect(x => x._rank = handRank);
 
 			//act

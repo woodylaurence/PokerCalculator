@@ -26,7 +26,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		public void Rank_get_WHERE_backing_field_already_set_SHOULD_return_value_of_backing_field()
 		{
 			//arrange
-			var handRank = HandRank.Create(PokerHand.Pair);
+			var handRank = new HandRank(PokerHand.Pair);
 			_instance._rank = handRank;
 
 			//act
@@ -56,7 +56,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		public void Rank_set_SHOULD_set_backing_field_value()
 		{
 			//arrange
-			var handRank = HandRank.Create(PokerHand.Straight);
+			var handRank = new HandRank(PokerHand.Straight);
 
 			//act
 			_instance.Rank = handRank;
@@ -68,10 +68,10 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 
 		#endregion
 
-		#region Create
+		#region Constructor
 
 		[Test]
-		public void Create_WHERE_empty_card_list_supplied_SHOULD_create_empty_hand()
+		public void Constructor_WHERE_empty_card_list_supplied_SHOULD_create_empty_hand()
 		{
 			//act
 			var actual = new Hand(new List<Card>());
@@ -81,7 +81,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		}
 
 		[Test]
-		public void Create_WHERE_cards_supplied_SHOULD_create_hand_with_those_cards()
+		public void Constructor_WHERE_cards_supplied_SHOULD_create_hand_with_those_cards()
 		{
 			//arrange
 			var card1 = new Card(CardValue.Five, CardSuit.Clubs);
@@ -131,7 +131,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		{
 			//arrange
 			var cardToAdd = new Card(CardValue.Four, CardSuit.Hearts);
-			_instance.Rank = HandRank.Create(PokerHand.Flush);
+			_instance.Rank = new HandRank(PokerHand.Flush);
 
 			//act
 			_instance.AddCard(cardToAdd);
@@ -148,7 +148,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			//arrange
 			var initialCard = new Card(CardValue.Ten, CardSuit.Diamonds);
 			_instance.AddCard(initialCard);
-			_instance.Rank = HandRank.Create(PokerHand.ThreeOfAKind);
+			_instance.Rank = new HandRank(PokerHand.ThreeOfAKind);
 
 			var cardToAdd = new Card(CardValue.Seven, CardSuit.Spades);
 
