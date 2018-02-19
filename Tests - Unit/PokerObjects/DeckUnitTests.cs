@@ -1,5 +1,6 @@
-﻿using NUnit.Framework;
-using PokerCalculator.Domain;
+﻿using Castle.MicroKernel.Registration;
+using NUnit.Framework;
+using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
@@ -14,6 +15,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 	{
 		private Deck _instance;
 		private Random _randomInstance;
+		private IUtilitiesService _utilitiesService;
 
 		[SetUp]
 		public override void Setup()
@@ -21,15 +23,12 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			base.Setup();
 
 			_randomInstance = MockRepository.GenerateStrictMock<Random>();
-			_instance = MockRepository.GeneratePartialMock<Deck>(_randomInstance);
+			_utilitiesService = MockRepository.GenerateStrictMock<IUtilitiesService>();
 
-			Utilities.MethodObject = MockRepository.GenerateStrictMock<Utilities>();
-		}
+			_utilitiesService.Stub(x => x.GetEnumValues<CardSuit>()).Return(new List<CardSuit>()).Repeat.Once();
+			_utilitiesService.Stub(x => x.GetEnumValues<CardValue>()).Return(new List<CardValue>()).Repeat.Once();
 
-		[TearDown]
-		public void TearDown()
-		{
-			Utilities.MethodObject = new Utilities();
+			_instance = MockRepository.GeneratePartialMock<Deck>(_randomInstance, _utilitiesService);
 		}
 
 		#region Constructor
@@ -38,11 +37,13 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void Constructor()
 		{
 			//arrange
+			WindsorContainer.Register(Component.For<IUtilitiesService>().Instance(_utilitiesService));
+
 			var cardSuits = new List<CardSuit> { CardSuit.Clubs, CardSuit.Hearts };
-			Utilities.MethodObject.Stub(x => x.GetEnumValuesSlave<CardSuit>()).Return(cardSuits);
+			_utilitiesService.Stub(x => x.GetEnumValues<CardSuit>()).Return(cardSuits);
 
 			var cardValues = new List<CardValue> { CardValue.Eight, CardValue.King };
-			Utilities.MethodObject.Stub(x => x.GetEnumValuesSlave<CardValue>()).Return(cardValues);
+			_utilitiesService.Stub(x => x.GetEnumValues<CardValue>()).Return(cardValues);
 
 			//act
 			var actual = new Deck();

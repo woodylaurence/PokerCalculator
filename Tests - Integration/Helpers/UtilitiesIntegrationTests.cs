@@ -1,19 +1,30 @@
-﻿using NUnit.Framework;
-using PokerCalculator.Domain;
+﻿using Microsoft.Practices.ServiceLocation;
+using NUnit.Framework;
+using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Tests.Shared.TestObjects;
 
-namespace PokerCalculator.Tests.Integration
+namespace PokerCalculator.Tests.Integration.Helpers
 {
 	[TestFixture]
 	public class UtilitiesIntegrationTests : LocalTestBase
 	{
+		private UtilitiesService _instance;
+
+		[SetUp]
+		public override void Setup()
+		{
+			base.Setup();
+
+			_instance = ServiceLocator.Current.GetInstance<IUtilitiesService>() as UtilitiesService;
+		}
+
 		#region GetEnumValues
 
 		[Test]
 		public void GetEnumValues()
 		{
 			//act
-			var actual = Utilities.GetEnumValues<TestEnum>();
+			var actual = _instance.GetEnumValues<TestEnum>();
 
 			//assert
 			Assert.That(actual, Has.Count.EqualTo(3));

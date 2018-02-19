@@ -1,4 +1,6 @@
-﻿using PokerCalculator.Domain.PokerEnums;
+﻿using Microsoft.Practices.ServiceLocation;
+using PokerCalculator.Domain.Helpers;
+using PokerCalculator.Domain.PokerEnums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +12,7 @@ namespace PokerCalculator.Domain.PokerObjects
 		#region Properties and Fields
 
 		private Random _randomInstance { get; }
+		private IUtilitiesService _utilities { get; }
 		public virtual List<Card> Cards { get; set; }
 
 		#endregion
@@ -19,13 +22,14 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// <summary>
 		/// 
 		/// </summary>
-		public Deck() : this(new Random()) { }
-		public Deck(Random randomInstance)
+		public Deck() : this(new Random(), ServiceLocator.Current.GetInstance<IUtilitiesService>()) { }
+		public Deck(Random randomInstance, IUtilitiesService utilitiesService)
 		{
 			_randomInstance = randomInstance;
+			_utilities = utilitiesService;
 
-			var cardSuits = Utilities.GetEnumValues<CardSuit>();
-			var cardValues = Utilities.GetEnumValues<CardValue>();
+			var cardSuits = utilitiesService.GetEnumValues<CardSuit>();
+			var cardValues = utilitiesService.GetEnumValues<CardValue>();
 			Cards = cardSuits.SelectMany(suit => cardValues.Select(value => new Card(value, suit))).ToList();
 		}
 

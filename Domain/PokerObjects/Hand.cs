@@ -1,5 +1,6 @@
 ﻿using Microsoft.Practices.ServiceLocation;
 using PokerCalculator.Domain.HandRankCalculator;
+using PokerCalculator.Domain.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

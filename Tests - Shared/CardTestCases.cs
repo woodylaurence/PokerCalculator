@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using PokerCalculator.Domain;
+using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using System.Collections.Generic;
@@ -15,8 +15,9 @@ namespace PokerCalculator.Tests.Shared
 		{
 			get
 			{
-				var cardSuits = Utilities.GetEnumValues<CardSuit>();
-				var cardValues = Utilities.GetEnumValues<CardValue>();
+				var utilities = new UtilitiesService();
+				var cardSuits = utilities.GetEnumValues<CardSuit>();
+				var cardValues = utilities.GetEnumValues<CardValue>();
 				return cardSuits.SelectMany(cardSuit => cardValues.Select(cardValue => new Card(cardValue, cardSuit))).ToList();
 			}
 		}

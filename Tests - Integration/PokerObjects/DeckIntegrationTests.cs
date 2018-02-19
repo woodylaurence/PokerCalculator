@@ -32,7 +32,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		public void Constructor_with_random_SHOULD_return_deck_full_of_every_card()
 		{
 			//act
-			var actual = new Deck(new Random());
+			var actual = new Deck(new Random(), UtilitiesService);
 
 			//assert
 			Assert.That(actual.Cards, Has.Count.EqualTo(52));

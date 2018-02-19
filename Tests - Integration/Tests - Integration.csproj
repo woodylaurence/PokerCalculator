@@ -59,9 +59,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PokerObjects\CardIntegrationTests.cs" />
     <Compile Include="PokerObjects\HandIntegrationTests.cs" />
-    <Compile Include="CardComparerIntegrationTests.cs" />
+    <Compile Include="Helpers\CardComparerIntegrationTests.cs" />
     <Compile Include="HandRankCalculator\BaseHandRankCalculatorIntegrationTests.cs" />
-    <Compile Include="UtilitiesIntegrationTests.cs" />
+    <Compile Include="Helpers\UtilitiesIntegrationTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
