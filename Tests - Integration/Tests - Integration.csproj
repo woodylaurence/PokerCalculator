@@ -54,7 +54,6 @@
   <ItemGroup>
     <Compile Include="HandRankCalculator\HandRankCalculatorIntegrationTests.cs" />
     <Compile Include="LocalTestBase.cs" />
-    <Compile Include="MyRandomIntegrationTests.cs" />
     <Compile Include="PokerObjects\DeckIntegrationTests.cs" />
     <Compile Include="PokerObjects\PokerOddsIntegrationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

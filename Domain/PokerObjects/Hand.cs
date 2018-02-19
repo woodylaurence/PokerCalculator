@@ -26,6 +26,10 @@ namespace PokerCalculator.Domain.PokerObjects
 
 		#region Constructors
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="cards"></param>
 		public Hand(List<Card> cards) : this(cards, ServiceLocator.Current.GetInstance<IEqualityComparer<Card>>(), ServiceLocator.Current.GetInstance<IHandRankCalculator>()) { }
 		public Hand(List<Card> cards, IEqualityComparer<Card> cardComparer, IHandRankCalculator handRankCalculator)
 		{

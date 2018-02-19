@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Castle.MicroKernel.Registration;
+using NUnit.Framework;
 using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
@@ -91,6 +92,12 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 
 			var cards = new List<Card> { card1, card2, card3 };
 
+			WindsorContainer.Register(Component.For<IEqualityComparer<Card>>().Instance(_cardComparer));
+			WindsorContainer.Register(Component.For<IHandRankCalculator>().Instance(_handRankCalculator));
+
+			_cardComparer.Stub(x => x.GetHashCode(card1)).Return(1);
+			_cardComparer.Stub(x => x.GetHashCode(card2)).Return(2);
+			_cardComparer.Stub(x => x.GetHashCode(card3)).Return(3);
 
 			//act
 			var actual = new Hand(cards);
@@ -137,6 +144,12 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 
 			var cards = new List<Card> { duplicatedCard1, card3, duplicatedCard2 };
 
+			_cardComparer.Stub(x => x.GetHashCode(duplicatedCard1)).Return(1);
+			_cardComparer.Stub(x => x.GetHashCode(duplicatedCard2)).Return(1);
+			_cardComparer.Stub(x => x.Equals(duplicatedCard1, duplicatedCard2)).Return(true);
+
+			_cardComparer.Stub(x => x.GetHashCode(card3)).Return(3);
+
 			//act + assert
 			var actualException = Assert.Throws<ArgumentException>(() => new Hand(cards, _cardComparer, _handRankCalculator));
 			Assert.That(actualException.Message, Is.EqualTo("A Hand cannot contain duplicate cards\r\nParameter name: cards"));
@@ -152,6 +165,10 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			var card3 = new Card(CardValue.Ace, CardSuit.Diamonds);
 
 			var cards = new List<Card> { card1, card2, card3 };
+
+			_cardComparer.Stub(x => x.GetHashCode(card1)).Return(1);
+			_cardComparer.Stub(x => x.GetHashCode(card2)).Return(2);
+			_cardComparer.Stub(x => x.GetHashCode(card3)).Return(3);
 
 			//act
 			var actual = new Hand(cards, _cardComparer, _handRankCalculator);

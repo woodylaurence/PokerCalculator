@@ -13,47 +13,29 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 	public class DeckUnitTests : AbstractUnitTestBase
 	{
 		private Deck _instance;
+		private Random _randomInstance;
 
 		[SetUp]
 		public override void Setup()
 		{
 			base.Setup();
 
-			_instance = MockRepository.GeneratePartialMock<Deck>();
+			_randomInstance = MockRepository.GenerateStrictMock<Random>();
+			_instance = MockRepository.GeneratePartialMock<Deck>(_randomInstance);
 
-			Deck.MethodObject = MockRepository.GenerateStrictMock<Deck>();
-			MyRandom.MethodObject = MockRepository.GenerateStrictMock<MyRandom>();
 			Utilities.MethodObject = MockRepository.GenerateStrictMock<Utilities>();
 		}
 
 		[TearDown]
 		public void TearDown()
 		{
-			Deck.MethodObject = new Deck();
-			MyRandom.MethodObject = new MyRandom();
 			Utilities.MethodObject = new Utilities();
 		}
 
-		#region Static Methods
-
-		#region Create
+		#region Constructor
 
 		[Test]
-		public void Create_calls_slave()
-		{
-			//arrange
-			Deck.MethodObject.Expect(x => x.CreateSlave()).Return(_instance);
-
-			//act
-			var actual = Deck.Create();
-
-			//assert
-			Deck.MethodObject.VerifyAllExpectations();
-			Assert.That(actual, Is.EqualTo(_instance));
-		}
-
-		[Test]
-		public void CreateSlave()
+		public void Constructor()
 		{
 			//arrange
 			var cardSuits = new List<CardSuit> { CardSuit.Clubs, CardSuit.Hearts };
@@ -63,7 +45,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			Utilities.MethodObject.Stub(x => x.GetEnumValuesSlave<CardValue>()).Return(cardValues);
 
 			//act
-			var actual = _instance.CreateSlave();
+			var actual = new Deck();
 
 			//assert
 			Assert.That(actual.Cards, Has.Count.EqualTo(4));
@@ -76,42 +58,6 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			Assert.That(actual.Cards, Has.Some.Matches<Card>(x => x.Value == CardValue.King &&
 																  x.Suit == CardSuit.Hearts));
 		}
-
-		#endregion
-
-		#region CreateShuffledDeck
-
-		[Test]
-		public void CreateShuffledDeck_calls_slave()
-		{
-			//arrange
-			Deck.MethodObject.Expect(x => x.CreateShuffledDeckSlave()).Return(_instance);
-
-			//act
-			var actual = Deck.CreateShuffledDeck();
-
-			//assert
-			Deck.MethodObject.VerifyAllExpectations();
-			Assert.That(actual, Is.EqualTo(_instance));
-		}
-
-		[Test]
-		public void CreateShuffledDeckSlave()
-		{
-			//arrange
-			var expected = MockRepository.GenerateStrictMock<Deck>();
-			Deck.MethodObject.Stub(x => x.CreateSlave()).Return(expected);
-			expected.Expect(x => x.Shuffle());
-
-			//act
-			var actual = _instance.CreateShuffledDeckSlave();
-
-			//assert
-			expected.VerifyAllExpectations();
-			Assert.That(actual, Is.EqualTo(expected));
-		}
-
-		#endregion
 
 		#endregion
 
@@ -134,16 +80,16 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			});
 
 			const int firstRandomNumber = 1781;
-			MyRandom.MethodObject.Stub(x => x.GenerateRandomNumberSlave(5000)).Return(firstRandomNumber).Repeat.Once();
+			_randomInstance.Stub(x => x.Next(5000)).Return(firstRandomNumber).Repeat.Once();
 
 			const int secondRandomNumber = 514;
-			MyRandom.MethodObject.Stub(x => x.GenerateRandomNumberSlave(5000)).Return(secondRandomNumber).Repeat.Once();
+			_randomInstance.Stub(x => x.Next(5000)).Return(secondRandomNumber).Repeat.Once();
 
 			const int thirdRandomNumber = 4981;
-			MyRandom.MethodObject.Stub(x => x.GenerateRandomNumberSlave(5000)).Return(thirdRandomNumber).Repeat.Once();
+			_randomInstance.Stub(x => x.Next(5000)).Return(thirdRandomNumber).Repeat.Once();
 
 			const int fourthRandomNumber = 45;
-			MyRandom.MethodObject.Stub(x => x.GenerateRandomNumberSlave(5000)).Return(fourthRandomNumber).Repeat.Once();
+			_randomInstance.Stub(x => x.Next(5000)).Return(fourthRandomNumber).Repeat.Once();
 
 			_instance.Expect(x => x.Cards = Arg<List<Card>>.Matches(y => y.Count == 4 &&
 																		 y[0] == card4 &&
@@ -226,7 +172,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			var cardsInDeck = new List<Card> { card1, card2, card3, card4, card5 };
 			_instance.Stub(x => x.Cards).Return(cardsInDeck);
 
-			MyRandom.MethodObject.Stub(x => x.GenerateRandomNumberSlave(5)).Return(3);
+			_randomInstance.Stub(x => x.Next(5)).Return(3);
 
 			//act
 			var actual = _instance.TakeRandomCard();
@@ -274,9 +220,9 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			var cardsInDeck = new List<Card> { card1, card2, card3, card4, card5 };
 			_instance.Stub(x => x.Cards).Return(cardsInDeck);
 
-			MyRandom.MethodObject.Stub(x => x.GenerateRandomNumberSlave(5)).Return(2);
-			MyRandom.MethodObject.Stub(x => x.GenerateRandomNumberSlave(4)).Return(2);
-			MyRandom.MethodObject.Stub(x => x.GenerateRandomNumberSlave(3)).Return(0);
+			_randomInstance.Stub(x => x.Next(5)).Return(2);
+			_randomInstance.Stub(x => x.Next(4)).Return(2);
+			_randomInstance.Stub(x => x.Next(3)).Return(0);
 
 			//act
 			var actual = _instance.GetRandomCards(3);

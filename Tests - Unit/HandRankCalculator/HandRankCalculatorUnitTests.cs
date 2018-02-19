@@ -149,7 +149,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 			var straightValues = new List<CardValue> { CardValue.King, CardValue.Six };
 			_instance.Stub(x => x.GetStraightValues(cards)).Return(straightValues);
 
-			var expected = MockRepository.GenerateStrictMock<HandRank>();
+			var expected = new HandRank(PokerHand.FourOfAKind);
 			_instance.Stub(x => x.GetMultiCardOrHighCardHandRank(cards)).Return(expected);
 
 			//act
@@ -198,7 +198,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 			var actual = _instance.GetFlushBasedHandRank(flushValues);
 
 			//assert
-			Assert.That(actual.PokerHand, Is.EqualTo(PokerHand.Straight));
+			Assert.That(actual.PokerHand, Is.EqualTo(PokerHand.StraightFlush));
 			Assert.That(actual.KickerCardValues, Has.Count.EqualTo(1));
 			Assert.That(actual.KickerCardValues[0], Is.EqualTo(highestStraightValue));
 		}
@@ -239,7 +239,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 			};
 			_instance.Stub(x => x.GetOrderedCardGroups(cards)).Return(cardGroups);
 
-			var expected = MockRepository.GenerateStrictMock<HandRank>();
+			var expected = new HandRank(PokerHand.FullHouse);
 			_instance.Stub(x => x.GetFourOfAKindHandRank(cardGroups)).Return(expected);
 
 			//act
@@ -262,7 +262,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 			};
 			_instance.Stub(x => x.GetOrderedCardGroups(cards)).Return(cardGroups);
 
-			var expected = MockRepository.GenerateStrictMock<HandRank>();
+			var expected = new HandRank(PokerHand.HighCard);
 			_instance.Stub(x => x.GetFullHouseOrThreeOfAKindHandRank(cardGroups)).Return(expected);
 
 			//act
@@ -284,7 +284,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 			};
 			_instance.Stub(x => x.GetOrderedCardGroups(cards)).Return(cardGroups);
 
-			var expected = MockRepository.GenerateStrictMock<HandRank>();
+			var expected = new HandRank(PokerHand.StraightFlush);
 			_instance.Stub(x => x.GetPairBasedHandRank(cardGroups)).Return(expected);
 
 			//act
@@ -308,7 +308,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 			};
 			_instance.Stub(x => x.GetOrderedCardGroups(cards)).Return(cardGroups);
 
-			var expected = MockRepository.GenerateStrictMock<HandRank>();
+			var expected = new HandRank(PokerHand.Pair);
 			_instance.Stub(x => x.GetHighCardHandRank(cardGroups)).Return(expected);
 
 			//act
@@ -588,7 +588,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 			Assert.That(actual.KickerCardValues[0], Is.EqualTo(pairValue));
 			Assert.That(actual.KickerCardValues[1], Is.EqualTo(highestRemainingCardValue));
 			Assert.That(actual.KickerCardValues[2], Is.EqualTo(secondHighestRemainingCardValue));
-			Assert.That(actual.KickerCardValues[4], Is.EqualTo(thirdHighestRemainingCardValue));
+			Assert.That(actual.KickerCardValues[3], Is.EqualTo(thirdHighestRemainingCardValue));
 		}
 
 		[Test]
@@ -741,7 +741,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 			var actual = _instance.GetHighCardHandRank(cardGroups);
 
 			//assert
-			Assert.That(actual.PokerHand, Is.EqualTo(PokerHand.TwoPair));
+			Assert.That(actual.PokerHand, Is.EqualTo(PokerHand.HighCard));
 			Assert.That(actual.KickerCardValues, Has.Count.EqualTo(5));
 			Assert.That(actual.KickerCardValues[0], Is.EqualTo(highestValue));
 			Assert.That(actual.KickerCardValues[1], Is.EqualTo(secondHighestValue));
