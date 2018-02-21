@@ -151,43 +151,74 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		#region TakeRandomCard
 
 		[Test]
-		public void TakeRandomCard_WHERE_no_more_cards_left_in_deck_SHOULD_throw_error()
-		{
-			//arrange
-			_instance.Stub(x => x.Cards).Return(new List<Card>());
-
-			//act + assert
-			var actualException = Assert.Throws<Exception>(() => _instance.TakeRandomCard());
-			Assert.That(actualException.Message, Is.EqualTo("No cards left in Deck to take."));
-		}
-
-		[Test]
 		public void TakeRandomCard()
 		{
 			//arrange
-			var card1 = new Card(CardValue.Seven, CardSuit.Hearts);
-			var card2 = new Card(CardValue.Nine, CardSuit.Hearts);
-			var card3 = new Card(CardValue.Four, CardSuit.Clubs);
-			var card4 = new Card(CardValue.Two, CardSuit.Diamonds);
-			var card5 = new Card(CardValue.Two, CardSuit.Spades);
-
-			var cardsInDeck = new List<Card> { card1, card2, card3, card4, card5 };
-			_instance.Stub(x => x.Cards).Return(cardsInDeck);
-
-			_randomNumberGenerator.Stub(x => x.Next(5)).Return(3);
+			var expected = new Card(CardValue.Five, CardSuit.Spades);
+			var notExpected = new Card(CardValue.Seven, CardSuit.Diamonds);
+			_instance.Stub(x => x.TakeRandomCards(1)).Return(new List<Card> { expected, notExpected });
 
 			//act
 			var actual = _instance.TakeRandomCard();
 
 			//assert
-			Assert.That(actual, Is.EqualTo(card4));
+			Assert.That(actual, Is.EqualTo(expected));
+		}
 
-			Assert.That(cardsInDeck, Has.Count.EqualTo(4));
-			Assert.That(cardsInDeck, Has.Some.EqualTo(card1));
-			Assert.That(cardsInDeck, Has.Some.EqualTo(card2));
-			Assert.That(cardsInDeck, Has.Some.EqualTo(card3));
-			Assert.That(cardsInDeck, Has.Some.EqualTo(card5));
-			Assert.That(cardsInDeck, Has.None.EqualTo(card4));
+		#endregion
+
+		#region TakeRandomCards
+
+		[Test]
+		public void TakeRandomCards_WHERE_trying_to_take_more_cards_than_there_are_left_in_deck_SHOULD_throw_error()
+		{
+			//arrange
+			_instance.Stub(x => x.Cards).Return(new List<Card>
+			{
+				new Card(CardValue.Queen, CardSuit.Spades),
+				new Card(CardValue.Eight, CardSuit.Diamonds)
+			});
+
+			//act + assert
+			var actualException = Assert.Throws<ArgumentException>(() => _instance.TakeRandomCards(3));
+			Assert.That(actualException.Message, Is.EqualTo("Cannot take more cards than there are left in the Deck."));
+		}
+
+		[Test]
+		public void TakeRandomCards()
+		{
+			//arrange
+			var card1 = new Card(CardValue.Queen, CardSuit.Spades);
+			var card2 = new Card(CardValue.Eight, CardSuit.Diamonds);
+			var card3 = new Card(CardValue.Nine, CardSuit.Clubs);
+			var card4 = new Card(CardValue.Ace, CardSuit.Hearts);
+			var card5 = new Card(CardValue.Seven, CardSuit.Spades);
+
+			_instance.Stub(x => x.Cards).Return(new List<Card> { card1, card2, card3, card4, card5 }).Repeat.Times(4);
+			_randomNumberGenerator.Stub(x => x.Next(5)).Return(3);
+
+			_instance.Stub(x => x.Cards).Return(new List<Card> { card1, card2, card3, card5 }).Repeat.Times(3);
+			_randomNumberGenerator.Stub(x => x.Next(4)).Return(0);
+
+			var cardsLeftInHand = new List<Card> { card2, card3, card5 };
+			_instance.Stub(x => x.Cards).Return(cardsLeftInHand).Repeat.Times(3);
+			_randomNumberGenerator.Stub(x => x.Next(3)).Return(1);
+
+			//act
+			var actual = _instance.TakeRandomCards(3);
+
+			//assert
+			Assert.That(actual, Has.Count.EqualTo(3));
+			Assert.That(actual[0], Is.EqualTo(card4));
+			Assert.That(actual[1], Is.EqualTo(card1));
+			Assert.That(actual[2], Is.EqualTo(card3));
+
+			Assert.That(cardsLeftInHand, Has.Count.EqualTo(2));
+			Assert.That(cardsLeftInHand[0], Is.EqualTo(card2));
+			Assert.That(cardsLeftInHand[1], Is.EqualTo(card5));
+			Assert.That(cardsLeftInHand, Has.None.EqualTo(card1));
+			Assert.That(cardsLeftInHand, Has.None.EqualTo(card3));
+			Assert.That(cardsLeftInHand, Has.None.EqualTo(card4));
 		}
 
 		#endregion

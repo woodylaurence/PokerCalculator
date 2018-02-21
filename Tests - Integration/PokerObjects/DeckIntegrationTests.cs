@@ -1,5 +1,4 @@
 ﻿using Castle.MicroKernel.Registration;
-using Castle.Windsor;
 using NUnit.Framework;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerEnums;
@@ -13,19 +12,15 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 	public class DeckIntegrationTests : LocalTestBase
 	{
 		private IRandomNumberGenerator _fakeRandomNumberGenerator;
+		private Deck _instance;
 
 		[SetUp]
 		protected override void Setup()
 		{
-			_fakeRandomNumberGenerator = new FakeRandomNumberGenerator();
-
 			base.Setup();
-		}
 
-		protected override void RegisterComponentsToWindsor(IWindsorContainer windsorContainer)
-		{
-			base.RegisterComponentsToWindsor(windsorContainer);
-			windsorContainer.Register(Component.For<IRandomNumberGenerator>().Instance(_fakeRandomNumberGenerator));
+			_fakeRandomNumberGenerator = new FakeRandomNumberGenerator();
+			_instance = new Deck(_fakeRandomNumberGenerator, UtilitiesService);
 		}
 
 		#region Constructor
@@ -33,6 +28,9 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		[Test]
 		public void Constructor_SHOULD_return_deck_full_of_every_card()
 		{
+			//arrange
+			WindsorContainer.Register(Component.For<IRandomNumberGenerator>().Instance(_fakeRandomNumberGenerator));
+
 			//act
 			var actual = new Deck();
 
@@ -49,16 +47,15 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		[Test]
 		public void Constructor_with_random_SHOULD_return_deck_full_of_every_card()
 		{
-			//act
-			var actual = new Deck(_fakeRandomNumberGenerator, UtilitiesService);
+			//act - in setup
 
 			//assert
-			Assert.That(actual.Cards, Has.Count.EqualTo(52));
+			Assert.That(_instance.Cards, Has.Count.EqualTo(52));
 
 			var allCards = CardTestCases.AllCards;
 			for (var i = 0; i < 52; i++)
 			{
-				Assert.That(actual.Cards[i], Is.EqualTo(allCards[i]).Using(CardComparer));
+				Assert.That(_instance.Cards[i], Is.EqualTo(allCards[i]).Using(CardComparer));
 			}
 		}
 
@@ -69,20 +66,17 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		[Test]
 		public void Shuffle()
 		{
-			//arrange
-			var instance = new Deck();
-
 			//act
-			instance.Shuffle();
+			_instance.Shuffle();
 
 			//assert - card results valid for deck seeding value 1337
-			Assert.That(instance.Cards[0], Is.EqualTo(new Card(CardValue.Eight, CardSuit.Hearts)).Using(CardComparer));
-			Assert.That(instance.Cards[3], Is.EqualTo(new Card(CardValue.Five, CardSuit.Clubs)).Using(CardComparer));
-			Assert.That(instance.Cards[10], Is.EqualTo(new Card(CardValue.Two, CardSuit.Spades)).Using(CardComparer));
-			Assert.That(instance.Cards[20], Is.EqualTo(new Card(CardValue.Ten, CardSuit.Clubs)).Using(CardComparer));
-			Assert.That(instance.Cards[30], Is.EqualTo(new Card(CardValue.Jack, CardSuit.Diamonds)).Using(CardComparer));
-			Assert.That(instance.Cards[40], Is.EqualTo(new Card(CardValue.Five, CardSuit.Diamonds)).Using(CardComparer));
-			Assert.That(instance.Cards[50], Is.EqualTo(new Card(CardValue.Eight, CardSuit.Spades)).Using(CardComparer));
+			Assert.That(_instance.Cards[0], Is.EqualTo(new Card(CardValue.Eight, CardSuit.Hearts)).Using(CardComparer));
+			Assert.That(_instance.Cards[3], Is.EqualTo(new Card(CardValue.Five, CardSuit.Clubs)).Using(CardComparer));
+			Assert.That(_instance.Cards[10], Is.EqualTo(new Card(CardValue.Two, CardSuit.Spades)).Using(CardComparer));
+			Assert.That(_instance.Cards[20], Is.EqualTo(new Card(CardValue.Ten, CardSuit.Clubs)).Using(CardComparer));
+			Assert.That(_instance.Cards[30], Is.EqualTo(new Card(CardValue.Jack, CardSuit.Diamonds)).Using(CardComparer));
+			Assert.That(_instance.Cards[40], Is.EqualTo(new Card(CardValue.Five, CardSuit.Diamonds)).Using(CardComparer));
+			Assert.That(_instance.Cards[50], Is.EqualTo(new Card(CardValue.Eight, CardSuit.Spades)).Using(CardComparer));
 		}
 
 		#endregion
@@ -93,15 +87,14 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		public void RemoveCard()
 		{
 			//arrange
-			var instance = new Deck();
 			var cardToRemove = new Card(CardValue.Jack, CardSuit.Spades);
 
 			//act
-			instance.RemoveCard(cardToRemove);
+			_instance.RemoveCard(cardToRemove);
 
 			//assert
-			Assert.That(instance.Cards, Has.Count.EqualTo(51));
-			Assert.That(instance.Cards, Has.None.EqualTo(cardToRemove));
+			Assert.That(_instance.Cards, Has.Count.EqualTo(51));
+			Assert.That(_instance.Cards, Has.None.EqualTo(cardToRemove));
 		}
 
 		#endregion
@@ -111,16 +104,37 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		[Test]
 		public void TakeRandomCard()
 		{
-			//arrange
-			var instance = new Deck();
-
 			//act
-			var actual = instance.TakeRandomCard();
+			var actual = _instance.TakeRandomCard();
 
 			//assert - card results valid for deck seeding value 1337
 			Assert.That(actual, Is.EqualTo(new Card(CardValue.Queen, CardSuit.Spades)).Using(CardComparer));
-			Assert.That(instance.Cards, Has.Count.EqualTo(51));
-			Assert.That(instance.Cards, Has.None.EqualTo(actual).Using(CardComparer));
+			Assert.That(_instance.Cards, Has.Count.EqualTo(51));
+			Assert.That(_instance.Cards, Has.None.EqualTo(actual).Using(CardComparer));
+		}
+
+		#endregion
+
+		#region TakeRandomCards
+
+		[Test]
+		public void TakeRandomCards()
+		{
+			//act
+			var actual = _instance.TakeRandomCards(4);
+
+			//assert
+			Assert.That(actual, Has.Count.EqualTo(4));
+			Assert.That(actual[0], Is.EqualTo(new Card(CardValue.Queen, CardSuit.Spades)).Using(CardComparer));
+			Assert.That(actual[1], Is.EqualTo(new Card(CardValue.Eight, CardSuit.Spades)).Using(CardComparer));
+			Assert.That(actual[2], Is.EqualTo(new Card(CardValue.Six, CardSuit.Hearts)).Using(CardComparer));
+			Assert.That(actual[3], Is.EqualTo(new Card(CardValue.Jack, CardSuit.Clubs)).Using(CardComparer));
+
+			Assert.That(_instance.Cards, Has.Count.EqualTo(48));
+			Assert.That(_instance.Cards, Has.None.EqualTo(actual[0]).Using(CardComparer));
+			Assert.That(_instance.Cards, Has.None.EqualTo(actual[1]).Using(CardComparer));
+			Assert.That(_instance.Cards, Has.None.EqualTo(actual[2]).Using(CardComparer));
+			Assert.That(_instance.Cards, Has.None.EqualTo(actual[3]).Using(CardComparer));
 		}
 
 		#endregion
@@ -130,11 +144,8 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		[Test]
 		public void GetRandomCards()
 		{
-			//arrange
-			var instance = new Deck();
-
 			//act
-			var actual = instance.GetRandomCards(3);
+			var actual = _instance.GetRandomCards(3);
 
 			//assert - card results valid for deck seeding value 1337
 			Assert.That(actual, Has.Count.EqualTo(3));
@@ -142,10 +153,10 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			Assert.That(actual[1], Is.EqualTo(new Card(CardValue.Eight, CardSuit.Spades)).Using(CardComparer));
 			Assert.That(actual[2], Is.EqualTo(new Card(CardValue.Six, CardSuit.Hearts)).Using(CardComparer));
 
-			Assert.That(instance.Cards, Has.Count.EqualTo(52));
-			Assert.That(instance.Cards, Has.Some.EqualTo(actual[0]).Using(CardComparer));
-			Assert.That(instance.Cards, Has.Some.EqualTo(actual[1]).Using(CardComparer));
-			Assert.That(instance.Cards, Has.Some.EqualTo(actual[2]).Using(CardComparer));
+			Assert.That(_instance.Cards, Has.Count.EqualTo(52));
+			Assert.That(_instance.Cards, Has.Some.EqualTo(actual[0]).Using(CardComparer));
+			Assert.That(_instance.Cards, Has.Some.EqualTo(actual[1]).Using(CardComparer));
+			Assert.That(_instance.Cards, Has.Some.EqualTo(actual[2]).Using(CardComparer));
 		}
 
 		#endregion

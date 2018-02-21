@@ -72,12 +72,32 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// <returns>The random card.</returns>
 		public virtual Card TakeRandomCard()
 		{
-			if (Cards.Any() == false) throw new Exception("No cards left in Deck to take.");
+			return TakeRandomCards(1).First();
+		}
 
-			var indexOfCardToTake = _randomNumberGenerator.Next(Cards.Count);
-			var cardToTake = Cards[indexOfCardToTake];
-			Cards.Remove(cardToTake);
-			return cardToTake;
+		#endregion
+
+		#region TakeRandomCards
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="numCardsToTake"></param>
+		/// <returns></returns>
+		public virtual List<Card> TakeRandomCards(int numCardsToTake)
+		{
+			if (Cards.Count < numCardsToTake) throw new ArgumentException("Cannot take more cards than there are left in the Deck.");
+
+			var cardsToTake = new List<Card>();
+			for (var i = 0; i < numCardsToTake; i++)
+			{
+				var indexOfCardToTake = _randomNumberGenerator.Next(Cards.Count);
+				var cardToTake = Cards[indexOfCardToTake];
+				Cards.Remove(cardToTake);
+				cardsToTake.Add(cardToTake);
+			}
+
+			return cardsToTake;
 		}
 
 		#endregion
@@ -88,14 +108,14 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// Gets the random cards.
 		/// </summary>
 		/// <returns>The random cards.</returns>
-		/// <param name="numCardsToTake">Number cards to take.</param>
-		public virtual List<Card> GetRandomCards(int numCardsToTake)
+		/// <param name="numCardsToGet">Number cards to get.</param>
+		public virtual List<Card> GetRandomCards(int numCardsToGet)
 		{
-			if (numCardsToTake > Cards.Count) throw new Exception("Cannot get more cards than there are left in the Deck.");
+			if (numCardsToGet > Cards.Count) throw new Exception("Cannot get more cards than there are left in the Deck.");
 
 			var cardsToTake = new List<Card>();
 			var cardsLeftInDeckToSelectFrom = Cards.ToList();
-			for (var i = 0; i < numCardsToTake; i++)
+			for (var i = 0; i < numCardsToGet; i++)
 			{
 				var indexOfCardToTake = _randomNumberGenerator.Next(cardsLeftInDeckToSelectFrom.Count);
 				var cardToTake = cardsLeftInDeckToSelectFrom[indexOfCardToTake];
