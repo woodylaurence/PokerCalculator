@@ -1,15 +1,33 @@
-﻿using NUnit.Framework;
+﻿using Castle.MicroKernel.Registration;
+using Castle.Windsor;
+using NUnit.Framework;
+using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
-using System;
-using System.Linq;
+using PokerCalculator.Tests.Shared.TestObjects;
 
 namespace PokerCalculator.Tests.Integration.PokerObjects
 {
 	[TestFixture]
 	public class DeckIntegrationTests : LocalTestBase
 	{
+		private IRandomNumberGenerator _fakeRandomNumberGenerator;
+
+		[SetUp]
+		public override void Setup()
+		{
+			_fakeRandomNumberGenerator = new FakeRandomNumberGenerator();
+
+			base.Setup();
+		}
+
+		protected override void RegisterComponentsToWindsor(IWindsorContainer windsorContainer)
+		{
+			base.RegisterComponentsToWindsor(windsorContainer);
+			windsorContainer.Register(Component.For<IRandomNumberGenerator>().Instance(_fakeRandomNumberGenerator));
+		}
+
 		#region Constructor
 
 		[Test]
@@ -32,7 +50,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		public void Constructor_with_random_SHOULD_return_deck_full_of_every_card()
 		{
 			//act
-			var actual = new Deck(new Random(), UtilitiesService);
+			var actual = new Deck(_fakeRandomNumberGenerator, UtilitiesService);
 
 			//assert
 			Assert.That(actual.Cards, Has.Count.EqualTo(52));
@@ -53,24 +71,18 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		{
 			//arrange
 			var instance = new Deck();
-			var originalCards = instance.Cards.ToList();
 
 			//act
 			instance.Shuffle();
 
-			//assert
-			Assert.That(instance.Cards.TrueForAll(x => originalCards.Contains(x, CardComparer)));
-			Assert.That(originalCards.TrueForAll(x => instance.Cards.Contains(x, CardComparer)));
-
-			var numCardsInSameOrderAsBefore = 0;
-			var orderedCards = CardTestCases.AllCards;
-			for (var i = 0; i < 52; i++)
-			{
-				if (CardComparer.Equals(instance.Cards[i], orderedCards[i])) numCardsInSameOrderAsBefore++;
-			}
-
-			//Represents roughly 1/300,000,000 chance
-			Assert.That(numCardsInSameOrderAsBefore, Is.LessThanOrEqualTo(5));
+			//assert - card results valid for deck seeding value 1337
+			Assert.That(instance.Cards[0], Is.EqualTo(new Card(CardValue.Eight, CardSuit.Hearts)).Using(CardComparer));
+			Assert.That(instance.Cards[3], Is.EqualTo(new Card(CardValue.Five, CardSuit.Clubs)).Using(CardComparer));
+			Assert.That(instance.Cards[10], Is.EqualTo(new Card(CardValue.Two, CardSuit.Spades)).Using(CardComparer));
+			Assert.That(instance.Cards[20], Is.EqualTo(new Card(CardValue.Ten, CardSuit.Clubs)).Using(CardComparer));
+			Assert.That(instance.Cards[30], Is.EqualTo(new Card(CardValue.Jack, CardSuit.Diamonds)).Using(CardComparer));
+			Assert.That(instance.Cards[40], Is.EqualTo(new Card(CardValue.Five, CardSuit.Diamonds)).Using(CardComparer));
+			Assert.That(instance.Cards[50], Is.EqualTo(new Card(CardValue.Eight, CardSuit.Spades)).Using(CardComparer));
 		}
 
 		#endregion
@@ -105,7 +117,8 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			//act
 			var actual = instance.TakeRandomCard();
 
-			//assert
+			//assert - card results valid for deck seeding value 1337
+			Assert.That(actual, Is.EqualTo(new Card(CardValue.Queen, CardSuit.Spades)).Using(CardComparer));
 			Assert.That(instance.Cards, Has.Count.EqualTo(51));
 			Assert.That(instance.Cards, Has.None.EqualTo(actual).Using(CardComparer));
 		}
@@ -123,8 +136,11 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			//act
 			var actual = instance.GetRandomCards(3);
 
-			//assert
+			//assert - card results valid for deck seeding value 1337
 			Assert.That(actual, Has.Count.EqualTo(3));
+			Assert.That(actual[0], Is.EqualTo(new Card(CardValue.Queen, CardSuit.Spades)).Using(CardComparer));
+			Assert.That(actual[1], Is.EqualTo(new Card(CardValue.Eight, CardSuit.Spades)).Using(CardComparer));
+			Assert.That(actual[2], Is.EqualTo(new Card(CardValue.Six, CardSuit.Hearts)).Using(CardComparer));
 
 			Assert.That(instance.Cards, Has.Count.EqualTo(52));
 			Assert.That(instance.Cards, Has.Some.EqualTo(actual[0]).Using(CardComparer));
