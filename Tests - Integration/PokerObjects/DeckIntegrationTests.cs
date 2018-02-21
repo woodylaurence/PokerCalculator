@@ -15,7 +15,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		private IRandomNumberGenerator _fakeRandomNumberGenerator;
 
 		[SetUp]
-		public override void Setup()
+		protected override void Setup()
 		{
 			_fakeRandomNumberGenerator = new FakeRandomNumberGenerator();
 
