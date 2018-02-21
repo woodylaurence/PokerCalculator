@@ -1,4 +1,8 @@
-﻿using NUnit.Framework;
+﻿using Castle.MicroKernel.Registration;
+using Castle.Windsor;
+using Microsoft.Practices.ServiceLocation;
+using NUnit.Framework;
+using PokerCalculator.Domain.HandRankCalculator;
 
 namespace PokerCalculator.Tests.Integration.HandRankCalculator
 {
@@ -6,11 +10,16 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 	public class HandRankCalculatorIntegrationTests : BaseHandRankCalculatorIntegrationTests
 	{
 		[SetUp]
-		public override void Setup()
+		protected override void Setup()
 		{
-			_instance = new Domain.HandRankCalculator.HandRankCalculator();
-
 			base.Setup();
+			_instance = ServiceLocator.Current.GetInstance<IHandRankCalculator>();
+		}
+
+		protected override void RegisterComponentsToWindsor(IWindsorContainer windsorContainer)
+		{
+			base.RegisterComponentsToWindsor(windsorContainer);
+			windsorContainer.Register(Component.For<IHandRankCalculator>().ImplementedBy<Domain.HandRankCalculator.HandRankCalculator>());
 		}
 	}
 }

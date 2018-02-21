@@ -1,5 +1,4 @@
-﻿using Castle.MicroKernel.Registration;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
@@ -7,19 +6,10 @@ using System.Collections.Generic;
 
 namespace PokerCalculator.Tests.Integration.HandRankCalculator
 {
-	[TestFixture]
 	public abstract class BaseHandRankCalculatorIntegrationTests : LocalTestBase
 	{
 		protected IHandRankCalculator _instance;
 		private Hand _hand;
-
-		[SetUp]
-		public override void Setup()
-		{
-			base.Setup();
-
-			WindsorContainer.Register(Component.For<IHandRankCalculator>().Instance(_instance));
-		}
 
 		#region CalculateHandRank
 

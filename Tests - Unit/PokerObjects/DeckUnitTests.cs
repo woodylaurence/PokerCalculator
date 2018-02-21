@@ -18,7 +18,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		private IUtilitiesService _utilitiesService;
 
 		[SetUp]
-		public override void Setup()
+		protected override void Setup()
 		{
 			base.Setup();
 

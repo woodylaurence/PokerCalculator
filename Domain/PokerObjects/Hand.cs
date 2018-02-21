@@ -1,6 +1,5 @@
 ﻿using Microsoft.Practices.ServiceLocation;
 using PokerCalculator.Domain.HandRankCalculator;
-using PokerCalculator.Domain.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,10 +53,59 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// <param name="cardToAdd">Card to add.</param>
 		public virtual void AddCard(Card cardToAdd)
 		{
-			if (Cards.Count == 7) throw new Exception("A Hand cannot have more than seven cards");
-			if (Cards.Contains(cardToAdd, new CardComparer())) throw new Exception("A Hand cannot contain duplicate cards");
-			Cards.Add(cardToAdd);
+			AddCards(new List<Card> { cardToAdd });
+		}
+
+		#endregion
+
+		#endregion
+
+		#region Operator Overloads
+
+		#region + Overload
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="hand1"></param>
+		/// <param name="hand2"></param>
+		/// <returns></returns>
+		public static Hand operator +(Hand hand1, Hand hand2)
+		{
+			var returnHand = hand1.Clone();
+			returnHand.AddCards(hand2.Cards.ToList());
+			return returnHand;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		protected internal virtual Hand Clone()
+		{
+			return new Hand(Cards, _cardComparer, _handRankCalculator);
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="cardsToAdd"></param>
+		protected internal virtual void AddCards(List<Card> cardsToAdd)
+		{
+			VerifyCardsCanBeAdded(cardsToAdd);
+			Cards.AddRange(cardsToAdd);
 			Rank = null;
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="cardsToAdd"></param>
+		protected internal virtual void VerifyCardsCanBeAdded(List<Card> cardsToAdd)
+		{
+			if (Cards.Count + cardsToAdd.Count > 7) throw new ArgumentException("A Hand cannot have more than seven cards");
+			if (cardsToAdd.Distinct(_cardComparer).Count() != cardsToAdd.Count) throw new ArgumentException("A Hand cannot contain duplicate cards");
+			if (cardsToAdd.Any(x => Cards.Contains(x, _cardComparer))) throw new ArgumentException("A Hand cannot contain duplicate cards");
 		}
 
 		#endregion
