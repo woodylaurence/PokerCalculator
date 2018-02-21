@@ -14,7 +14,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 	public class DeckUnitTests : AbstractUnitTestBase
 	{
 		private Deck _instance;
-		private Random _randomInstance;
+		private IRandomNumberGenerator _randomNumberGenerator;
 		private IUtilitiesService _utilitiesService;
 
 		[SetUp]
@@ -22,13 +22,13 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		{
 			base.Setup();
 
-			_randomInstance = MockRepository.GenerateStrictMock<Random>();
+			_randomNumberGenerator = MockRepository.GenerateStrictMock<IRandomNumberGenerator>();
 			_utilitiesService = MockRepository.GenerateStrictMock<IUtilitiesService>();
 
 			_utilitiesService.Stub(x => x.GetEnumValues<CardSuit>()).Return(new List<CardSuit>()).Repeat.Once();
 			_utilitiesService.Stub(x => x.GetEnumValues<CardValue>()).Return(new List<CardValue>()).Repeat.Once();
 
-			_instance = MockRepository.GeneratePartialMock<Deck>(_randomInstance, _utilitiesService);
+			_instance = MockRepository.GeneratePartialMock<Deck>(_randomNumberGenerator, _utilitiesService);
 		}
 
 		#region Constructor
@@ -38,6 +38,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		{
 			//arrange
 			WindsorContainer.Register(Component.For<IUtilitiesService>().Instance(_utilitiesService));
+			WindsorContainer.Register(Component.For<IRandomNumberGenerator>().Instance(_randomNumberGenerator));
 
 			var cardSuits = new List<CardSuit> { CardSuit.Clubs, CardSuit.Hearts };
 			_utilitiesService.Stub(x => x.GetEnumValues<CardSuit>()).Return(cardSuits);
@@ -81,16 +82,16 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			});
 
 			const int firstRandomNumber = 1781;
-			_randomInstance.Stub(x => x.Next(5000)).Return(firstRandomNumber).Repeat.Once();
+			_randomNumberGenerator.Stub(x => x.Next(5000)).Return(firstRandomNumber).Repeat.Once();
 
 			const int secondRandomNumber = 514;
-			_randomInstance.Stub(x => x.Next(5000)).Return(secondRandomNumber).Repeat.Once();
+			_randomNumberGenerator.Stub(x => x.Next(5000)).Return(secondRandomNumber).Repeat.Once();
 
 			const int thirdRandomNumber = 4981;
-			_randomInstance.Stub(x => x.Next(5000)).Return(thirdRandomNumber).Repeat.Once();
+			_randomNumberGenerator.Stub(x => x.Next(5000)).Return(thirdRandomNumber).Repeat.Once();
 
 			const int fourthRandomNumber = 45;
-			_randomInstance.Stub(x => x.Next(5000)).Return(fourthRandomNumber).Repeat.Once();
+			_randomNumberGenerator.Stub(x => x.Next(5000)).Return(fourthRandomNumber).Repeat.Once();
 
 			_instance.Expect(x => x.Cards = Arg<List<Card>>.Matches(y => y.Count == 4 &&
 																		 y[0] == card4 &&
@@ -173,7 +174,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			var cardsInDeck = new List<Card> { card1, card2, card3, card4, card5 };
 			_instance.Stub(x => x.Cards).Return(cardsInDeck);
 
-			_randomInstance.Stub(x => x.Next(5)).Return(3);
+			_randomNumberGenerator.Stub(x => x.Next(5)).Return(3);
 
 			//act
 			var actual = _instance.TakeRandomCard();
@@ -221,9 +222,9 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			var cardsInDeck = new List<Card> { card1, card2, card3, card4, card5 };
 			_instance.Stub(x => x.Cards).Return(cardsInDeck);
 
-			_randomInstance.Stub(x => x.Next(5)).Return(2);
-			_randomInstance.Stub(x => x.Next(4)).Return(2);
-			_randomInstance.Stub(x => x.Next(3)).Return(0);
+			_randomNumberGenerator.Stub(x => x.Next(5)).Return(2);
+			_randomNumberGenerator.Stub(x => x.Next(4)).Return(2);
+			_randomNumberGenerator.Stub(x => x.Next(3)).Return(0);
 
 			//act
 			var actual = _instance.GetRandomCards(3);
