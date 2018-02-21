@@ -11,7 +11,7 @@ namespace PokerCalculator.Domain.PokerObjects
 	{
 		#region Properties and Fields
 
-		private Random _randomInstance { get; }
+		private IRandomNumberGenerator _randomNumberGenerator { get; }
 		private IUtilitiesService _utilities { get; }
 		public virtual List<Card> Cards { get; set; }
 
@@ -22,10 +22,10 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// <summary>
 		/// 
 		/// </summary>
-		public Deck() : this(new Random(), ServiceLocator.Current.GetInstance<IUtilitiesService>()) { }
-		public Deck(Random randomInstance, IUtilitiesService utilitiesService)
+		public Deck() : this(ServiceLocator.Current.GetInstance<IRandomNumberGenerator>(), ServiceLocator.Current.GetInstance<IUtilitiesService>()) { }
+		public Deck(IRandomNumberGenerator randomNumberGenerator, IUtilitiesService utilitiesService)
 		{
-			_randomInstance = randomInstance;
+			_randomNumberGenerator = randomNumberGenerator;
 			_utilities = utilitiesService;
 
 			var cardSuits = utilitiesService.GetEnumValues<CardSuit>();
@@ -44,7 +44,7 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// </summary>
 		public virtual void Shuffle()
 		{
-			Cards = Cards.OrderBy(x => _randomInstance.Next(5000)).ToList();
+			Cards = Cards.OrderBy(x => _randomNumberGenerator.Next(5000)).ToList();
 		}
 
 		#endregion
@@ -74,7 +74,7 @@ namespace PokerCalculator.Domain.PokerObjects
 		{
 			if (Cards.Any() == false) throw new Exception("No cards left in Deck to take.");
 
-			var indexOfCardToTake = _randomInstance.Next(Cards.Count);
+			var indexOfCardToTake = _randomNumberGenerator.Next(Cards.Count);
 			var cardToTake = Cards[indexOfCardToTake];
 			Cards.Remove(cardToTake);
 			return cardToTake;
@@ -97,7 +97,7 @@ namespace PokerCalculator.Domain.PokerObjects
 			var cardsLeftInDeckToSelectFrom = Cards.ToList();
 			for (var i = 0; i < numCardsToTake; i++)
 			{
-				var indexOfCardToTake = _randomInstance.Next(cardsLeftInDeckToSelectFrom.Count);
+				var indexOfCardToTake = _randomNumberGenerator.Next(cardsLeftInDeckToSelectFrom.Count);
 				var cardToTake = cardsLeftInDeckToSelectFrom[indexOfCardToTake];
 				cardsToTake.Add(cardToTake);
 				cardsLeftInDeckToSelectFrom.Remove(cardToTake);
