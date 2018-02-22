@@ -49,6 +49,22 @@ namespace PokerCalculator.Domain.PokerObjects
 
 		#endregion
 
+		#region Clone
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <returns></returns>
+		public virtual Deck Clone()
+		{
+			return new Deck
+			{
+				Cards = Cards.ToList()
+			};
+		}
+
+		#endregion
+
 		#region RemoveCard
 
 		/// <summary>

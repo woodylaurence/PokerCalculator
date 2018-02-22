@@ -5,6 +5,8 @@ using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
 using PokerCalculator.Tests.Shared.TestObjects;
+using System.Configuration;
+using System.Linq;
 
 namespace PokerCalculator.Tests.Integration.PokerObjects
 {
@@ -21,6 +23,12 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 
 			_fakeRandomNumberGenerator = new FakeRandomNumberGenerator();
 			_instance = new Deck(_fakeRandomNumberGenerator, UtilitiesService);
+		}
+
+		[TearDown]
+		protected void TearDown()
+		{
+			ConfigurationManager.AppSettings["PokerCalculator.Helpers.FakeRandomNumberGenerator.RandomSeedingValue"] = "1337";
 		}
 
 		#region Constructor
@@ -77,6 +85,31 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			Assert.That(_instance.Cards[30], Is.EqualTo(new Card(CardValue.Jack, CardSuit.Diamonds)).Using(CardComparer));
 			Assert.That(_instance.Cards[40], Is.EqualTo(new Card(CardValue.Five, CardSuit.Diamonds)).Using(CardComparer));
 			Assert.That(_instance.Cards[50], Is.EqualTo(new Card(CardValue.Eight, CardSuit.Spades)).Using(CardComparer));
+		}
+
+		#endregion
+
+		#region Clone
+
+		[Test]
+		public void Clone()
+		{
+			//arrange
+			WindsorContainer.Register(Component.For<IRandomNumberGenerator>().ImplementedBy<FakeRandomNumberGenerator>().LifestyleTransient());
+
+			_instance.TakeRandomCards(4);
+			ConfigurationManager.AppSettings["PokerCalculator.Helpers.FakeRandomNumberGenerator.RandomSeedingValue"] = "123456789";
+
+			//act
+			var actual = _instance.Clone();
+
+			//assert
+			Assert.That(actual.Cards, Has.Count.EqualTo(_instance.Cards.Count));
+			Assert.That(_instance.Cards.TrueForAll(cardInOriginalDeck => actual.Cards.Contains(cardInOriginalDeck, CardComparer)));
+
+			var randomCardsFromClonedDeck = actual.TakeRandomCards(2);
+			Assert.That(randomCardsFromClonedDeck[0], Is.EqualTo(new Card(CardValue.Three, CardSuit.Diamonds)).Using(CardComparer));
+			Assert.That(randomCardsFromClonedDeck[1], Is.EqualTo(new Card(CardValue.Jack, CardSuit.Spades)).Using(CardComparer));
 		}
 
 		#endregion

@@ -108,6 +108,47 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 
 		#endregion
 
+		#region Clone
+
+		[Test]
+		public void Clone()
+		{
+			//arrange
+			WindsorContainer.Register(Component.For<IUtilitiesService>().Instance(_utilitiesService));
+			WindsorContainer.Register(Component.For<IRandomNumberGenerator>().Instance(_randomNumberGenerator));
+
+			var cardSuits = new List<CardSuit> { CardSuit.Clubs, CardSuit.Hearts };
+			_utilitiesService.Stub(x => x.GetEnumValues<CardSuit>()).Return(cardSuits);
+
+			var cardValues = new List<CardValue> { CardValue.Eight, CardValue.King };
+			_utilitiesService.Stub(x => x.GetEnumValues<CardValue>()).Return(cardValues);
+
+			var card1InOriginalDeck = new Card(CardValue.Eight, CardSuit.Clubs);
+			var card2InOriginalDeck = new Card(CardValue.Seven, CardSuit.Spades);
+			var card3InOriginalDeck = new Card(CardValue.Ace, CardSuit.Diamonds);
+			var card4InOriginalDeck = new Card(CardValue.Four, CardSuit.Hearts);
+			var cardsInOriginalDeck = new List<Card>
+			{
+				card1InOriginalDeck,
+				card2InOriginalDeck,
+				card3InOriginalDeck,
+				card4InOriginalDeck
+			};
+			_instance.Stub(x => x.Cards).Return(cardsInOriginalDeck);
+
+			//act
+			var actual = _instance.Clone();
+
+			//assert
+			Assert.That(actual.Cards, Is.Not.SameAs(cardsInOriginalDeck));
+			Assert.That(actual.Cards[0], Is.EqualTo(card1InOriginalDeck));
+			Assert.That(actual.Cards[1], Is.EqualTo(card2InOriginalDeck));
+			Assert.That(actual.Cards[2], Is.EqualTo(card3InOriginalDeck));
+			Assert.That(actual.Cards[3], Is.EqualTo(card4InOriginalDeck));
+		}
+
+		#endregion
+
 		#region RemoveCard
 
 		[Test]
