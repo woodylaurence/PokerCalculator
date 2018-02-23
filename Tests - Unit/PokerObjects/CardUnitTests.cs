@@ -2,6 +2,7 @@
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
+using PokerCalculator.Tests.Shared.TestData;
 
 namespace PokerCalculator.Tests.Unit.PokerObjects
 {
@@ -10,7 +11,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 	{
 		#region Constructor
 
-		[Test, TestCaseSource(typeof(CardTestCases), nameof(CardTestCases.AllCardsTestCaseData))]
+		[Test, TestCaseSource(typeof(CardTestCaseData), nameof(CardTestCaseData.AllCardsTestCaseData))]
 		public void Constructor(CardValue value, CardSuit suit)
 		{
 			//act

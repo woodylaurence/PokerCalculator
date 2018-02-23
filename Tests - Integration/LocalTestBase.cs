@@ -1,6 +1,5 @@
 ﻿using Castle.MicroKernel.Registration;
 using Castle.Windsor;
-using NUnit.Framework;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
@@ -8,7 +7,6 @@ using System.Collections.Generic;
 
 namespace PokerCalculator.Tests.Integration
 {
-	[TestFixture]
 	public class LocalTestBase : AbstractUnitTestBase
 	{
 		protected IEqualityComparer<Card> CardComparer = new CardComparer();
