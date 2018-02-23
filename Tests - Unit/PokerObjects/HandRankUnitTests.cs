@@ -14,7 +14,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		private HandRank _instance;
 
 		[SetUp]
-		public override void Setup()
+		protected override void Setup()
 		{
 			_instance = MockRepository.GeneratePartialMock<HandRank>(null, null);
 		}
