@@ -5,9 +5,9 @@ using PokerCalculator.Domain.PokerObjects;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace PokerCalculator.Tests.Shared
+namespace PokerCalculator.Tests.Shared.TestData
 {
-	public static class CardTestCases
+	public static class CardTestCaseData
 	{
 		public static IEnumerable<TestCaseData> AllCardsTestCaseData => AllCards.Select(x => new TestCaseData(x.Value, x.Suit));
 
