@@ -5,6 +5,7 @@ using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
+using PokerCalculator.Tests.Shared.TestData;
 using PokerCalculator.Tests.Shared.TestObjects;
 
 namespace PokerCalculator.Tests.Integration.PokerObjects
@@ -39,7 +40,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			//assert
 			Assert.That(actual.Cards, Has.Count.EqualTo(52));
 
-			var allCards = CardTestCases.AllCards;
+			var allCards = CardTestCaseData.AllCards;
 			for (var i = 0; i < 52; i++)
 			{
 				Assert.That(actual.Cards[i], Is.EqualTo(allCards[i]).Using(CardComparer));
@@ -55,7 +56,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			//assert
 			Assert.That(actual.Cards, Has.Count.EqualTo(52));
 
-			var allCards = CardTestCases.AllCards;
+			var allCards = CardTestCaseData.AllCards;
 			for (var i = 0; i < 52; i++)
 			{
 				Assert.That(actual.Cards[i], Is.EqualTo(allCards[i]).Using(CardComparer));
