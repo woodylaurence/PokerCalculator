@@ -16,7 +16,7 @@ namespace PokerCalculator.Tests.Speed.HandRankCalculator
 		private IHandRankCalculator _instance;
 
 		[SetUp]
-		public override void Setup()
+		protected override void Setup()
 		{
 			base.Setup();
 
@@ -31,7 +31,7 @@ namespace PokerCalculator.Tests.Speed.HandRankCalculator
 			var handRankSpeedResults = new HandRankSpeedResults(UtilitiesService);
 
 			//act
-			const int numIterations = 10000;
+			const int numIterations = 500000;
 			for (var i = 0; i < numIterations; i++)
 			{
 				var randomCards = deck.GetRandomCards(5);
@@ -43,30 +43,43 @@ namespace PokerCalculator.Tests.Speed.HandRankCalculator
 				handRankSpeedResults.HandRankFrequency[handRank.PokerHand]++;
 			}
 
-			Console.WriteLine($"Total time spent: {handRankSpeedResults.TotalCalculationTime / TimeSpan.TicksPerMillisecond}ms");
-			Console.WriteLine("PokerHand breakdown:");
-			foreach (var handRankSpeedResult in handRankSpeedResults.HandRankAverageCalculationTimes)
-			{
-				var pokerHand = handRankSpeedResult.Key;
-				var total = handRankSpeedResults.HandRankFrequency[pokerHand];
-				var averageTime = 1000 * handRankSpeedResult.Value / TimeSpan.TicksPerMillisecond;
-				var totalTime = handRankSpeedResults.HandRankCalculationTimes[pokerHand] / TimeSpan.TicksPerMillisecond;
-				Console.WriteLine($"{pokerHand.ToString()} : Probability - {(total / (double)numIterations):N7}\tTotal - {total}\tTotal time - {totalTime}ms\tAverage time - {averageTime:N1}μs");
-			}
+			handRankSpeedResults.DisplaySpeedResults();
 		}
 
 		private class HandRankSpeedResults
 		{
-			public long TotalCalculationTime => HandRankCalculationTimes.Sum(x => x.Value);
+			private long TotalCalculationTime => HandRankCalculationTimes.Sum(x => x.Value);
+			private Dictionary<PokerHand, double> HandRankAverageCalculationTimes => HandRankCalculationTimes.ToDictionary(x => x.Key, x => HandRankFrequency[x.Key] == 0 ? 0 : x.Value / (double)HandRankFrequency[x.Key]);
 
 			public Dictionary<PokerHand, long> HandRankCalculationTimes { get; }
 			public Dictionary<PokerHand, int> HandRankFrequency { get; }
-			public Dictionary<PokerHand, double> HandRankAverageCalculationTimes => HandRankCalculationTimes.ToDictionary(x => x.Key, x => HandRankFrequency[x.Key] == 0 ? 0 : x.Value / (double)HandRankFrequency[x.Key]);
 
 			public HandRankSpeedResults(IUtilitiesService utilitiesService)
 			{
 				HandRankCalculationTimes = utilitiesService.GetEnumValues<PokerHand>().ToDictionary(x => x, x => 0L);
 				HandRankFrequency = utilitiesService.GetEnumValues<PokerHand>().ToDictionary(x => x, x => 0);
+			}
+
+			public void DisplaySpeedResults()
+			{
+				Console.WriteLine($"Total time spent: {TotalCalculationTime / TimeSpan.TicksPerMillisecond}ms");
+				Console.WriteLine("PokerHand breakdown:");
+
+				foreach (var handRankSpeedResult in HandRankAverageCalculationTimes)
+				{
+					var pokerHand = handRankSpeedResult.Key;
+					var displayPokerHand = pokerHand.ToString().PadRight(14);
+					var averageTimeAsString = GetTimedValueAsStringWithUnit(handRankSpeedResult.Value);
+					var totalTimeAsString = GetTimedValueAsStringWithUnit(HandRankCalculationTimes[pokerHand]);
+					Console.WriteLine($"{displayPokerHand} : Total time - {totalTimeAsString.PadRight(11)}\tAverage time - {averageTimeAsString}");
+				}
+			}
+
+			private string GetTimedValueAsStringWithUnit(double ticks)
+			{
+				if (ticks > TimeSpan.TicksPerMillisecond) return $"{ticks / TimeSpan.TicksPerMillisecond:N1}ms";
+				if (ticks * 1000 > TimeSpan.TicksPerMillisecond) return $"{ticks * 1000 / TimeSpan.TicksPerMillisecond:N1}μs";
+				return $"{ticks * 1000000 / TimeSpan.TicksPerMillisecond:N1}ns";
 			}
 		}
 	}
