@@ -4,6 +4,7 @@ using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
 using PokerCalculator.Tests.Shared.TestData;
 using Rhino.Mocks;
+using System;
 using System.Collections.Generic;
 
 namespace PokerCalculator.Tests.Unit.PokerObjects
@@ -126,6 +127,20 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		}
 
 		#region CompareKickers
+
+		[Test]
+		public void CompareKickers_WHERE_this_hand_rank_kickers_is_different_length_to_other_hand_rank_kickers_SHOULD_throw_error()
+		{
+			//arrange
+			_instance.Stub(x => x.KickerCardValues).Return(new List<CardValue> { CardValue.Jack, CardValue.Eight });
+
+			var otherHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
+			otherHandRank.Stub(x => x.KickerCardValues).Return(new List<CardValue> { CardValue.Seven, CardValue.Four, CardValue.Queen });
+
+			//act + assert
+			var actualException = Assert.Throws<Exception>(() => _instance.CompareKickers(otherHandRank));
+			Assert.That(actualException.Message, Is.EqualTo("Kickers have different lengths."));
+		}
 
 		[Test]
 		public void CompareKickers_WHERE_no_kickers_SHOULD_return_zero()
