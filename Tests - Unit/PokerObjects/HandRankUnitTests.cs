@@ -148,8 +148,11 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			//arrange
 			_instance.Stub(x => x.KickerCardValues).Return(new List<CardValue>());
 
+			var otherHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
+			otherHandRank.Stub(x => x.KickerCardValues).Return(new List<CardValue>());
+
 			//act
-			var actual = _instance.CompareKickers(null);
+			var actual = _instance.CompareKickers(otherHandRank);
 
 			//assert
 			Assert.That(actual, Is.EqualTo(0));

@@ -317,6 +317,38 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 		#region Flush
 
 		[Test]
+		public void CalculateHandRank_WHERE_flush_with_more_than_five_cards_in_flush_SHOULD_return_flush_with_values_set_to_top_five_flush_descending_values()
+		{
+			//	  	 FLUSH		 -  OTHERS
+			// {AD QD 7D 6D 4D 3D}  - {9C}
+
+			//arrange
+			_hand = new Hand(new List<Card>
+			{
+				new Card(CardValue.Ace, CardSuit.Diamonds),
+				new Card(CardValue.Three, CardSuit.Diamonds),
+				new Card(CardValue.Six, CardSuit.Diamonds),
+				new Card(CardValue.Queen, CardSuit.Diamonds),
+				new Card(CardValue.Four, CardSuit.Diamonds),
+				new Card(CardValue.Nine, CardSuit.Clubs),
+				new Card(CardValue.Seven, CardSuit.Diamonds)
+			});
+
+			//act
+			var actual = _instance.CalculateHandRank(_hand);
+
+			//assert
+			Assert.That(actual.PokerHand, Is.EqualTo(PokerHand.Flush));
+
+			Assert.That(actual.KickerCardValues, Has.Count.EqualTo(5));
+			Assert.That(actual.KickerCardValues[0], Is.EqualTo(CardValue.Ace));
+			Assert.That(actual.KickerCardValues[1], Is.EqualTo(CardValue.Queen));
+			Assert.That(actual.KickerCardValues[2], Is.EqualTo(CardValue.Seven));
+			Assert.That(actual.KickerCardValues[3], Is.EqualTo(CardValue.Six));
+			Assert.That(actual.KickerCardValues[4], Is.EqualTo(CardValue.Four));
+		}
+
+		[Test]
 		public void CalculateHandRank_WHERE_flush_SHOULD_return_flush_with_values_set_to_flush_descending_values()
 		{
 			//	  	 FLUSH		 -  OTHERS
