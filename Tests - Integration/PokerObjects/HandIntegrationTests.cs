@@ -1,4 +1,5 @@
 ﻿using Castle.MicroKernel.Registration;
+using Castle.Windsor;
 using NUnit.Framework;
 using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.PokerEnums;
@@ -13,11 +14,17 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		private Hand _instance;
 
 		[SetUp]
-		public new void Setup()
+		protected override void Setup()
 		{
-			WindsorContainer.Register(Component.For<IHandRankCalculator>().ImplementedBy<Domain.HandRankCalculator.HandRankCalculator>());
+			base.Setup();
 
 			_instance = new Hand(new List<Card>());
+		}
+
+		protected override void RegisterComponentsToWindsor(IWindsorContainer windsorContainer)
+		{
+			base.RegisterComponentsToWindsor(windsorContainer);
+			windsorContainer.Register(Component.For<IHandRankCalculator>().ImplementedBy<Domain.HandRankCalculator.HandRankCalculator>());
 		}
 
 		#region Properties and Fields
@@ -124,6 +131,8 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 
 		#endregion
 
+		#region Instance Methods
+
 		#region AddCard
 
 		[Test]
@@ -161,6 +170,142 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			Assert.That(_instance.Cards, Has.Some.EqualTo(cardToAdd));
 			Assert.That(_instance._rank, Is.Null);
 		}
+
+		#endregion
+
+		#endregion
+
+		#region Operator Overloads
+
+		#region + Overload
+
+		[Test]
+		public void AdditionOverload_WHERE_hand1_is_empty_and_hand2_is_empty_SHOULD_return_new_empty_hand()
+		{
+			//arrange
+			var hand1 = new Hand(new List<Card>());
+			var hand2 = new Hand(new List<Card>());
+
+			//act
+			var actual = hand1 + hand2;
+
+			//assert
+			Assert.That(actual, Is.Not.SameAs(hand1));
+			Assert.That(actual, Is.Not.SameAs(hand2));
+			Assert.That(actual.Cards, Is.Empty);
+		}
+
+		[Test]
+		public void AdditionOverload_WHERE_hand1_is_empty_but_hand2_is_not_SHOULD_return_new_hand_with_cards_from_hand2()
+		{
+			//arrange
+			var hand1 = new Hand(new List<Card>());
+
+			var hand2Card1 = new Card(CardValue.Jack, CardSuit.Hearts);
+			var hand2Card2 = new Card(CardValue.Queen, CardSuit.Spades);
+			var hand2Card3 = new Card(CardValue.Three, CardSuit.Diamonds);
+			var hand2 = new Hand(new List<Card> { hand2Card1, hand2Card2, hand2Card3 });
+
+			//act
+			var actual = hand1 + hand2;
+
+			//assert
+			Assert.That(actual, Is.Not.SameAs(hand1));
+			Assert.That(actual, Is.Not.SameAs(hand2));
+			Assert.That(actual.Cards, Is.Not.SameAs(hand2.Cards));
+
+			Assert.That(actual.Cards, Has.Count.EqualTo(3));
+			Assert.That(actual.Cards, Has.Some.EqualTo(hand2Card1));
+			Assert.That(actual.Cards, Has.Some.EqualTo(hand2Card2));
+			Assert.That(actual.Cards, Has.Some.EqualTo(hand2Card3));
+		}
+
+		[Test]
+		public void AdditionOverload_WHERE_hand1_is_not_empty_but_hand2_is_SHOULD_return_new_hand_with_cards_from_hand1()
+		{
+			//arrange
+			var hand1Card1 = new Card(CardValue.Four, CardSuit.Hearts);
+			var hand1Card2 = new Card(CardValue.Five, CardSuit.Diamonds);
+			var hand1Card3 = new Card(CardValue.Eight, CardSuit.Clubs);
+			var hand1Card4 = new Card(CardValue.Ace, CardSuit.Clubs);
+			var hand1 = new Hand(new List<Card> { hand1Card1, hand1Card2, hand1Card3, hand1Card4 });
+			var hand2 = new Hand(new List<Card>());
+
+			//act
+			var actual = hand1 + hand2;
+
+			//assert
+			Assert.That(actual, Is.Not.SameAs(hand1));
+			Assert.That(actual, Is.Not.SameAs(hand2));
+			Assert.That(actual.Cards, Is.Not.SameAs(hand1.Cards));
+
+			Assert.That(actual.Cards, Has.Count.EqualTo(4));
+			Assert.That(actual.Cards, Has.Some.EqualTo(hand1Card1));
+			Assert.That(actual.Cards, Has.Some.EqualTo(hand1Card2));
+			Assert.That(actual.Cards, Has.Some.EqualTo(hand1Card3));
+			Assert.That(actual.Cards, Has.Some.EqualTo(hand1Card4));
+		}
+
+		[Test]
+		public void AdditionOverload_WHERE_hand1_and_hand2_are_not_empty_SHOULD_return_new_hand_with_cards_from_both_hands()
+		{
+			//arrange
+			var hand1Card1 = new Card(CardValue.Four, CardSuit.Hearts);
+			var hand1Card2 = new Card(CardValue.Five, CardSuit.Diamonds);
+			var hand1 = new Hand(new List<Card> { hand1Card1, hand1Card2 });
+
+			var hand2Card1 = new Card(CardValue.King, CardSuit.Diamonds);
+			var hand2Card2 = new Card(CardValue.Jack, CardSuit.Hearts);
+			var hand2Card3 = new Card(CardValue.Seven, CardSuit.Hearts);
+			var hand2 = new Hand(new List<Card> { hand2Card1, hand2Card2, hand2Card3 });
+
+			//act
+			var actual = hand1 + hand2;
+
+			//assert
+			Assert.That(actual, Is.Not.SameAs(hand1));
+			Assert.That(actual, Is.Not.SameAs(hand2));
+			Assert.That(actual.Cards, Is.Not.SameAs(hand1.Cards));
+			Assert.That(actual.Cards, Is.Not.SameAs(hand2.Cards));
+
+			Assert.That(actual.Cards, Has.Count.EqualTo(5));
+			Assert.That(actual.Cards, Has.Some.EqualTo(hand1Card1));
+			Assert.That(actual.Cards, Has.Some.EqualTo(hand1Card2));
+			Assert.That(actual.Cards, Has.Some.EqualTo(hand2Card1));
+			Assert.That(actual.Cards, Has.Some.EqualTo(hand2Card2));
+			Assert.That(actual.Cards, Has.Some.EqualTo(hand2Card3));
+		}
+
+		[Test]
+		public void AdditionOverload_PlusEqualsCheck()
+		{
+			//arrange
+			var hand1Card1 = new Card(CardValue.Four, CardSuit.Hearts);
+			var hand1Card2 = new Card(CardValue.Five, CardSuit.Diamonds);
+			var hand1 = new Hand(new List<Card> { hand1Card1, hand1Card2 });
+
+			var hand2Card1 = new Card(CardValue.King, CardSuit.Diamonds);
+			var hand2Card2 = new Card(CardValue.Jack, CardSuit.Hearts);
+			var hand2Card3 = new Card(CardValue.Seven, CardSuit.Hearts);
+			var hand2 = new Hand(new List<Card> { hand2Card1, hand2Card2, hand2Card3 });
+
+			//act
+			var actual = hand1;
+			actual += hand2;
+
+			//assert
+			Assert.That(actual, Is.Not.SameAs(hand2));
+			Assert.That(actual, Is.Not.SameAs(hand1));
+
+			Assert.That(actual.Cards, Has.Count.EqualTo(5));
+			Assert.That(actual.Cards, Has.Some.EqualTo(hand1Card1));
+			Assert.That(actual.Cards, Has.Some.EqualTo(hand1Card2));
+			Assert.That(actual.Cards, Has.Some.EqualTo(hand2Card1));
+			Assert.That(actual.Cards, Has.Some.EqualTo(hand2Card2));
+			Assert.That(actual.Cards, Has.Some.EqualTo(hand2Card3));
+		}
+
+		#endregion
 
 		#endregion
 	}

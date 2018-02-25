@@ -11,7 +11,7 @@ namespace PokerCalculator.Tests.Integration.Helpers
 		private UtilitiesService _instance;
 
 		[SetUp]
-		public override void Setup()
+		protected override void Setup()
 		{
 			base.Setup();
 

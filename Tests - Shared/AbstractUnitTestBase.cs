@@ -10,20 +10,20 @@ namespace PokerCalculator.Tests.Shared
 		protected internal IWindsorContainer WindsorContainer { get; set; }
 
 		[SetUp]
-		public virtual void Setup()
+		protected virtual void Setup()
 		{
 			WindsorContainer = SetupWindsorContainer();
 			RegisterComponentsToWindsor(WindsorContainer);
 		}
 
-		protected internal virtual IWindsorContainer SetupWindsorContainer()
+		private IWindsorContainer SetupWindsorContainer()
 		{
 			var container = new WindsorContainer();
 			ServiceLocator.SetLocatorProvider(() => new WindsorServiceLocator(container));
 			return container;
 		}
 
-		protected internal virtual void RegisterComponentsToWindsor(IWindsorContainer windsorContainer)
+		protected virtual void RegisterComponentsToWindsor(IWindsorContainer windsorContainer)
 		{
 
 		}

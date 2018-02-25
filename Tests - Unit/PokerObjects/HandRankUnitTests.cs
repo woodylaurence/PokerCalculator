@@ -4,6 +4,7 @@ using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
 using PokerCalculator.Tests.Shared.TestData;
 using Rhino.Mocks;
+using System;
 using System.Collections.Generic;
 
 namespace PokerCalculator.Tests.Unit.PokerObjects
@@ -14,7 +15,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		private HandRank _instance;
 
 		[SetUp]
-		public override void Setup()
+		protected override void Setup()
 		{
 			_instance = MockRepository.GeneratePartialMock<HandRank>(null, null);
 		}
@@ -128,6 +129,20 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		#region CompareKickers
 
 		[Test]
+		public void CompareKickers_WHERE_this_hand_rank_kickers_is_different_length_to_other_hand_rank_kickers_SHOULD_throw_error()
+		{
+			//arrange
+			_instance.Stub(x => x.KickerCardValues).Return(new List<CardValue> { CardValue.Jack, CardValue.Eight });
+
+			var otherHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
+			otherHandRank.Stub(x => x.KickerCardValues).Return(new List<CardValue> { CardValue.Seven, CardValue.Four, CardValue.Queen });
+
+			//act + assert
+			var actualException = Assert.Throws<Exception>(() => _instance.CompareKickers(otherHandRank));
+			Assert.That(actualException.Message, Is.EqualTo("Kickers have different lengths."));
+		}
+
+		[Test]
 		public void CompareKickers_WHERE_no_kickers_SHOULD_return_zero()
 		{
 			//arrange
@@ -226,14 +241,13 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 
 		#region Operator Overloads
 
-		[TestCase(-1, true)]
-		[TestCase(0, false)]
-		[TestCase(1, false)]
-		public void LessThan(int compareToResult, bool expected)
+		[TestCase(true)]
+		[TestCase(false)]
+		public void LessThan_calls_helper(bool expected)
 		{
 			//arrange
 			var otherHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
-			_instance.Stub(x => x.CompareTo(otherHandRank)).Return(compareToResult);
+			_instance.Stub(x => x.Operator_LessThan(otherHandRank)).Return(expected);
 
 			//act
 			var actual = _instance < otherHandRank;
@@ -242,17 +256,48 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			Assert.That(actual, Is.EqualTo(expected));
 		}
 
-		[TestCase(-1, false)]
+		[TestCase(-1, true)]
 		[TestCase(0, false)]
-		[TestCase(1, true)]
-		public void GreaterThan(int compareToResult, bool expected)
+		[TestCase(1, false)]
+		public void Operator_LessThan(int compareToResult, bool expected)
 		{
 			//arrange
 			var otherHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
 			_instance.Stub(x => x.CompareTo(otherHandRank)).Return(compareToResult);
 
 			//act
+			var actual = _instance.Operator_LessThan(otherHandRank);
+
+			//assert
+			Assert.That(actual, Is.EqualTo(expected));
+		}
+
+		[TestCase(true)]
+		[TestCase(false)]
+		public void GreaterThan(bool expected)
+		{
+			//arrange
+			var otherHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
+			_instance.Stub(x => x.Operator_GreaterThan(otherHandRank)).Return(expected);
+
+			//act
 			var actual = _instance > otherHandRank;
+
+			//assert
+			Assert.That(actual, Is.EqualTo(expected));
+		}
+
+		[TestCase(-1, false)]
+		[TestCase(0, false)]
+		[TestCase(1, true)]
+		public void Operator_GreaterThan(int compareToResult, bool expected)
+		{
+			//arrange
+			var otherHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
+			_instance.Stub(x => x.CompareTo(otherHandRank)).Return(compareToResult);
+
+			//act
+			var actual = _instance.Operator_GreaterThan(otherHandRank);
 
 			//assert
 			Assert.That(actual, Is.EqualTo(expected));

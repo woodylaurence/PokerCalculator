@@ -18,10 +18,31 @@ namespace PokerCalculator.Domain.PokerObjects
 		public HandRank(PokerHand pokerHand, List<CardValue> kickerCardValues = null)
 		{
 			PokerHand = pokerHand;
+			throw new NotImplementedException("need to be careful to cut kickers down to correct length, we're getting differing number of kickers for the same hand rank");
 			KickerCardValues = kickerCardValues ?? new List<CardValue>();
 		}
 
 		#endregion
+
+		#region Operator Overloads
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		/// <returns></returns>
+		public static bool operator <(HandRank left, HandRank right) => left.Operator_LessThan(right);
+		protected internal virtual bool Operator_LessThan(HandRank otherHandRank) => CompareTo(otherHandRank) == -1;
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="left"></param>
+		/// <param name="right"></param>
+		/// <returns></returns>
+		public static bool operator >(HandRank left, HandRank right) => left.Operator_GreaterThan(right);
+		protected internal virtual bool Operator_GreaterThan(HandRank otherHandRank) => CompareTo(otherHandRank) == 1;
 
 		#region IComparable
 
@@ -46,6 +67,7 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// <returns></returns>
 		protected internal virtual int CompareKickers(HandRank otherHandRank)
 		{
+			if (KickerCardValues.Count != otherHandRank.KickerCardValues.Count) throw new Exception("Kickers have different lengths.");
 			for (var i = 0; i < KickerCardValues.Count; i++)
 			{
 				var kicker = KickerCardValues[i];
@@ -57,30 +79,6 @@ namespace PokerCalculator.Domain.PokerObjects
 		}
 
 		#endregion
-
-		#region Operator Overloads
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
-		public static bool operator <(HandRank left, HandRank right)
-		{
-			return left.CompareTo(right) == -1;
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
-		public static bool operator >(HandRank left, HandRank right)
-		{
-			return left.CompareTo(right) == 1;
-		}
 
 		#endregion
 	}

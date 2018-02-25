@@ -54,6 +54,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PokerCalculator\PokerCalculatorUnitTests.cs" />
+    <Compile Include="PokerCalculator\PokerOddsUnitTests.cs" />
     <Compile Include="PokerObjects\DeckUnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PokerObjects\CardUnitTests.cs" />
@@ -69,7 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj">
-      <Project>{059495E2-3B00-4184-BAE8-B50FF4787166}</Project>
+      <Project>{059495e2-3b00-4184-bae8-b50ff4787166}</Project>
       <Name>Domain</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tests - Shared\Tests - Shared.csproj">

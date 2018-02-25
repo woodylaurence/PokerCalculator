@@ -15,7 +15,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 		private Hand _hand;
 
 		[SetUp]
-		public override void Setup()
+		protected override void Setup()
 		{
 			base.Setup();
 
