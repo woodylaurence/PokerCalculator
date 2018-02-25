@@ -19,5 +19,17 @@ namespace PokerCalculator.Domain.Helpers
 		}
 
 		#endregion
+
+		#region GetTicksAsStringWithUnit
+
+		public string GetTicksAsStringWithUnit(double ticks)
+		{
+			if (ticks >= 10 * TimeSpan.TicksPerSecond) return $"{ticks / TimeSpan.TicksPerSecond:N1}s";
+			if (ticks >= TimeSpan.TicksPerMillisecond) return $"{ticks / TimeSpan.TicksPerMillisecond:N1}ms";
+			if (ticks * 1000 >= TimeSpan.TicksPerMillisecond) return $"{ticks * 1000 / TimeSpan.TicksPerMillisecond:N1}μs";
+			return $"{ticks * 1000000 / TimeSpan.TicksPerMillisecond:N1}ns";
+		}
+
+		#endregion
 	}
 }

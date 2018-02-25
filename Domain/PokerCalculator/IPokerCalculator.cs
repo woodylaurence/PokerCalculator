@@ -4,6 +4,6 @@ namespace PokerCalculator.Domain.PokerCalculator
 {
 	public interface IPokerCalculator
 	{
-		PokerOdds CalculatePokerOdds(Deck deck, Hand myHand, Hand boardHand, int numOpponents);
+		PokerOdds CalculatePokerOdds(Deck deck, Hand myHand, Hand boardHand, int numOpponents, int numIterations);
 	}
 }

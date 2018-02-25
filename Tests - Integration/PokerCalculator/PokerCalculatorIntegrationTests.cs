@@ -68,7 +68,7 @@ namespace PokerCalculator.Tests.Integration.PokerCalculator
 			var boardHand = new Hand(new List<Card> { third, fourth, fifth });
 
 			//act
-			var actual = _instance.CalculatePokerOdds(_deck, myHand, boardHand, 3);
+			var actual = _instance.CalculatePokerOdds(_deck, myHand, boardHand, 3, 10000);
 
 			//output
 			Console.WriteLine("% Win Results:");

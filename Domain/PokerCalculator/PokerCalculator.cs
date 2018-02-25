@@ -3,7 +3,6 @@ using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerObjects;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 
 namespace PokerCalculator.Domain.PokerCalculator
@@ -11,7 +10,6 @@ namespace PokerCalculator.Domain.PokerCalculator
 	public class PokerCalculator : IPokerCalculator
 	{
 		private IHandRankCalculator _handRankCalculator { get; }
-		internal int _numIterationsToCalculate => int.Parse(ConfigurationManager.AppSettings["PokerCalculator.Domain.PokerCalculator.NumIterationsToCalculate"]);
 
 		#region Constructor
 
@@ -24,10 +22,10 @@ namespace PokerCalculator.Domain.PokerCalculator
 
 		#region Instance Methods
 
-		public PokerOdds CalculatePokerOdds(Deck deck, Hand myHand, Hand boardHand, int numOpponents)
+		public PokerOdds CalculatePokerOdds(Deck deck, Hand myHand, Hand boardHand, int numOpponents, int numIterations)
 		{
 			var pokerOdds = new PokerOdds(ServiceLocator.Current.GetInstance<IUtilitiesService>());
-			for (var i = 0; i < _numIterationsToCalculate; i++)
+			for (var i = 0; i < numIterations; i++)
 			{
 				var clonedDeck = deck.Clone();
 				var clonedMyHand = myHand.Clone();
