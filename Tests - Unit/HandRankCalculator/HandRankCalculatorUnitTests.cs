@@ -15,7 +15,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 		private Hand _hand;
 
 		[SetUp]
-		public override void Setup()
+		protected override void Setup()
 		{
 			base.Setup();
 
@@ -85,7 +85,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 		}
 
 		[Test]
-		public void CalculateHandRank_WHERE_have_less_than_five_flush_values_but_five_straight_valus_SHOULD_return_straight_hand_rank()
+		public void CalculateHandRank_WHERE_have_less_than_five_flush_values_but_five_straight_values_SHOULD_return_straight_hand_rank()
 		{
 			//arrange
 			var cards = new List<Card> { new Card(CardValue.Queen, CardSuit.Diamonds) };
@@ -204,10 +204,16 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 		}
 
 		[Test]
-		public void GetFlushBasedHandRank_WHERE_hand_has_flush_and_flush_cards_are_not_a_straight_SHOULD_return_flush()
+		public void GetFlushBasedHandRank_WHERE_hand_has_flush_and_flush_cards_are_not_a_straight_and_have_more_than_five_flush_cards_SHOULD_return_flush_with_highest_five_flush_cards()
 		{
 			//assert
-			var flushValues = new List<CardValue> { CardValue.Ten, CardValue.Three };
+			const CardValue flushCardValue1 = CardValue.Ace;
+			const CardValue flushCardValue2 = CardValue.Ten;
+			const CardValue flushCardValue3 = CardValue.Nine;
+			const CardValue flushCardValue4 = CardValue.Eight;
+			const CardValue flushCardValue5 = CardValue.Six;
+			const CardValue flushCardValue6 = CardValue.Three;
+			var flushValues = new List<CardValue> { flushCardValue1, flushCardValue2, flushCardValue3, flushCardValue4, flushCardValue5, flushCardValue6 };
 
 			_instance.Stub(x => x.GetStraightValues(flushValues)).Return(new List<CardValue>
 			{
@@ -219,7 +225,41 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 
 			//assert
 			Assert.That(actual.PokerHand, Is.EqualTo(PokerHand.Flush));
-			Assert.That(actual.KickerCardValues, Is.EqualTo(flushValues));
+			Assert.That(actual.KickerCardValues, Has.Count.EqualTo(5));
+			Assert.That(actual.KickerCardValues[0], Is.EqualTo(flushCardValue1));
+			Assert.That(actual.KickerCardValues[1], Is.EqualTo(flushCardValue2));
+			Assert.That(actual.KickerCardValues[2], Is.EqualTo(flushCardValue3));
+			Assert.That(actual.KickerCardValues[3], Is.EqualTo(flushCardValue4));
+			Assert.That(actual.KickerCardValues[4], Is.EqualTo(flushCardValue5));
+		}
+
+		[Test]
+		public void GetFlushBasedHandRank_WHERE_hand_has_flush_and_flush_cards_are_not_a_straight_and_have_five_flush_cards_SHOULD_return_flush()
+		{
+			//assert
+			const CardValue flushCardValue1 = CardValue.Ace;
+			const CardValue flushCardValue2 = CardValue.Ten;
+			const CardValue flushCardValue3 = CardValue.Nine;
+			const CardValue flushCardValue4 = CardValue.Eight;
+			const CardValue flushCardValue5 = CardValue.Six;
+			var flushValues = new List<CardValue> { flushCardValue1, flushCardValue2, flushCardValue3, flushCardValue4, flushCardValue5 };
+
+			_instance.Stub(x => x.GetStraightValues(flushValues)).Return(new List<CardValue>
+			{
+				CardValue.Nine, CardValue.Two
+			});
+
+			//act
+			var actual = _instance.GetFlushBasedHandRank(flushValues);
+
+			//assert
+			Assert.That(actual.PokerHand, Is.EqualTo(PokerHand.Flush));
+			Assert.That(actual.KickerCardValues, Has.Count.EqualTo(5));
+			Assert.That(actual.KickerCardValues[0], Is.EqualTo(flushCardValue1));
+			Assert.That(actual.KickerCardValues[1], Is.EqualTo(flushCardValue2));
+			Assert.That(actual.KickerCardValues[2], Is.EqualTo(flushCardValue3));
+			Assert.That(actual.KickerCardValues[3], Is.EqualTo(flushCardValue4));
+			Assert.That(actual.KickerCardValues[4], Is.EqualTo(flushCardValue5));
 		}
 
 		#endregion
