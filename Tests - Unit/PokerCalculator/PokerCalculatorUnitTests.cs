@@ -9,7 +9,6 @@ using PokerCalculator.Tests.Shared;
 using PokerCalculator.Tests.Shared.TestData;
 using Rhino.Mocks;
 using System.Collections.Generic;
-using System.Configuration;
 using Card = PokerCalculator.Domain.PokerObjects.Card;
 
 namespace PokerCalculator.Tests.Unit.PokerCalculator
@@ -45,23 +44,6 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			windsorContainer.Register(Component.For<IHandRankCalculator>().Instance(_handRankCalculator));
 		}
 
-		#region Properties and Fields
-
-		[Test]
-		public void NumIterationsToCalculate()
-		{
-			//arrange
-			var expected = int.Parse(ConfigurationManager.AppSettings["PokerCalculator.Domain.PokerCalculator.NumIterationsToCalculate"]);
-
-			//act
-			var actual = _instance._numIterationsToCalculate;
-
-			//assert
-			Assert.That(actual, Is.EqualTo(expected));
-		}
-
-		#endregion
-
 		#region Instance Methods
 
 		#region CalculatePokerOdds
@@ -73,8 +55,6 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			const int numOpponents = 0;
 			var myHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 			var boardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
-
-			ConfigurationManager.AppSettings["PokerCalculator.Domain.PokerCalculator.NumIterationsToCalculate"] = "1";
 
 			var clonedDeck = MockRepository.GenerateStrictMock<Deck>();
 			_deck.Stub(x => x.Clone()).Return(clonedDeck);
@@ -101,7 +81,7 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			myHandRank.Stub(x => x.Operator_GreaterThan(null)).Return(true);
 
 			//act
-			var actual = _instance.CalculatePokerOdds(_deck, myHand, boardHand, numOpponents);
+			var actual = _instance.CalculatePokerOdds(_deck, myHand, boardHand, numOpponents, 1);
 
 			//assert
 			_instance.VerifyAllExpectations();
@@ -123,8 +103,6 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			const int numOpponents = 2;
 			var myHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 			var boardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
-
-			ConfigurationManager.AppSettings["PokerCalculator.Domain.PokerCalculator.NumIterationsToCalculate"] = "1";
 
 			var clonedDeck = MockRepository.GenerateStrictMock<Deck>();
 			_deck.Stub(x => x.Clone()).Return(clonedDeck);
@@ -154,7 +132,7 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			myHandRank.Stub(x => x.Operator_LessThan(bestOpponentHandRank)).Return(true);
 
 			//act
-			var actual = _instance.CalculatePokerOdds(_deck, myHand, boardHand, numOpponents);
+			var actual = _instance.CalculatePokerOdds(_deck, myHand, boardHand, numOpponents, 1);
 
 			//assert
 			_instance.VerifyAllExpectations();
@@ -176,8 +154,6 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			const int numOpponents = 2;
 			var myHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 			var boardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
-
-			ConfigurationManager.AppSettings["PokerCalculator.Domain.PokerCalculator.NumIterationsToCalculate"] = "1";
 
 			var clonedDeck = MockRepository.GenerateStrictMock<Deck>();
 			_deck.Stub(x => x.Clone()).Return(clonedDeck);
@@ -208,7 +184,7 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			myHandRank.Stub(x => x.Operator_GreaterThan(bestOpponentHandRank)).Return(true);
 
 			//act
-			var actual = _instance.CalculatePokerOdds(_deck, myHand, boardHand, numOpponents);
+			var actual = _instance.CalculatePokerOdds(_deck, myHand, boardHand, numOpponents, 1);
 
 			//assert
 			_instance.VerifyAllExpectations();
@@ -230,8 +206,6 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			const int numOpponents = 2;
 			var myHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 			var boardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
-
-			ConfigurationManager.AppSettings["PokerCalculator.Domain.PokerCalculator.NumIterationsToCalculate"] = "1";
 
 			var clonedDeck = MockRepository.GenerateStrictMock<Deck>();
 			_deck.Stub(x => x.Clone()).Return(clonedDeck);
@@ -262,7 +236,7 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			myHandRank.Stub(x => x.Operator_GreaterThan(bestOpponentHandRank)).Return(false);
 
 			//act
-			var actual = _instance.CalculatePokerOdds(_deck, myHand, boardHand, numOpponents);
+			var actual = _instance.CalculatePokerOdds(_deck, myHand, boardHand, numOpponents, 1);
 
 			//assert
 			_instance.VerifyAllExpectations();
@@ -284,8 +258,6 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			const int numOpponents = 2;
 			var myHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 			var boardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
-
-			ConfigurationManager.AppSettings["PokerCalculator.Domain.PokerCalculator.NumIterationsToCalculate"] = "2";
 
 			var clonedDeck1 = MockRepository.GenerateStrictMock<Deck>();
 			_deck.Stub(x => x.Clone()).Return(clonedDeck1).Repeat.Once();
@@ -345,7 +317,7 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			myHandRank2.Stub(x => x.Operator_LessThan(bestOpponentHandRank2)).Return(true);
 
 			//act
-			var actual = _instance.CalculatePokerOdds(_deck, myHand, boardHand, numOpponents);
+			var actual = _instance.CalculatePokerOdds(_deck, myHand, boardHand, numOpponents, 2);
 
 			//assert
 			_instance.VerifyAllExpectations();

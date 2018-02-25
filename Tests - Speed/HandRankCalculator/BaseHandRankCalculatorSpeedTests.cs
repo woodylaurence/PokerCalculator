@@ -48,6 +48,8 @@ namespace PokerCalculator.Tests.Speed.HandRankCalculator
 
 		private class HandRankSpeedResults
 		{
+			private IUtilitiesService _utilitiesService;
+
 			private long TotalCalculationTime => HandRankCalculationTimes.Sum(x => x.Value);
 			private Dictionary<PokerHand, double> HandRankAverageCalculationTimes => HandRankCalculationTimes.ToDictionary(x => x.Key, x => HandRankFrequency[x.Key] == 0 ? 0 : x.Value / (double)HandRankFrequency[x.Key]);
 
@@ -56,8 +58,10 @@ namespace PokerCalculator.Tests.Speed.HandRankCalculator
 
 			public HandRankSpeedResults(IUtilitiesService utilitiesService)
 			{
-				HandRankCalculationTimes = utilitiesService.GetEnumValues<PokerHand>().ToDictionary(x => x, x => 0L);
-				HandRankFrequency = utilitiesService.GetEnumValues<PokerHand>().ToDictionary(x => x, x => 0);
+				_utilitiesService = utilitiesService;
+
+				HandRankCalculationTimes = _utilitiesService.GetEnumValues<PokerHand>().ToDictionary(x => x, x => 0L);
+				HandRankFrequency = _utilitiesService.GetEnumValues<PokerHand>().ToDictionary(x => x, x => 0);
 			}
 
 			public void DisplaySpeedResults()
@@ -69,17 +73,10 @@ namespace PokerCalculator.Tests.Speed.HandRankCalculator
 				{
 					var pokerHand = handRankSpeedResult.Key;
 					var displayPokerHand = pokerHand.ToString().PadRight(14);
-					var averageTimeAsString = GetTimedValueAsStringWithUnit(handRankSpeedResult.Value);
-					var totalTimeAsString = GetTimedValueAsStringWithUnit(HandRankCalculationTimes[pokerHand]);
+					var averageTimeAsString = _utilitiesService.GetTicksAsStringWithUnit(handRankSpeedResult.Value);
+					var totalTimeAsString = _utilitiesService.GetTicksAsStringWithUnit(HandRankCalculationTimes[pokerHand]);
 					Console.WriteLine($"{displayPokerHand} : Total time - {totalTimeAsString.PadRight(11)}\tAverage time - {averageTimeAsString}");
 				}
-			}
-
-			private string GetTimedValueAsStringWithUnit(double ticks)
-			{
-				if (ticks > TimeSpan.TicksPerMillisecond) return $"{ticks / TimeSpan.TicksPerMillisecond:N1}ms";
-				if (ticks * 1000 > TimeSpan.TicksPerMillisecond) return $"{ticks * 1000 / TimeSpan.TicksPerMillisecond:N1}μs";
-				return $"{ticks * 1000000 / TimeSpan.TicksPerMillisecond:N1}ns";
 			}
 		}
 	}
