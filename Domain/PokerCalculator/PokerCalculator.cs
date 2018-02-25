@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.Practices.ServiceLocation;
+﻿using Microsoft.Practices.ServiceLocation;
 using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerObjects;
@@ -39,9 +38,7 @@ namespace PokerCalculator.Domain.PokerCalculator
 				clonedMyHand += clonedBoardHand;
 				var myHandRank = clonedMyHand.Rank;
 
-				var opponentHands = CreateOpponentHands(clonedDeck, clonedBoardHand, numOpponents);
-				throw new Exception("Unit Test situation where 0 opponents, so that rank is null");
-				var bestOpponentHandRank = GetBestOpponentHand(opponentHands)?.Rank;
+				var bestOpponentHandRank = SimulateOpponentHandsAndReturnBestHand(clonedDeck, clonedBoardHand, numOpponents)?.Rank;
 
 				if (myHandRank < bestOpponentHandRank) pokerOdds.NumLosses++;
 				else if (myHandRank > bestOpponentHandRank) pokerOdds.NumWins++;
@@ -52,6 +49,8 @@ namespace PokerCalculator.Domain.PokerCalculator
 
 			return pokerOdds;
 		}
+
+		#region DealRequiredNumberOfCardsToHand
 
 		/// <summary>
 		/// 
@@ -68,6 +67,10 @@ namespace PokerCalculator.Domain.PokerCalculator
 			hand.AddCards(randomCards);
 		}
 
+		#endregion
+
+		#region SimulateOpponentHandsAndReturnBestHand
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -75,7 +78,7 @@ namespace PokerCalculator.Domain.PokerCalculator
 		/// <param name="boardhand"></param>
 		/// <param name="numOpponents"></param>
 		/// <returns></returns>
-		protected internal virtual List<Hand> CreateOpponentHands(Deck deck, Hand boardhand, int numOpponents)
+		protected internal virtual Hand SimulateOpponentHandsAndReturnBestHand(Deck deck, Hand boardhand, int numOpponents)
 		{
 			var opponentsHands = new List<Hand>();
 			for (var i = 0; i < numOpponents; i++)
@@ -84,7 +87,8 @@ namespace PokerCalculator.Domain.PokerCalculator
 				opponentHand += boardhand;
 				opponentsHands.Add(opponentHand);
 			}
-			return opponentsHands;
+
+			return GetBestOpponentHand(opponentsHands);
 		}
 
 		/// <summary>
@@ -108,6 +112,8 @@ namespace PokerCalculator.Domain.PokerCalculator
 						? opponentHands.FirstOrDefault()
 						: opponentHands.OrderBy(x => x.Rank).Last();
 		}
+
+		#endregion
 
 		#endregion
 	}
