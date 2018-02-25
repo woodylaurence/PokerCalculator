@@ -8,6 +8,11 @@ namespace PokerCalculator.Domain.HandRankCalculator
 {
 	public class HandRankCalculator : IHandRankCalculator
 	{
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="hand"></param>
+		/// <returns></returns>
 		public virtual HandRank CalculateHandRank(Hand hand)
 		{
 			var flushValues = GetFlushValues(hand.Cards);
@@ -27,7 +32,7 @@ namespace PokerCalculator.Domain.HandRankCalculator
 		protected internal virtual HandRank GetFlushBasedHandRank(List<CardValue> flushValues)
 		{
 			var straightFlushValues = GetStraightValues(flushValues);
-			if (straightFlushValues.Count < 5) return new HandRank(PokerHand.Flush, flushValues);
+			if (straightFlushValues.Count < 5) return new HandRank(PokerHand.Flush, flushValues.Take(5).ToList());
 
 			var highestStraightFlushValue = straightFlushValues.First();
 			return highestStraightFlushValue == CardValue.Ace

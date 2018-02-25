@@ -64,8 +64,8 @@ namespace PokerCalculator.Tests.Integration.PokerCalculator
 			_deck.RemoveCard(fourth);
 			_deck.RemoveCard(fifth);
 
-			var myHand = new Hand(new List<Card> { new Card(CardValue.Ace, CardSuit.Spades), new Card(CardValue.Seven, CardSuit.Diamonds) });
-			var boardHand = new Hand(new List<Card>());
+			var myHand = new Hand(new List<Card> { first, second });
+			var boardHand = new Hand(new List<Card> { third, fourth, fifth });
 
 			//act
 			var actual = _instance.CalculatePokerOdds(_deck, myHand, boardHand, 3);

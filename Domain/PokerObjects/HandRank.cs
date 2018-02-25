@@ -18,7 +18,6 @@ namespace PokerCalculator.Domain.PokerObjects
 		public HandRank(PokerHand pokerHand, List<CardValue> kickerCardValues = null)
 		{
 			PokerHand = pokerHand;
-			throw new NotImplementedException("need to be careful to cut kickers down to correct length, we're getting differing number of kickers for the same hand rank");
 			KickerCardValues = kickerCardValues ?? new List<CardValue>();
 		}
 
