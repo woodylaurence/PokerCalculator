@@ -62,7 +62,7 @@ namespace PokerCalculator.Domain.PokerObjects
 
 		#region Operator Overloads
 
-		#region + Overload
+		#region +
 
 		/// <summary>
 		/// 
@@ -70,9 +70,10 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// <param name="hand1"></param>
 		/// <param name="hand2"></param>
 		/// <returns></returns>
-		public static Hand operator +(Hand hand1, Hand hand2)
+		public static Hand operator +(Hand hand1, Hand hand2) => hand1.Operator_plus(hand2);
+		protected internal virtual Hand Operator_plus(Hand hand2)
 		{
-			var returnHand = hand1.Clone();
+			var returnHand = Clone();
 			returnHand.AddCards(hand2.Cards.ToList());
 			return returnHand;
 		}

@@ -210,7 +210,23 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		#region + Overload
 
 		[Test]
-		public void AdditionOverload()
+		public void AdditionOverload_calls_helper()
+		{
+			//arrange
+			var hand2 = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
+			var expected = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
+
+			_instance.Stub(x => x.Operator_plus(hand2)).Return(expected);
+
+			//act
+			var actual = _instance + hand2;
+
+			//assert
+			Assert.That(actual, Is.EqualTo(expected));
+		}
+
+		[Test]
+		public void Operator_plus()
 		{
 			//arrange
 			var hand1Card1 = new Card(CardValue.Eight, CardSuit.Diamonds);
@@ -234,7 +250,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 														y.Contains(hand2Card2))));
 
 			//act
-			var actual = _instance + hand2;
+			var actual = _instance.Operator_plus(hand2);
 
 			//assert
 			Assert.That(actual, Is.EqualTo(expectedHand));
