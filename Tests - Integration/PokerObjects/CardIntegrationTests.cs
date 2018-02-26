@@ -23,6 +23,20 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			Assert.That(actual.Suit, Is.EqualTo(suit));
 		}
 
+		[TestCase("AD", CardValue.Ace, CardSuit.Diamonds)]
+		[TestCase("4c", CardValue.Four, CardSuit.Clubs)]
+		[TestCase("qs", CardValue.Queen, CardSuit.Spades)]
+		[TestCase("10H", CardValue.Ten, CardSuit.Hearts)]
+		public void Constructor_string(string stringValue, CardValue expectedValue, CardSuit expectedSuit)
+		{
+			//act
+			var actual = new Card(stringValue);
+
+			//assert
+			Assert.That(actual.Value, Is.EqualTo(expectedValue));
+			Assert.That(actual.Suit, Is.EqualTo(expectedSuit));
+		}
+
 		#endregion
 	}
 }

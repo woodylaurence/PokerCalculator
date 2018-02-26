@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 
 namespace PokerCalculator.Domain.Helpers
 {
@@ -16,6 +18,23 @@ namespace PokerCalculator.Domain.Helpers
 		public List<T> GetEnumValues<T>() where T : struct
 		{
 			return Enum.GetValues(typeof(T)).Cast<T>().ToList();
+		}
+
+		#endregion
+
+		#region GetEnumValueFromDescription
+
+		public T GetEnumValueFromDescription<T>(string description) where T : struct
+		{
+			var enumType = typeof(T);
+			if (enumType.IsEnum == false) throw new InvalidOperationException("Type to return must be an enum.");
+
+			var enumValueMatchingDescription = enumType.GetFields()
+													   .FirstOrDefault(x => x.GetCustomAttribute<DescriptionAttribute>()?.Description == description ||
+																			x.Name == description);
+
+			if (enumValueMatchingDescription == null) throw new ArgumentException("Cannot find enum value by supplied string");
+			return (T)enumValueMatchingDescription.GetValue(null);
 		}
 
 		#endregion

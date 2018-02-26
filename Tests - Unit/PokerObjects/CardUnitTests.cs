@@ -22,6 +22,17 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			Assert.That(actual.Suit, Is.EqualTo(suit));
 		}
 
+		[Test, TestCaseSource(typeof(CardTestCaseData), nameof(CardTestCaseData.AllCardsAsString))]
+		public void Constructor_string(string cardAsString, CardValue expectedCardValue, CardSuit expectedCardSuit)
+		{
+			//act
+			var actual = new Card(cardAsString);
+
+			//assert
+			Assert.That(actual.Value, Is.EqualTo(expectedCardValue));
+			Assert.That(actual.Suit, Is.EqualTo(expectedCardValue));
+		}
+
 		#endregion
 	}
 }
