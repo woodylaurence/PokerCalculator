@@ -76,11 +76,8 @@ namespace PokerCalculator.Tests.Integration.PokerCalculator
 		public void CalculatePokerOdds_WHERE_4D_and_5C_in_hand_no_cards_on_board_and_three_opponents_SHOULD_calculate_winning_odds_and_hand_odds_accurately()
 		{
 			//arange
-			var myHandCard1 = new Card(CardValue.Four, CardSuit.Diamonds);
-			var myHandCard2 = new Card(CardValue.Five, CardSuit.Clubs);
-
-			_deck.RemoveCard(myHandCard1);
-			_deck.RemoveCard(myHandCard2);
+			var myHandCard1 = _deck.TakeCard(CardValue.Four, CardSuit.Diamonds);
+			var myHandCard2 = _deck.TakeCard(CardValue.Five, CardSuit.Clubs);
 
 			var myHand = new Hand(new List<Card> { myHandCard1, myHandCard2 });
 			var boardHand = new Hand(new List<Card>());
@@ -109,21 +106,14 @@ namespace PokerCalculator.Tests.Integration.PokerCalculator
 		public void CalculatePokerOdds_WHERE_7H_and_7C_in_hand_2D_KC_and_JS_on_board_and_two_opponents_SHOULD_calculate_winning_odds_and_hand_odds_accurately()
 		{
 			//arange
-			var myHandCard1 = new Card(CardValue.Seven, CardSuit.Hearts);
-			var myHandCard2 = new Card(CardValue.Seven, CardSuit.Clubs);
-
-			_deck.RemoveCard(myHandCard1);
-			_deck.RemoveCard(myHandCard2);
+			var myHandCard1 = _deck.TakeCard(CardValue.Seven, CardSuit.Hearts);
+			var myHandCard2 = _deck.TakeCard(CardValue.Seven, CardSuit.Clubs);
 
 			var myHand = new Hand(new List<Card> { myHandCard1, myHandCard2 });
 
-			var boardHandCard1 = new Card(CardValue.Two, CardSuit.Diamonds);
-			var boardHandCard2 = new Card(CardValue.King, CardSuit.Clubs);
-			var boardHandCard3 = new Card(CardValue.Jack, CardSuit.Spades);
-
-			_deck.RemoveCard(boardHandCard1);
-			_deck.RemoveCard(boardHandCard2);
-			_deck.RemoveCard(boardHandCard3);
+			var boardHandCard1 = _deck.TakeCard(CardValue.Two, CardSuit.Diamonds);
+			var boardHandCard2 = _deck.TakeCard(CardValue.King, CardSuit.Clubs);
+			var boardHandCard3 = _deck.TakeCard(CardValue.Jack, CardSuit.Spades);
 
 			var boardHand = new Hand(new List<Card> { boardHandCard1, boardHandCard2, boardHandCard3 });
 
@@ -151,23 +141,15 @@ namespace PokerCalculator.Tests.Integration.PokerCalculator
 		public void CalculatePokerOdds_WHERE_AS_and_9D_in_hand_9C_10S_JS_4C_on_board_and_five_opponents_SHOULD_calculate_winning_odds_and_hand_odds_accurately()
 		{
 			//arange
-			var myHandCard1 = new Card(CardValue.Ace, CardSuit.Spades);
-			var myHandCard2 = new Card(CardValue.Nine, CardSuit.Diamonds);
-
-			_deck.RemoveCard(myHandCard1);
-			_deck.RemoveCard(myHandCard2);
+			var myHandCard1 = _deck.TakeCard(CardValue.Ace, CardSuit.Spades);
+			var myHandCard2 = _deck.TakeCard(CardValue.Nine, CardSuit.Diamonds);
 
 			var myHand = new Hand(new List<Card> { myHandCard1, myHandCard2 });
 
-			var boardHandCard1 = new Card(CardValue.Nine, CardSuit.Clubs);
-			var boardHandCard2 = new Card(CardValue.Ten, CardSuit.Spades);
-			var boardHandCard3 = new Card(CardValue.Jack, CardSuit.Spades);
-			var boardHandCard4 = new Card(CardValue.Four, CardSuit.Clubs);
-
-			_deck.RemoveCard(boardHandCard1);
-			_deck.RemoveCard(boardHandCard2);
-			_deck.RemoveCard(boardHandCard3);
-			_deck.RemoveCard(boardHandCard4);
+			var boardHandCard1 = _deck.TakeCard(CardValue.Nine, CardSuit.Clubs);
+			var boardHandCard2 = _deck.TakeCard(CardValue.Ten, CardSuit.Spades);
+			var boardHandCard3 = _deck.TakeCard(CardValue.Jack, CardSuit.Spades);
+			var boardHandCard4 = _deck.TakeCard(CardValue.Four, CardSuit.Clubs);
 
 			var boardHand = new Hand(new List<Card> { boardHandCard1, boardHandCard2, boardHandCard3, boardHandCard4 });
 
@@ -195,25 +177,16 @@ namespace PokerCalculator.Tests.Integration.PokerCalculator
 		public void CalculatePokerOdds_WHERE_AS_and_10D_in_hand_9C_10S_JS_KC_QC_on_board_and_three_opponents_SHOULD_calculate_winning_odds_and_hand_odds_accurately()
 		{
 			//arange
-			var myHandCard1 = new Card(CardValue.Ace, CardSuit.Spades);
-			var myHandCard2 = new Card(CardValue.Ten, CardSuit.Diamonds);
-
-			_deck.RemoveCard(myHandCard1);
-			_deck.RemoveCard(myHandCard2);
+			var myHandCard1 = _deck.TakeCard(CardValue.Ace, CardSuit.Spades);
+			var myHandCard2 = _deck.TakeCard(CardValue.Ten, CardSuit.Diamonds);
 
 			var myHand = new Hand(new List<Card> { myHandCard1, myHandCard2 });
 
-			var boardHandCard1 = new Card(CardValue.Nine, CardSuit.Clubs);
-			var boardHandCard2 = new Card(CardValue.Ten, CardSuit.Spades);
-			var boardHandCard3 = new Card(CardValue.Jack, CardSuit.Spades);
-			var boardHandCard4 = new Card(CardValue.King, CardSuit.Clubs);
-			var boardHandCard5 = new Card(CardValue.Queen, CardSuit.Clubs);
-
-			_deck.RemoveCard(boardHandCard1);
-			_deck.RemoveCard(boardHandCard2);
-			_deck.RemoveCard(boardHandCard3);
-			_deck.RemoveCard(boardHandCard4);
-			_deck.RemoveCard(boardHandCard5);
+			var boardHandCard1 = _deck.TakeCard(CardValue.Nine, CardSuit.Clubs);
+			var boardHandCard2 = _deck.TakeCard(CardValue.Ten, CardSuit.Spades);
+			var boardHandCard3 = _deck.TakeCard(CardValue.Jack, CardSuit.Spades);
+			var boardHandCard4 = _deck.TakeCard(CardValue.King, CardSuit.Clubs);
+			var boardHandCard5 = _deck.TakeCard(CardValue.Queen, CardSuit.Clubs);
 
 			var boardHand = new Hand(new List<Card> { boardHandCard1, boardHandCard2, boardHandCard3, boardHandCard4, boardHandCard5 });
 
