@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2024
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{059495E2-3B00-4184-BAE8-B50FF4787166}"
 EndProject
@@ -56,6 +56,7 @@ Global
 		{CE4348D1-D954-4B34-B9C8-64CAE40BA2B9}.Release|x86.ActiveCfg = Release|Any CPU
 		{CE4348D1-D954-4B34-B9C8-64CAE40BA2B9}.Release|x86.Build.0 = Release|Any CPU
 		{D13E63A6-640F-49D3-8CE3-14BF9A16BD52}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{D13E63A6-640F-49D3-8CE3-14BF9A16BD52}.Debug|Any CPU.Build.0 = Debug|x86
 		{D13E63A6-640F-49D3-8CE3-14BF9A16BD52}.Debug|x86.ActiveCfg = Debug|x86
 		{D13E63A6-640F-49D3-8CE3-14BF9A16BD52}.Debug|x86.Build.0 = Debug|x86
 		{D13E63A6-640F-49D3-8CE3-14BF9A16BD52}.Release|Any CPU.ActiveCfg = Release|x86
@@ -72,5 +73,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0E571F6C-2A74-49E6-A3DA-9EE9EC8E9E60}
 	EndGlobalSection
 EndGlobal
