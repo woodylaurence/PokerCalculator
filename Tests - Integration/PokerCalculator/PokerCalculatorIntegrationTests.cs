@@ -8,7 +8,6 @@ using PokerCalculator.Domain.PokerCalculator;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared.TestObjects;
-using System;
 using System.Collections.Generic;
 using System.Configuration;
 
@@ -57,21 +56,20 @@ namespace PokerCalculator.Tests.Integration.PokerCalculator
 			var actual = _instance.CalculatePokerOdds(_deck, myHand, boardHand, 3, 100000);
 
 			//output
-			//			Assert.That(actual.WinPercentage, Is.InRange() Is.EqualTo(0.4).Within());
+			Assert.That(actual.WinPercentage, Is.InRange(0.2348, 0.2372));
+			Assert.That(actual.DrawPercentage, Is.InRange(0.0297, 0.0323));
+			Assert.That(actual.LossPercentage, Is.InRange(0.7327, 0.7353));
 
-			Console.WriteLine("% Win Results:");
-			Console.WriteLine($"Win - {actual.WinPercentage * 100:N1}");
-			Console.WriteLine($"Draw - {actual.DrawPercentage * 100:N1}");
-			Console.WriteLine($"Loss - {actual.LossPercentage * 100:N1}");
-
-			Console.WriteLine("");
-			Console.WriteLine("");
-
-			Console.WriteLine("PokerHand Results:");
-			foreach (var actualPokerHandPercentage in actual.PokerHandPercentages)
-			{
-				Console.WriteLine($"{actualPokerHandPercentage.Key} - {actualPokerHandPercentage.Value * 100:N1}");
-			}
+			Assert.That(actual.PokerHandPercentages[PokerHand.RoyalFlush], Is.InRange(0, 0.000035));
+			Assert.That(actual.PokerHandPercentages[PokerHand.StraightFlush], Is.InRange(0, 0.00032));
+			Assert.That(actual.PokerHandPercentages[PokerHand.FourOfAKind], Is.InRange(0.00165, 0.00175));
+			Assert.That(actual.PokerHandPercentages[PokerHand.FullHouse], Is.InRange(0.0255, 0.0265));
+			Assert.That(actual.PokerHandPercentages[PokerHand.Flush], Is.InRange(0.0297, 0.0307));
+			Assert.That(actual.PokerHandPercentages[PokerHand.Straight], Is.InRange(0.0437, 0.0477));
+			Assert.That(actual.PokerHandPercentages[PokerHand.ThreeOfAKind], Is.InRange(0.0478, 0.0488));
+			Assert.That(actual.PokerHandPercentages[PokerHand.TwoPair], Is.InRange(0.2320, 0.238));
+			Assert.That(actual.PokerHandPercentages[PokerHand.Pair], Is.InRange(0.4345, 0.4415));
+			Assert.That(actual.PokerHandPercentages[PokerHand.HighCard], Is.InRange(0.1734, 0.1746));
 		}
 
 		[Test]
@@ -95,6 +93,7 @@ namespace PokerCalculator.Tests.Integration.PokerCalculator
 			Assert.That(actual.DrawPercentage, Is.InRange(0.029, 0.033));
 			Assert.That(actual.LossPercentage, Is.InRange(0.785, 0.8));
 
+			Assert.That(actual.PokerHandPercentages[PokerHand.RoyalFlush], Is.InRange(0, 0.00003));
 			Assert.That(actual.PokerHandPercentages[PokerHand.StraightFlush], Is.InRange(0, 0.0003));
 			Assert.That(actual.PokerHandPercentages[PokerHand.FourOfAKind], Is.InRange(0, 0.002));
 			Assert.That(actual.PokerHandPercentages[PokerHand.FullHouse], Is.InRange(0.019, 0.025));
@@ -136,6 +135,7 @@ namespace PokerCalculator.Tests.Integration.PokerCalculator
 			Assert.That(actual.DrawPercentage, Is.InRange(0.0010, 0.0015));
 			Assert.That(actual.LossPercentage, Is.InRange(0.607, 0.611));
 
+			Assert.That(actual.PokerHandPercentages[PokerHand.RoyalFlush], Is.EqualTo(0));
 			Assert.That(actual.PokerHandPercentages[PokerHand.StraightFlush], Is.EqualTo(0));
 			Assert.That(actual.PokerHandPercentages[PokerHand.FourOfAKind], Is.InRange(0.0009, 0.0013));
 			Assert.That(actual.PokerHandPercentages[PokerHand.FullHouse], Is.InRange(0.022, 0.026));
@@ -179,6 +179,7 @@ namespace PokerCalculator.Tests.Integration.PokerCalculator
 			Assert.That(actual.DrawPercentage, Is.InRange(0.0037, 0.0044));
 			Assert.That(actual.LossPercentage, Is.InRange(0.867, 0.872));
 
+			Assert.That(actual.PokerHandPercentages[PokerHand.RoyalFlush], Is.EqualTo(0));
 			Assert.That(actual.PokerHandPercentages[PokerHand.StraightFlush], Is.EqualTo(0));
 			Assert.That(actual.PokerHandPercentages[PokerHand.FourOfAKind], Is.EqualTo(0));
 			Assert.That(actual.PokerHandPercentages[PokerHand.FullHouse], Is.EqualTo(0));
@@ -199,7 +200,7 @@ namespace PokerCalculator.Tests.Integration.PokerCalculator
 
 			_deck.RemoveCard(myHandCard1);
 			_deck.RemoveCard(myHandCard2);
-			
+
 			var myHand = new Hand(new List<Card> { myHandCard1, myHandCard2 });
 
 			var boardHandCard1 = new Card(CardValue.Nine, CardSuit.Clubs);
@@ -224,6 +225,7 @@ namespace PokerCalculator.Tests.Integration.PokerCalculator
 			Assert.That(actual.DrawPercentage, Is.InRange(0.298, 0.306));
 			Assert.That(actual.LossPercentage, Is.InRange(0.130, 0.137));
 
+			Assert.That(actual.PokerHandPercentages[PokerHand.RoyalFlush], Is.EqualTo(0));
 			Assert.That(actual.PokerHandPercentages[PokerHand.StraightFlush], Is.EqualTo(0));
 			Assert.That(actual.PokerHandPercentages[PokerHand.FourOfAKind], Is.EqualTo(0));
 			Assert.That(actual.PokerHandPercentages[PokerHand.FullHouse], Is.EqualTo(0));
