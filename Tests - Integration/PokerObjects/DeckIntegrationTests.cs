@@ -3,7 +3,6 @@ using NUnit.Framework;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
-using PokerCalculator.Tests.Shared;
 using PokerCalculator.Tests.Shared.TestData;
 using PokerCalculator.Tests.Shared.TestObjects;
 using System.Configuration;
@@ -120,15 +119,34 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		[Test]
 		public void RemoveCard()
 		{
-			//arrange
-			var cardToRemove = new Card(CardValue.Jack, CardSuit.Spades);
-
 			//act
-			_instance.RemoveCard(cardToRemove);
+			_instance.RemoveCard(CardValue.Jack, CardSuit.Spades);
 
 			//assert
 			Assert.That(_instance.Cards, Has.Count.EqualTo(51));
-			Assert.That(_instance.Cards, Has.None.EqualTo(cardToRemove));
+			Assert.That(_instance.Cards, Has.None.EqualTo(new Card(CardValue.Jack, CardSuit.Spades)).Using(CardComparer));
+		}
+
+		#endregion
+
+		#region TakeCard
+
+		[Test]
+		public void TakeCard()
+		{
+			//arrange
+			const CardValue value = CardValue.Eight;
+			const CardSuit suit = CardSuit.Diamonds;
+
+			//act
+			var actual = _instance.TakeCard(value, suit);
+
+			//assert
+			Assert.That(actual.Value, Is.EqualTo(value));
+			Assert.That(actual.Suit, Is.EqualTo(suit));
+
+			Assert.That(_instance.Cards, Has.Count.EqualTo(51));
+			Assert.That(_instance.Cards, Has.None.EqualTo(new Card(value, suit)).Using(CardComparer));
 		}
 
 		#endregion
