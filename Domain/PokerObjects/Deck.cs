@@ -70,12 +70,29 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// <summary>
 		/// Removes the card.
 		/// </summary>
-		/// <param name="cardToRemove">Card to remove.</param>
-		public virtual void RemoveCard(Card cardToRemove)
+		/// <param name="value"></param>
+		/// <param name="suit"></param>
+		public virtual void RemoveCard(CardValue value, CardSuit suit)
 		{
-			var cardToRemoveInDeck = Cards.FirstOrDefault(x => new CardComparer().Equals(x, cardToRemove));
-			if (cardToRemoveInDeck == null) throw new Exception("Cannot remove Card, it is not in Deck.");
+			TakeCard(value, suit);
+		}
+
+		#endregion
+
+		#region TakeCard
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="value"></param>
+		/// <param name="suit"></param>
+		/// <returns></returns>
+		public virtual Card TakeCard(CardValue value, CardSuit suit)
+		{
+			var cardToRemoveInDeck = Cards.FirstOrDefault(x => x.Value == value && x.Suit == suit);
+			if (cardToRemoveInDeck == null) throw new Exception("No matching card in Deck.");
 			Cards.Remove(cardToRemoveInDeck);
+			return cardToRemoveInDeck;
 		}
 
 		#endregion

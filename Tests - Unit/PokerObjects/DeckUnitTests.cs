@@ -152,39 +152,67 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		#region RemoveCard
 
 		[Test]
-		public void RemoveCard_WHERE_card_is_not_in_deck_SHOULD_throw_error()
-		{
-			//arrange
-			var cardToRemove = new Card(CardValue.Two, CardSuit.Clubs);
-
-			var card1InDeck = new Card(CardValue.Two, CardSuit.Diamonds);
-			var card2InDeck = new Card(CardValue.Seven, CardSuit.Clubs);
-			_instance.Stub(x => x.Cards).Return(new List<Card> { card1InDeck, card2InDeck });
-
-			//act + assert
-			var actualException = Assert.Throws<Exception>(() => _instance.RemoveCard(cardToRemove));
-			Assert.That(actualException.Message, Is.EqualTo("Cannot remove Card, it is not in Deck."));
-		}
-
-		[Test]
 		public void RemoveCard()
 		{
 			//arrange
-			var cardToRemove = new Card(CardValue.Two, CardSuit.Clubs);
+			const CardValue value = CardValue.Four;
+			const CardSuit suit = CardSuit.Diamonds;
+			_instance.Expect(x => x.TakeCard(value, suit)).Return(new Card(CardValue.Jack, CardSuit.Clubs));
 
-			var card1InDeck = new Card(CardValue.Seven, CardSuit.Hearts);
-			var card2InDeck = new Card(CardValue.Two, CardSuit.Clubs);
+			//act
+			_instance.RemoveCard(value, suit);
 
-			var cardsInDeck = new List<Card> { card1InDeck, card2InDeck };
+			//assert
+			_instance.VerifyAllExpectations();
+		}
+
+		#endregion
+
+		#region TakeCard
+
+		[Test]
+		public void TakeCard_WHERE_no_card_with_given_value_and_suit_in_deck_SHOULD_throw_error()
+		{
+			//arrange
+			const CardValue value = CardValue.Four;
+			const CardSuit suit = CardSuit.Diamonds;
+
+			_instance.Stub(x => x.Cards).Return(new List<Card>
+			{
+				new Card(value, CardSuit.Clubs),
+				new Card(CardValue.Jack, suit),
+				new Card(CardValue.Ace, CardSuit.Spades)
+			});
+
+			//act + assert
+			var actualException = Assert.Throws<Exception>(() => _instance.TakeCard(value, suit));
+			Assert.That(actualException.Message, Is.EqualTo("No matching card in Deck."));
+		}
+
+		[Test]
+		public void TakeCard()
+		{
+			//arrange
+			const CardValue value = CardValue.Four;
+			const CardSuit suit = CardSuit.Diamonds;
+
+			var matchingCard = new Card(value, suit);
+			var cardsInDeck = new List<Card>
+			{
+				new Card(value, CardSuit.Clubs),
+				new Card(CardValue.Jack, suit),
+				new Card(CardValue.Ace, CardSuit.Spades),
+				matchingCard
+			};
 			_instance.Stub(x => x.Cards).Return(cardsInDeck);
 
 			//act
-			_instance.RemoveCard(cardToRemove);
+			var actual = _instance.TakeCard(value, suit);
 
 			//assert
-			Assert.That(cardsInDeck, Has.Count.EqualTo(1));
-			Assert.That(cardsInDeck, Has.Some.EqualTo(card1InDeck));
-			Assert.That(cardsInDeck, Has.None.EqualTo(card2InDeck));
+			Assert.That(actual, Is.EqualTo(matchingCard));
+			Assert.That(cardsInDeck, Has.Count.EqualTo(3));
+			Assert.That(cardsInDeck, Has.None.EqualTo(matchingCard));
 		}
 
 		#endregion

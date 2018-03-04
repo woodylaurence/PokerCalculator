@@ -9,16 +9,16 @@ namespace PokerCalculator.Domain.PokerCalculator
 	{
 		#region Properties and Fields
 
-		public virtual int NumWins { get; set; }
-		public virtual int NumDraws { get; set; }
-		public virtual int NumLosses { get; set; }
-		protected internal virtual int TotalNumHands => NumWins + NumDraws + NumLosses;
+		internal virtual int NumWins { get; set; }
+		internal virtual int NumDraws { get; set; }
+		internal virtual int NumLosses { get; set; }
+		internal virtual int TotalNumHands => NumWins + NumDraws + NumLosses;
 
 		public virtual double WinPercentage => TotalNumHands == 0 ? 0 : (double)NumWins / TotalNumHands;
 		public virtual double DrawPercentage => TotalNumHands == 0 ? 0 : (double)NumDraws / TotalNumHands;
 		public virtual double LossPercentage => TotalNumHands == 0 ? 0 : (double)NumLosses / TotalNumHands;
 
-		public virtual Dictionary<PokerHand, int> PokerHandFrequencies { get; }
+		internal virtual Dictionary<PokerHand, int> PokerHandFrequencies { get; }
 		public virtual Dictionary<PokerHand, double> PokerHandPercentages => PokerHandFrequencies.ToDictionary(x => x.Key, x => TotalNumHands == 0 ? 0 : (double)x.Value / TotalNumHands);
 
 		#endregion
