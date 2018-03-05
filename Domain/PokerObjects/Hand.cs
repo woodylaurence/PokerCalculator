@@ -15,13 +15,6 @@ namespace PokerCalculator.Domain.PokerObjects
 
 		public virtual List<Card> Cards { get; }
 
-		protected internal virtual HandRank _rank { get; set; }
-		public virtual HandRank Rank
-		{
-			get => _rank ?? (_rank = _handRankCalculator.CalculateHandRank(this));
-			set => _rank = value;
-		}
-
 		#endregion
 
 		#region Constructors
@@ -95,7 +88,6 @@ namespace PokerCalculator.Domain.PokerObjects
 		{
 			VerifyCardsCanBeAdded(cardsToAdd);
 			Cards.AddRange(cardsToAdd);
-			Rank = null;
 		}
 
 		/// <summary>

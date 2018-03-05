@@ -34,9 +34,11 @@ namespace PokerCalculator.Domain.PokerCalculator
 				var clonedBoardHand = boardHand.Clone();
 				DealRequiredNumberOfCardsToHand(clonedBoardHand, clonedDeck, 5);
 				clonedMyHand += clonedBoardHand;
-				var myHandRank = clonedMyHand.Rank;
 
-				var bestOpponentHandRank = SimulateOpponentHandsAndReturnBestHand(clonedDeck, clonedBoardHand, numOpponents)?.Rank;
+				var myHandRank = _handRankCalculator.CalculateHandRank(clonedMyHand);
+
+				var bestOpponentHand = SimulateOpponentHandsAndReturnBestHand(clonedDeck, clonedBoardHand, numOpponents);
+				var bestOpponentHandRank = bestOpponentHand == null ? null : _handRankCalculator.CalculateHandRank(bestOpponentHand);
 
 				if (myHandRank < bestOpponentHandRank) pokerOdds.NumLosses++;
 				else if (myHandRank > bestOpponentHandRank) pokerOdds.NumWins++;
@@ -108,7 +110,7 @@ namespace PokerCalculator.Domain.PokerCalculator
 		{
 			return opponentHands.Count < 2
 						? opponentHands.FirstOrDefault()
-						: opponentHands.OrderBy(x => x.Rank).Last();
+						: opponentHands.OrderBy(x => _handRankCalculator.CalculateHandRank(x)).Last();
 		}
 
 		#endregion

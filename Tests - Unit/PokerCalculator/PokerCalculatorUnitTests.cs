@@ -71,7 +71,7 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			clonedMyHand.Stub(x => x.Operator_plus(clonedBoardHand)).Return(combinedMyAndBoardHand);
 
 			var myHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
-			combinedMyAndBoardHand.Stub(x => x.Rank).Return(myHandRank);
+			_handRankCalculator.Stub(x => x.CalculateHandRank(combinedMyAndBoardHand)).Return(myHandRank);
 
 			myHandRank.Stub(x => x.PokerHand).Return(PokerHand.ThreeOfAKind);
 
@@ -122,12 +122,12 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			_instance.Stub(x => x.SimulateOpponentHandsAndReturnBestHand(clonedDeck, clonedBoardHand, numOpponents)).Return(bestOpponentHand);
 
 			var myHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
-			combinedMyAndBoardHand.Stub(x => x.Rank).Return(myHandRank);
+			_handRankCalculator.Stub(x => x.CalculateHandRank(combinedMyAndBoardHand)).Return(myHandRank);
 
 			myHandRank.Stub(x => x.PokerHand).Return(pokerHand);
 
 			var bestOpponentHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
-			bestOpponentHand.Stub(x => x.Rank).Return(bestOpponentHandRank);
+			_handRankCalculator.Stub(x => x.CalculateHandRank(bestOpponentHand)).Return(bestOpponentHandRank);
 
 			myHandRank.Stub(x => x.Operator_LessThan(bestOpponentHandRank)).Return(true);
 
@@ -173,12 +173,12 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			_instance.Stub(x => x.SimulateOpponentHandsAndReturnBestHand(clonedDeck, clonedBoardHand, numOpponents)).Return(bestOpponentHand);
 
 			var myHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
-			combinedMyAndBoardHand.Stub(x => x.Rank).Return(myHandRank);
+			_handRankCalculator.Stub(x => x.CalculateHandRank(combinedMyAndBoardHand)).Return(myHandRank);
 
 			myHandRank.Stub(x => x.PokerHand).Return(pokerHand);
 
 			var bestOpponentHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
-			bestOpponentHand.Stub(x => x.Rank).Return(bestOpponentHandRank);
+			_handRankCalculator.Stub(x => x.CalculateHandRank(bestOpponentHand)).Return(bestOpponentHandRank);
 
 			myHandRank.Stub(x => x.Operator_LessThan(bestOpponentHandRank)).Return(false);
 			myHandRank.Stub(x => x.Operator_GreaterThan(bestOpponentHandRank)).Return(true);
@@ -225,12 +225,12 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			_instance.Stub(x => x.SimulateOpponentHandsAndReturnBestHand(clonedDeck, clonedBoardHand, numOpponents)).Return(bestOpponentHand);
 
 			var myHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
-			combinedMyAndBoardHand.Stub(x => x.Rank).Return(myHandRank);
+			_handRankCalculator.Stub(x => x.CalculateHandRank(combinedMyAndBoardHand)).Return(myHandRank);
 
 			myHandRank.Stub(x => x.PokerHand).Return(pokerHand);
 
 			var bestOpponentHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
-			bestOpponentHand.Stub(x => x.Rank).Return(bestOpponentHandRank);
+			_handRankCalculator.Stub(x => x.CalculateHandRank(bestOpponentHand)).Return(bestOpponentHandRank);
 
 			myHandRank.Stub(x => x.Operator_LessThan(bestOpponentHandRank)).Return(false);
 			myHandRank.Stub(x => x.Operator_GreaterThan(bestOpponentHandRank)).Return(false);
@@ -277,12 +277,12 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			_instance.Stub(x => x.SimulateOpponentHandsAndReturnBestHand(clonedDeck1, clonedBoardHand1, numOpponents)).Return(bestOpponentHand1);
 
 			var myHandRank1 = MockRepository.GenerateStrictMock<HandRank>(null, null);
-			combinedMyAndBoardHand1.Stub(x => x.Rank).Return(myHandRank1);
+			_handRankCalculator.Stub(x => x.CalculateHandRank(combinedMyAndBoardHand1)).Return(myHandRank1);
 
 			myHandRank1.Stub(x => x.PokerHand).Return(PokerHand.ThreeOfAKind);
 
 			var bestOpponentHandRank1 = MockRepository.GenerateStrictMock<HandRank>(null, null);
-			bestOpponentHand1.Stub(x => x.Rank).Return(bestOpponentHandRank1);
+			_handRankCalculator.Stub(x => x.CalculateHandRank(bestOpponentHand1)).Return(bestOpponentHandRank1);
 
 			myHandRank1.Stub(x => x.Operator_LessThan(bestOpponentHandRank1)).Return(false);
 			myHandRank1.Stub(x => x.Operator_GreaterThan(bestOpponentHandRank1)).Return(true);
@@ -307,12 +307,12 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			_instance.Stub(x => x.SimulateOpponentHandsAndReturnBestHand(clonedDeck2, clonedBoardHand2, numOpponents)).Return(bestOpponentHand2);
 
 			var myHandRank2 = MockRepository.GenerateStrictMock<HandRank>(null, null);
-			combinedMyAndBoardHand2.Stub(x => x.Rank).Return(myHandRank2);
+			_handRankCalculator.Stub(x => x.CalculateHandRank(combinedMyAndBoardHand2)).Return(myHandRank2);
 
 			myHandRank2.Stub(x => x.PokerHand).Return(PokerHand.StraightFlush);
 
 			var bestOpponentHandRank2 = MockRepository.GenerateStrictMock<HandRank>(null, null);
-			bestOpponentHand2.Stub(x => x.Rank).Return(bestOpponentHandRank2);
+			_handRankCalculator.Stub(x => x.CalculateHandRank(bestOpponentHand2)).Return(bestOpponentHandRank2);
 
 			myHandRank2.Stub(x => x.Operator_LessThan(bestOpponentHandRank2)).Return(true);
 
@@ -500,13 +500,13 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			var opponentHand3 = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 
 			var opponentHand1Rank = MockRepository.GeneratePartialMock<HandRank>(PokerHand.ThreeOfAKind, null);
-			opponentHand1.Stub(x => x.Rank).Return(opponentHand1Rank);
+			_handRankCalculator.Stub(x => x.CalculateHandRank(opponentHand1)).Return(opponentHand1Rank);
 
 			var opponentHand2Rank = MockRepository.GeneratePartialMock<HandRank>(PokerHand.Straight, null);
-			opponentHand2.Stub(x => x.Rank).Return(opponentHand2Rank);
+			_handRankCalculator.Stub(x => x.CalculateHandRank(opponentHand2)).Return(opponentHand2Rank);
 
 			var opponentHand3Rank = MockRepository.GeneratePartialMock<HandRank>(PokerHand.HighCard, null);
-			opponentHand3.Stub(x => x.Rank).Return(opponentHand3Rank);
+			_handRankCalculator.Stub(x => x.CalculateHandRank(opponentHand3)).Return(opponentHand3Rank);
 
 			opponentHand1Rank.Stub(x => x.CompareTo(opponentHand2Rank)).Return(-1);
 			opponentHand2Rank.Stub(x => x.CompareTo(opponentHand3Rank)).Return(1);

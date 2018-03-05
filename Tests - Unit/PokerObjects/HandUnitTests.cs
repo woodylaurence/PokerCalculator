@@ -31,58 +31,6 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			WindsorContainer.Register(Component.For<IHandRankCalculator>().Instance(_handRankCalculator));
 		}
 
-		#region Properties and Fields
-
-		[Test]
-		public void Rank_get_WHERE_backing_field_has_already_been_set_SHOULD_return_value_of_backing_field()
-		{
-			//arrange
-			var handRank = new HandRank(PokerHand.HighCard);
-			_instance.Stub(x => x._rank).Return(handRank);
-
-			//act
-			var actual = _instance.Rank;
-
-			//assert
-			Assert.That(actual, Is.EqualTo(handRank));
-			_handRankCalculator.AssertWasNotCalled(x => x.CalculateHandRank(_instance));
-		}
-
-		[Test]
-		public void Rank_get_WHERE_backing_field_is_null_SHOULD_return_calculate_value_of_rank_set_backing_field_and_return_rank()
-		{
-			//arrange
-			_instance.Stub(x => x._rank).Return(null).Repeat.Once();
-
-			var handRank = new HandRank(PokerHand.ThreeOfAKind);
-			_handRankCalculator.Stub(x => x.CalculateHandRank(_instance)).Return(handRank);
-
-			_instance.Expect(x => x._rank = handRank);
-
-			//act
-			var actual = _instance.Rank;
-
-			//assert
-			_instance.VerifyAllExpectations();
-			Assert.That(actual, Is.EqualTo(handRank));
-		}
-
-		[Test]
-		public void Rank_set_SHOULD_set_value_of_backing_field()
-		{
-			//arrange
-			var handRank = new HandRank(PokerHand.FullHouse);
-			_instance.Expect(x => x._rank = handRank);
-
-			//act
-			_instance.Rank = handRank;
-
-			//assert
-			_instance.VerifyAllExpectations();
-		}
-
-		#endregion
-
 		#region Constructor
 
 		[Test]
@@ -298,8 +246,6 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			var handCards = new List<Card> { existingCard };
 			_instance.Stub(x => x.Cards).Return(handCards);
 
-			_instance.Expect(x => x.Rank = null);
-
 			//act
 			_instance.AddCards(new List<Card>());
 
@@ -323,8 +269,6 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			var existingcard2 = new Card(CardValue.Ace, CardSuit.Clubs);
 			var handCards = new List<Card> { existingcard1, existingcard2 };
 			_instance.Stub(x => x.Cards).Return(handCards);
-
-			_instance.Expect(x => x.Rank = null);
 
 			//act
 			_instance.AddCards(cardsToAdd);
@@ -351,8 +295,6 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			var existingcard2 = new Card(CardValue.Ace, CardSuit.Clubs);
 			var handCards = new List<Card> { existingcard1, existingcard2 };
 			_instance.Stub(x => x.Cards).Return(handCards);
-
-			_instance.Expect(x => x.Rank = null);
 
 			//act
 			_instance.AddCards(cardsToAdd);
