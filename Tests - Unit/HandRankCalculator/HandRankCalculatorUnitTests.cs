@@ -22,7 +22,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 			var cardComparer = MockRepository.GenerateStrictMock<IEqualityComparer<Card>>();
 			_instance = MockRepository.GeneratePartialMock<Domain.HandRankCalculator.HandRankCalculator>();
 
-			_hand = MockRepository.GenerateStrictMock<Hand>(new List<Card>(), cardComparer, _instance);
+			_hand = MockRepository.GenerateStrictMock<Hand>(new List<Card>(), cardComparer);
 		}
 
 		#region CalculateHandRank

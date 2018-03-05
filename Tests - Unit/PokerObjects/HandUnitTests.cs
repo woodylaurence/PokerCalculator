@@ -15,7 +15,6 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 	{
 		private Hand _instance;
 		private IEqualityComparer<Card> _cardComparer;
-		private IHandRankCalculator _handRankCalculator;
 
 		[SetUp]
 		protected override void Setup()
@@ -23,12 +22,10 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			base.Setup();
 
 			_cardComparer = MockRepository.GenerateStrictMock<IEqualityComparer<Card>>();
-			_handRankCalculator = MockRepository.GenerateStrictMock<IHandRankCalculator>();
 
-			_instance = MockRepository.GeneratePartialMock<Hand>(new List<Card>(), _cardComparer, _handRankCalculator);
+			_instance = MockRepository.GeneratePartialMock<Hand>(new List<Card>(), _cardComparer);
 
 			WindsorContainer.Register(Component.For<IEqualityComparer<Card>>().Instance(_cardComparer));
-			WindsorContainer.Register(Component.For<IHandRankCalculator>().Instance(_handRankCalculator));
 		}
 
 		#region Constructor
@@ -75,7 +72,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			};
 
 			//act + assert
-			var actualException = Assert.Throws<ArgumentException>(() => new Hand(cards, _cardComparer, _handRankCalculator));
+			var actualException = Assert.Throws<ArgumentException>(() => new Hand(cards, _cardComparer));
 			Assert.That(actualException.Message, Is.EqualTo("A Hand cannot contain more than seven cards\r\nParameter name: cards"));
 			Assert.That(actualException.ParamName, Is.EqualTo("cards"));
 		}
@@ -99,7 +96,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			_cardComparer.Stub(x => x.GetHashCode(card3)).Return(3);
 
 			//act + assert
-			var actualException = Assert.Throws<ArgumentException>(() => new Hand(cards, _cardComparer, _handRankCalculator));
+			var actualException = Assert.Throws<ArgumentException>(() => new Hand(cards, _cardComparer));
 			Assert.That(actualException.Message, Is.EqualTo("A Hand cannot contain duplicate cards\r\nParameter name: cards"));
 			Assert.That(actualException.ParamName, Is.EqualTo("cards"));
 		}
@@ -119,7 +116,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			_cardComparer.Stub(x => x.GetHashCode(card3)).Return(3);
 
 			//act
-			var actual = new Hand(cards, _cardComparer, _handRankCalculator);
+			var actual = new Hand(cards, _cardComparer);
 
 			//assert
 			Assert.That(actual.Cards, Is.Not.SameAs(cards));

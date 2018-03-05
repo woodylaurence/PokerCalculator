@@ -1,5 +1,4 @@
 ﻿using Microsoft.Practices.ServiceLocation;
-using PokerCalculator.Domain.HandRankCalculator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +9,6 @@ namespace PokerCalculator.Domain.PokerObjects
 	{
 		#region Properties and Fields
 
-		private readonly IHandRankCalculator _handRankCalculator;
 		private readonly IEqualityComparer<Card> _cardComparer;
 
 		public virtual List<Card> Cards { get; }
@@ -23,11 +21,10 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// 
 		/// </summary>
 		/// <param name="cards"></param>
-		public Hand(List<Card> cards) : this(cards, ServiceLocator.Current.GetInstance<IEqualityComparer<Card>>(), ServiceLocator.Current.GetInstance<IHandRankCalculator>()) { }
-		public Hand(List<Card> cards, IEqualityComparer<Card> cardComparer, IHandRankCalculator handRankCalculator)
+		public Hand(List<Card> cards) : this(cards, ServiceLocator.Current.GetInstance<IEqualityComparer<Card>>()) { }
+		public Hand(List<Card> cards, IEqualityComparer<Card> cardComparer)
 		{
 			_cardComparer = cardComparer;
-			_handRankCalculator = handRankCalculator;
 
 			if (cards.Count > 7) throw new ArgumentException("A Hand cannot contain more than seven cards", nameof(cards));
 			if (cards.Distinct(_cardComparer).Count() != cards.Count) throw new ArgumentException("A Hand cannot contain duplicate cards", nameof(cards));
@@ -77,7 +74,7 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// <returns></returns>
 		protected internal virtual Hand Clone()
 		{
-			return new Hand(Cards, _cardComparer, _handRankCalculator);
+			return new Hand(Cards, _cardComparer);
 		}
 
 		/// <summary>
