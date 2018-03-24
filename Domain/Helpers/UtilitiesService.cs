@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -41,12 +42,21 @@ namespace PokerCalculator.Domain.Helpers
 
 		#region GetTicksAsStringWithUnit
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="ticks"></param>
+		/// <returns></returns>
 		public string GetTicksAsStringWithUnit(double ticks)
 		{
-			if (ticks >= 10 * TimeSpan.TicksPerSecond) return $"{ticks / TimeSpan.TicksPerSecond:N1}s";
-			if (ticks >= TimeSpan.TicksPerMillisecond) return $"{ticks / TimeSpan.TicksPerMillisecond:N1}ms";
-			if (ticks * 1000 >= TimeSpan.TicksPerMillisecond) return $"{ticks * 1000 / TimeSpan.TicksPerMillisecond:N1}μs";
-			return $"{ticks * 1000000 / TimeSpan.TicksPerMillisecond:N1}ns";
+			var microseconds = 1000000 * ticks / Stopwatch.Frequency;
+			switch (microseconds)
+			{
+				case double ms when ms >= 10000000: return $"{microseconds / 1000000.0:N1}s";
+				case double ms when ms >= 1000: return $"{microseconds / 1000.0:N1}ms";
+				case double ms when ms >= 1: return $"{microseconds:N1}μs";
+				default: return $"{microseconds * 1000:N1}ns"; ;
+			}
 		}
 
 		#endregion
