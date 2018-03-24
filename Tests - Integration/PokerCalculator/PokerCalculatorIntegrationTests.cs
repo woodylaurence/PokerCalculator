@@ -55,21 +55,36 @@ namespace PokerCalculator.Tests.Integration.PokerCalculator
 			//act
 			var actual = _instance.CalculatePokerOdds(_deck, myHand, boardHand, 3, 100000);
 
-			//output
-			Assert.That(actual.WinPercentage, Is.InRange(0.2348, 0.2372));
-			Assert.That(actual.DrawPercentage, Is.InRange(0.0297, 0.0323));
-			Assert.That(actual.LossPercentage, Is.InRange(0.7327, 0.7353));
+			//assert
+			Assert.That(actual.WinPercentageWithError.Error, Is.LessThanOrEqualTo(0.0025));
+			Assert.That(actual.WinPercentageWithError.Percentage, Is.EqualTo(0.2360).Within(2 * actual.WinPercentageWithError.Error));
 
-			Assert.That(actual.PokerHandPercentages[PokerHand.RoyalFlush], Is.InRange(0, 0.000035));
-			Assert.That(actual.PokerHandPercentages[PokerHand.StraightFlush], Is.InRange(0, 0.00032));
-			Assert.That(actual.PokerHandPercentages[PokerHand.FourOfAKind], Is.InRange(0.00165, 0.00175));
-			Assert.That(actual.PokerHandPercentages[PokerHand.FullHouse], Is.InRange(0.0255, 0.0265));
-			Assert.That(actual.PokerHandPercentages[PokerHand.Flush], Is.InRange(0.0297, 0.0307));
-			Assert.That(actual.PokerHandPercentages[PokerHand.Straight], Is.InRange(0.0437, 0.0477));
-			Assert.That(actual.PokerHandPercentages[PokerHand.ThreeOfAKind], Is.InRange(0.0478, 0.0488));
-			Assert.That(actual.PokerHandPercentages[PokerHand.TwoPair], Is.InRange(0.2320, 0.238));
-			Assert.That(actual.PokerHandPercentages[PokerHand.Pair], Is.InRange(0.4345, 0.4415));
-			Assert.That(actual.PokerHandPercentages[PokerHand.HighCard], Is.InRange(0.1734, 0.1746));
+			Assert.That(actual.DrawPercentageWithError.Error, Is.LessThanOrEqualTo(0.0025));
+			Assert.That(actual.DrawPercentageWithError.Percentage, Is.EqualTo(0.0310).Within(2 * actual.DrawPercentageWithError.Error));
+
+			Assert.That(actual.LossPercentageWithError.Error, Is.LessThanOrEqualTo(0.0025));
+			Assert.That(actual.LossPercentageWithError.Percentage, Is.EqualTo(0.7340).Within(2 * actual.LossPercentageWithError.Error));
+
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.RoyalFlush].Error, Is.LessThanOrEqualTo(0.00004));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.RoyalFlush].Percentage, Is.EqualTo(0.000015).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.RoyalFlush].Error));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.StraightFlush].Error, Is.LessThanOrEqualTo(0.00015));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.StraightFlush].Percentage, Is.EqualTo(0.00015).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.StraightFlush].Error));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.FourOfAKind].Error, Is.LessThanOrEqualTo(0.0005));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.FourOfAKind].Percentage, Is.EqualTo(0.0016).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.FourOfAKind].Error));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.FullHouse].Error, Is.LessThanOrEqualTo(0.002));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.FullHouse].Percentage, Is.EqualTo(0.026).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.FullHouse].Error));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Flush].Error, Is.LessThanOrEqualTo(0.002));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Flush].Percentage, Is.EqualTo(0.0302).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.Flush].Error));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Straight].Error, Is.LessThanOrEqualTo(0.002));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Straight].Percentage, Is.EqualTo(0.0457).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.Straight].Error));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.ThreeOfAKind].Error, Is.LessThanOrEqualTo(0.003));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.ThreeOfAKind].Percentage, Is.EqualTo(0.0483).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.ThreeOfAKind].Error));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.TwoPair].Error, Is.LessThanOrEqualTo(0.005));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.TwoPair].Percentage, Is.EqualTo(0.235).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.TwoPair].Error));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Pair].Error, Is.LessThanOrEqualTo(0.005));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Pair].Percentage, Is.EqualTo(0.438).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.Pair].Error));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.HighCard].Error, Is.LessThanOrEqualTo(0.005));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.HighCard].Percentage, Is.EqualTo(0.174).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.HighCard].Error));
 		}
 
 		[Test]
@@ -85,21 +100,36 @@ namespace PokerCalculator.Tests.Integration.PokerCalculator
 			//act
 			var actual = _instance.CalculatePokerOdds(_deck, myHand, boardHand, 3, 100000);
 
-			//output
-			Assert.That(actual.WinPercentage, Is.InRange(0.1735, 0.1785));
-			Assert.That(actual.DrawPercentage, Is.InRange(0.029, 0.033));
-			Assert.That(actual.LossPercentage, Is.InRange(0.785, 0.8));
+			//assert
+			Assert.That(actual.WinPercentageWithError.Error, Is.LessThanOrEqualTo(0.003));
+			Assert.That(actual.WinPercentageWithError.Percentage, Is.EqualTo(0.176).Within(2 * actual.WinPercentageWithError.Error));
 
-			Assert.That(actual.PokerHandPercentages[PokerHand.RoyalFlush], Is.InRange(0, 0.00003));
-			Assert.That(actual.PokerHandPercentages[PokerHand.StraightFlush], Is.InRange(0, 0.0003));
-			Assert.That(actual.PokerHandPercentages[PokerHand.FourOfAKind], Is.InRange(0, 0.002));
-			Assert.That(actual.PokerHandPercentages[PokerHand.FullHouse], Is.InRange(0.019, 0.025));
-			Assert.That(actual.PokerHandPercentages[PokerHand.Flush], Is.InRange(0.017, 0.02));
-			Assert.That(actual.PokerHandPercentages[PokerHand.Straight], Is.InRange(0.0875, 0.0975));
-			Assert.That(actual.PokerHandPercentages[PokerHand.ThreeOfAKind], Is.InRange(0.04, 0.046));
-			Assert.That(actual.PokerHandPercentages[PokerHand.TwoPair], Is.InRange(0.22, 0.225));
-			Assert.That(actual.PokerHandPercentages[PokerHand.Pair], Is.InRange(0.423, 0.428));
-			Assert.That(actual.PokerHandPercentages[PokerHand.HighCard], Is.InRange(0.169, 0.173));
+			Assert.That(actual.DrawPercentageWithError.Error, Is.LessThanOrEqualTo(0.003));
+			Assert.That(actual.DrawPercentageWithError.Percentage, Is.EqualTo(0.031).Within(2 * actual.DrawPercentageWithError.Error));
+
+			Assert.That(actual.LossPercentageWithError.Error, Is.LessThanOrEqualTo(0.0035));
+			Assert.That(actual.LossPercentageWithError.Percentage, Is.EqualTo(0.7925).Within(2 * actual.LossPercentageWithError.Error));
+
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.RoyalFlush].Error, Is.LessThanOrEqualTo(0.00004));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.RoyalFlush].Percentage, Is.EqualTo(0.000015).Within(0.00008));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.StraightFlush].Error, Is.LessThanOrEqualTo(0.00015));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.StraightFlush].Percentage, Is.EqualTo(0.00015).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.StraightFlush].Error));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.FourOfAKind].Error, Is.LessThanOrEqualTo(0.0005));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.FourOfAKind].Percentage, Is.EqualTo(0.0015).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.FourOfAKind].Error));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.FullHouse].Error, Is.LessThanOrEqualTo(0.002));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.FullHouse].Percentage, Is.EqualTo(0.022).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.FullHouse].Error));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Flush].Error, Is.LessThanOrEqualTo(0.002));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Flush].Percentage, Is.EqualTo(0.0185).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.Flush].Error));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Straight].Error, Is.LessThanOrEqualTo(0.002));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Straight].Percentage, Is.EqualTo(0.0925).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.Straight].Error));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.ThreeOfAKind].Error, Is.LessThanOrEqualTo(0.003));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.ThreeOfAKind].Percentage, Is.EqualTo(0.043).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.ThreeOfAKind].Error));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.TwoPair].Error, Is.LessThanOrEqualTo(0.005));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.TwoPair].Percentage, Is.EqualTo(0.2225).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.TwoPair].Error));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Pair].Error, Is.LessThanOrEqualTo(0.005));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Pair].Percentage, Is.EqualTo(0.4255).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.Pair].Error));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.HighCard].Error, Is.LessThanOrEqualTo(0.005));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.HighCard].Percentage, Is.EqualTo(0.172).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.HighCard].Error));
 		}
 
 		[Test]
@@ -120,21 +150,36 @@ namespace PokerCalculator.Tests.Integration.PokerCalculator
 			//act
 			var actual = _instance.CalculatePokerOdds(_deck, myHand, boardHand, 2, 100000);
 
-			//output
-			Assert.That(actual.WinPercentage, Is.InRange(0.385, 0.395));
-			Assert.That(actual.DrawPercentage, Is.InRange(0.0010, 0.0015));
-			Assert.That(actual.LossPercentage, Is.InRange(0.607, 0.611));
+			//assert
+			Assert.That(actual.WinPercentageWithError.Error, Is.LessThanOrEqualTo(0.006));
+			Assert.That(actual.WinPercentageWithError.Percentage, Is.EqualTo(0.39).Within(2 * actual.WinPercentageWithError.Error));
 
-			Assert.That(actual.PokerHandPercentages[PokerHand.RoyalFlush], Is.EqualTo(0));
-			Assert.That(actual.PokerHandPercentages[PokerHand.StraightFlush], Is.EqualTo(0));
-			Assert.That(actual.PokerHandPercentages[PokerHand.FourOfAKind], Is.InRange(0.0009, 0.0013));
-			Assert.That(actual.PokerHandPercentages[PokerHand.FullHouse], Is.InRange(0.022, 0.026));
-			Assert.That(actual.PokerHandPercentages[PokerHand.Flush], Is.EqualTo(0));
-			Assert.That(actual.PokerHandPercentages[PokerHand.Straight], Is.EqualTo(0));
-			Assert.That(actual.PokerHandPercentages[PokerHand.ThreeOfAKind], Is.InRange(0.065, 0.067));
-			Assert.That(actual.PokerHandPercentages[PokerHand.TwoPair], Is.InRange(0.3756, 0.3762));
-			Assert.That(actual.PokerHandPercentages[PokerHand.Pair], Is.InRange(0.5305, 0.5355));
-			Assert.That(actual.PokerHandPercentages[PokerHand.HighCard], Is.EqualTo(0));
+			Assert.That(actual.DrawPercentageWithError.Error, Is.LessThanOrEqualTo(0.001));
+			Assert.That(actual.DrawPercentageWithError.Percentage, Is.EqualTo(0.001).Within(2 * actual.DrawPercentageWithError.Error));
+
+			Assert.That(actual.LossPercentageWithError.Error, Is.LessThanOrEqualTo(0.006));
+			Assert.That(actual.LossPercentageWithError.Percentage, Is.EqualTo(0.608).Within(2 * actual.LossPercentageWithError.Error));
+
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.RoyalFlush].Error, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.RoyalFlush].Percentage, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.StraightFlush].Error, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.StraightFlush].Percentage, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.FourOfAKind].Error, Is.LessThanOrEqualTo(0.0005));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.FourOfAKind].Percentage, Is.EqualTo(0.001).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.FourOfAKind].Error));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.FullHouse].Error, Is.LessThanOrEqualTo(0.002));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.FullHouse].Percentage, Is.EqualTo(0.024).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.FullHouse].Error));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Flush].Error, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Flush].Percentage, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Straight].Error, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Straight].Percentage, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.ThreeOfAKind].Error, Is.LessThanOrEqualTo(0.003));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.ThreeOfAKind].Percentage, Is.EqualTo(0.066).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.ThreeOfAKind].Error));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.TwoPair].Error, Is.LessThanOrEqualTo(0.005));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.TwoPair].Percentage, Is.EqualTo(0.375).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.TwoPair].Error));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Pair].Error, Is.LessThanOrEqualTo(0.005));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Pair].Percentage, Is.EqualTo(0.5325).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.Pair].Error));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.HighCard].Error, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.HighCard].Percentage, Is.EqualTo(0));
 		}
 
 		[Test]
@@ -156,21 +201,36 @@ namespace PokerCalculator.Tests.Integration.PokerCalculator
 			//act
 			var actual = _instance.CalculatePokerOdds(_deck, myHand, boardHand, 5, 100000);
 
-			//output
-			Assert.That(actual.WinPercentage, Is.InRange(0.124, 0.128));
-			Assert.That(actual.DrawPercentage, Is.InRange(0.0037, 0.0044));
-			Assert.That(actual.LossPercentage, Is.InRange(0.867, 0.872));
+			//assert
+			Assert.That(actual.WinPercentageWithError.Error, Is.LessThanOrEqualTo(0.005));
+			Assert.That(actual.WinPercentageWithError.Percentage, Is.EqualTo(0.127).Within(2 * actual.WinPercentageWithError.Error));
 
-			Assert.That(actual.PokerHandPercentages[PokerHand.RoyalFlush], Is.EqualTo(0));
-			Assert.That(actual.PokerHandPercentages[PokerHand.StraightFlush], Is.EqualTo(0));
-			Assert.That(actual.PokerHandPercentages[PokerHand.FourOfAKind], Is.EqualTo(0));
-			Assert.That(actual.PokerHandPercentages[PokerHand.FullHouse], Is.EqualTo(0));
-			Assert.That(actual.PokerHandPercentages[PokerHand.Flush], Is.EqualTo(0));
-			Assert.That(actual.PokerHandPercentages[PokerHand.Straight], Is.EqualTo(0));
-			Assert.That(actual.PokerHandPercentages[PokerHand.ThreeOfAKind], Is.InRange(0.0423, 0.0433));
-			Assert.That(actual.PokerHandPercentages[PokerHand.TwoPair], Is.InRange(0.261, 0.265));
-			Assert.That(actual.PokerHandPercentages[PokerHand.Pair], Is.InRange(0.692, 0.696));
-			Assert.That(actual.PokerHandPercentages[PokerHand.HighCard], Is.EqualTo(0));
+			Assert.That(actual.DrawPercentageWithError.Error, Is.LessThanOrEqualTo(0.001));
+			Assert.That(actual.DrawPercentageWithError.Percentage, Is.EqualTo(0.004).Within(2 * actual.DrawPercentageWithError.Error));
+
+			Assert.That(actual.LossPercentageWithError.Error, Is.LessThanOrEqualTo(0.005));
+			Assert.That(actual.LossPercentageWithError.Percentage, Is.EqualTo(0.869).Within(2 * actual.LossPercentageWithError.Error));
+
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.RoyalFlush].Error, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.RoyalFlush].Percentage, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.StraightFlush].Error, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.StraightFlush].Percentage, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.FourOfAKind].Error, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.FourOfAKind].Percentage, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.FullHouse].Error, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.FullHouse].Percentage, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Flush].Error, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Flush].Percentage, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Straight].Error, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Straight].Percentage, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.ThreeOfAKind].Error, Is.LessThanOrEqualTo(0.003));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.ThreeOfAKind].Percentage, Is.EqualTo(0.0429).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.ThreeOfAKind].Error));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.TwoPair].Error, Is.LessThanOrEqualTo(0.005));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.TwoPair].Percentage, Is.EqualTo(0.266).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.TwoPair].Error));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Pair].Error, Is.LessThanOrEqualTo(0.005));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Pair].Percentage, Is.EqualTo(0.691).Within(2 * actual.PokerHandPercentagesWithErrors[PokerHand.Pair].Error));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.HighCard].Error, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.HighCard].Percentage, Is.EqualTo(0));
 		}
 
 		[Test]
@@ -193,21 +253,36 @@ namespace PokerCalculator.Tests.Integration.PokerCalculator
 			//act
 			var actual = _instance.CalculatePokerOdds(_deck, myHand, boardHand, 3, 100000);
 
-			//output
-			Assert.That(actual.WinPercentage, Is.InRange(0.562, 0.569));
-			Assert.That(actual.DrawPercentage, Is.InRange(0.298, 0.306));
-			Assert.That(actual.LossPercentage, Is.InRange(0.130, 0.137));
+			//assert
+			Assert.That(actual.WinPercentageWithError.Error, Is.LessThanOrEqualTo(0.005));
+			Assert.That(actual.WinPercentageWithError.Percentage, Is.EqualTo(0.565).Within(2 * actual.WinPercentageWithError.Error));
 
-			Assert.That(actual.PokerHandPercentages[PokerHand.RoyalFlush], Is.EqualTo(0));
-			Assert.That(actual.PokerHandPercentages[PokerHand.StraightFlush], Is.EqualTo(0));
-			Assert.That(actual.PokerHandPercentages[PokerHand.FourOfAKind], Is.EqualTo(0));
-			Assert.That(actual.PokerHandPercentages[PokerHand.FullHouse], Is.EqualTo(0));
-			Assert.That(actual.PokerHandPercentages[PokerHand.Flush], Is.EqualTo(0));
-			Assert.That(actual.PokerHandPercentages[PokerHand.Straight], Is.EqualTo(1));
-			Assert.That(actual.PokerHandPercentages[PokerHand.ThreeOfAKind], Is.EqualTo(0));
-			Assert.That(actual.PokerHandPercentages[PokerHand.TwoPair], Is.EqualTo(0));
-			Assert.That(actual.PokerHandPercentages[PokerHand.Pair], Is.EqualTo(0));
-			Assert.That(actual.PokerHandPercentages[PokerHand.HighCard], Is.EqualTo(0));
+			Assert.That(actual.DrawPercentageWithError.Error, Is.LessThanOrEqualTo(0.005));
+			Assert.That(actual.DrawPercentageWithError.Percentage, Is.EqualTo(0.303).Within(2 * actual.DrawPercentageWithError.Error));
+
+			Assert.That(actual.LossPercentageWithError.Error, Is.LessThanOrEqualTo(0.003));
+			Assert.That(actual.LossPercentageWithError.Percentage, Is.EqualTo(0.133).Within(2 * actual.LossPercentageWithError.Error));
+
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.RoyalFlush].Error, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.RoyalFlush].Percentage, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.StraightFlush].Error, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.StraightFlush].Percentage, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.FourOfAKind].Error, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.FourOfAKind].Percentage, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.FullHouse].Error, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.FullHouse].Percentage, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Flush].Error, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Flush].Percentage, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Straight].Error, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Straight].Percentage, Is.EqualTo(1));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.ThreeOfAKind].Error, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.ThreeOfAKind].Percentage, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.TwoPair].Error, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.TwoPair].Percentage, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Pair].Error, Is.LessThanOrEqualTo(0.005));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.Pair].Percentage, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.HighCard].Error, Is.EqualTo(0));
+			Assert.That(actual.PokerHandPercentagesWithErrors[PokerHand.HighCard].Percentage, Is.EqualTo(0));
 		}
 	}
 }

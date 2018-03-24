@@ -3,10 +3,10 @@ using Castle.Windsor;
 using NUnit.Framework;
 using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.Helpers;
+using PokerCalculator.Domain.PokerCalculator;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
-using PokerCalculator.Tests.Shared.TestData;
 using Rhino.Mocks;
 using System.Collections.Generic;
 using Card = PokerCalculator.Domain.PokerObjects.Card;
@@ -33,6 +33,14 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 
 			_instance = MockRepository.GeneratePartialMock<Domain.PokerCalculator.PokerCalculator>(_handRankCalculator);
 			_deck = MockRepository.GenerateStrictMock<Deck>(_randomNumberGenerator, _utilitiesService);
+
+			PokerOdds.MethodObject = MockRepository.GenerateStrictMock<PokerOdds>(_utilitiesService);
+		}
+
+		[TearDown]
+		protected void TearDown()
+		{
+			PokerOdds.MethodObject = new PokerOdds(_utilitiesService);
 		}
 
 		protected override void RegisterComponentsToWindsor(IWindsorContainer windsorContainer)
@@ -49,12 +57,60 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 		#region CalculatePokerOdds
 
 		[Test]
-		public void CalculatePokerOdds_WHERE_single_iteration_and_zero_opponents_SHOULD_still_calculate_odds()
+		public void CalculatePokerOdds_WHERE_multiple_iterations_SHOULD_call_ExectutePokerCalculateIteration_multiple_times()
 		{
 			//arrange
-			const int numOpponents = 0;
+			const int numOpponents = 156;
 			var myHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 			var boardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
+
+			var pokerOdds1 = MockRepository.GenerateStub<PokerOdds>(_utilitiesService);
+			_instance.Stub(x => x.InitializePokerOdds()).Return(pokerOdds1).Repeat.Once();
+			_instance.Expect(x => x.ExecuteCalculatePokerOddsForIteration(_deck, myHand, boardHand, numOpponents, pokerOdds1)).Repeat.Times(5);
+
+			var pokerOdds2 = MockRepository.GenerateStub<PokerOdds>(_utilitiesService);
+			_instance.Stub(x => x.InitializePokerOdds()).Return(pokerOdds2).Repeat.Once();
+			_instance.Expect(x => x.ExecuteCalculatePokerOddsForIteration(_deck, myHand, boardHand, numOpponents, pokerOdds2)).Repeat.Times(5);
+
+			var pokerOdds3 = MockRepository.GenerateStub<PokerOdds>(_utilitiesService);
+			_instance.Stub(x => x.InitializePokerOdds()).Return(pokerOdds3).Repeat.Once();
+			_instance.Expect(x => x.ExecuteCalculatePokerOddsForIteration(_deck, myHand, boardHand, numOpponents, pokerOdds3)).Repeat.Times(5);
+
+			var pokerOdds4 = MockRepository.GenerateStub<PokerOdds>(_utilitiesService);
+			_instance.Stub(x => x.InitializePokerOdds()).Return(pokerOdds4).Repeat.Once();
+			_instance.Expect(x => x.ExecuteCalculatePokerOddsForIteration(_deck, myHand, boardHand, numOpponents, pokerOdds4)).Repeat.Times(5);
+
+			var pokerOdds5 = MockRepository.GenerateStub<PokerOdds>(_utilitiesService);
+			_instance.Stub(x => x.InitializePokerOdds()).Return(pokerOdds5).Repeat.Once();
+			_instance.Expect(x => x.ExecuteCalculatePokerOddsForIteration(_deck, myHand, boardHand, numOpponents, pokerOdds5)).Repeat.Times(5);
+
+			var aggregatedPokerOdds = MockRepository.GenerateStrictMock<PokerOdds>(_utilitiesService);
+			PokerOdds.MethodObject.Stub(x =>
+					x.AggregatePokerOddsSlave(Arg<List<PokerOdds>>.Matches(y => y.Count == 5 &&
+																				y.Contains(pokerOdds1) &&
+																				y.Contains(pokerOdds2) &&
+																				y.Contains(pokerOdds3) &&
+																				y.Contains(pokerOdds4) &&
+																				y.Contains(pokerOdds5))))
+				.Return(aggregatedPokerOdds);
+
+			//act
+			var actual = _instance.CalculatePokerOdds(_deck, myHand, boardHand, numOpponents, 25);
+
+			//assert
+			_instance.VerifyAllExpectations();
+			Assert.That(actual, Is.EqualTo(aggregatedPokerOdds));
+		}
+
+		#region ExecuteCalculatePokerOddsForIteration
+
+		[Test]
+		public void ExecuteCalculatePokerOddsForIteration_WHERE_zero_opponents()
+		{
+			//arrange
+			var myHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
+			var boardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
+			var pokerOdds = MockRepository.GenerateStrictMock<PokerOdds>(_utilitiesService);
 
 			var clonedDeck = MockRepository.GenerateStrictMock<Deck>();
 			_deck.Stub(x => x.Clone()).Return(clonedDeck);
@@ -73,36 +129,42 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			var myHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
 			combinedMyAndBoardHand.Stub(x => x.Rank).Return(myHandRank);
 
-			myHandRank.Stub(x => x.PokerHand).Return(PokerHand.ThreeOfAKind);
-
-			_instance.Stub(x => x.SimulateOpponentHandsAndReturnBestHand(clonedDeck, clonedBoardHand, numOpponents)).Return(null);
+			_instance.Stub(x => x.SimulateOpponentHandsAndReturnBestHand(clonedDeck, clonedBoardHand, 0)).Return(null);
 
 			myHandRank.Stub(x => x.Operator_LessThan(null)).Return(false);
 			myHandRank.Stub(x => x.Operator_GreaterThan(null)).Return(true);
 
+			const int initialNumWins = 4;
+			pokerOdds.Stub(x => x.NumWins).Return(initialNumWins);
+			pokerOdds.Expect(x => x.NumWins = initialNumWins + 1);
+
+			const PokerHand myHandRankPokerHand = PokerHand.ThreeOfAKind;
+			myHandRank.Stub(x => x.PokerHand).Return(myHandRankPokerHand);
+
+			const int initialPokerHandValud = 54;
+			var pokerHandFrequencies = new Dictionary<PokerHand, int>
+			{
+				{ PokerHand.RoyalFlush, 0 },
+				{ myHandRankPokerHand, initialPokerHandValud }
+			};
+			pokerOdds.Stub(x => x.PokerHandFrequencies).Return(pokerHandFrequencies);
+
 			//act
-			var actual = _instance.CalculatePokerOdds(_deck, myHand, boardHand, numOpponents, 1);
+			_instance.ExecuteCalculatePokerOddsForIteration(_deck, myHand, boardHand, 0, pokerOdds);
 
 			//assert
-			_instance.VerifyAllExpectations();
-			Assert.That(actual.NumWins, Is.EqualTo(1));
-			Assert.That(actual.NumDraws, Is.EqualTo(0));
-			Assert.That(actual.NumLosses, Is.EqualTo(0));
-
-			foreach (var pokerHandFrequency in actual.PokerHandFrequencies)
-			{
-				var expectedFrequency = pokerHandFrequency.Key == PokerHand.ThreeOfAKind ? 1 : 0;
-				Assert.That(pokerHandFrequency.Value, Is.EqualTo(expectedFrequency));
-			}
+			pokerOdds.VerifyAllExpectations();
+			Assert.That(pokerHandFrequencies[PokerHand.RoyalFlush], Is.EqualTo(0));
+			Assert.That(pokerHandFrequencies[myHandRankPokerHand], Is.EqualTo(initialPokerHandValud + 1));
 		}
 
-		[Test, TestCaseSource(typeof(PokerHandComparisonTestCaseData), nameof(PokerHandComparisonTestCaseData.AllPokerHands))]
-		public void CalculatePokerOdds_WHERE_single_iteration_and_my_hand_loses_against_opponent_SHOULD_record_loss_in_odds(PokerHand pokerHand)
+		[Test]
+		public void ExecuteCalculatePokerOddsForIteration_WHERE_my_hand_loses_against_opponent_SHOULD_record_loss_in_odds()
 		{
 			//arrange
-			const int numOpponents = 2;
 			var myHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 			var boardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
+			var pokerOdds = MockRepository.GenerateStrictMock<PokerOdds>(_utilitiesService);
 
 			var clonedDeck = MockRepository.GenerateStrictMock<Deck>();
 			_deck.Stub(x => x.Clone()).Return(clonedDeck);
@@ -118,42 +180,49 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			var combinedMyAndBoardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 			clonedMyHand.Stub(x => x.Operator_plus(clonedBoardHand)).Return(combinedMyAndBoardHand);
 
-			var bestOpponentHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
-			_instance.Stub(x => x.SimulateOpponentHandsAndReturnBestHand(clonedDeck, clonedBoardHand, numOpponents)).Return(bestOpponentHand);
-
 			var myHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
 			combinedMyAndBoardHand.Stub(x => x.Rank).Return(myHandRank);
 
-			myHandRank.Stub(x => x.PokerHand).Return(pokerHand);
+			const int numOpponents = 3;
+			var bestOpponentHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
+			_instance.Stub(x => x.SimulateOpponentHandsAndReturnBestHand(clonedDeck, clonedBoardHand, numOpponents)).Return(bestOpponentHand);
 
 			var bestOpponentHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
 			bestOpponentHand.Stub(x => x.Rank).Return(bestOpponentHandRank);
 
 			myHandRank.Stub(x => x.Operator_LessThan(bestOpponentHandRank)).Return(true);
 
+			const int initialNumLosses = 545;
+			pokerOdds.Stub(x => x.NumLosses).Return(initialNumLosses);
+			pokerOdds.Expect(x => x.NumLosses = initialNumLosses + 1);
+
+			const PokerHand myHandRankPokerHand = PokerHand.FourOfAKind;
+			myHandRank.Stub(x => x.PokerHand).Return(myHandRankPokerHand);
+
+			const int initialPokerHandValud = 54;
+			var pokerHandFrequencies = new Dictionary<PokerHand, int>
+			{
+				{ PokerHand.Pair, 0 },
+				{ myHandRankPokerHand, initialPokerHandValud }
+			};
+			pokerOdds.Stub(x => x.PokerHandFrequencies).Return(pokerHandFrequencies);
+
 			//act
-			var actual = _instance.CalculatePokerOdds(_deck, myHand, boardHand, numOpponents, 1);
+			_instance.ExecuteCalculatePokerOddsForIteration(_deck, myHand, boardHand, numOpponents, pokerOdds);
 
 			//assert
-			_instance.VerifyAllExpectations();
-			Assert.That(actual.NumWins, Is.EqualTo(0));
-			Assert.That(actual.NumDraws, Is.EqualTo(0));
-			Assert.That(actual.NumLosses, Is.EqualTo(1));
-
-			foreach (var pokerHandFrequency in actual.PokerHandFrequencies)
-			{
-				var expectedFrequency = pokerHandFrequency.Key == pokerHand ? 1 : 0;
-				Assert.That(pokerHandFrequency.Value, Is.EqualTo(expectedFrequency));
-			}
+			pokerOdds.VerifyAllExpectations();
+			Assert.That(pokerHandFrequencies[PokerHand.Pair], Is.EqualTo(0));
+			Assert.That(pokerHandFrequencies[myHandRankPokerHand], Is.EqualTo(initialPokerHandValud + 1));
 		}
 
-		[Test, TestCaseSource(typeof(PokerHandComparisonTestCaseData), nameof(PokerHandComparisonTestCaseData.AllPokerHands))]
-		public void CalculatePokerOdds_WHERE_single_iteration_and_my_hand_wins_against_opponent_SHOULD_record_win_in_odds(PokerHand pokerHand)
+		[Test]
+		public void ExecuteCalculatePokerOddsForIteration_WHERE_my_hand_draws_against_opponent_SHOULD_record_draw_in_odds()
 		{
 			//arrange
-			const int numOpponents = 2;
 			var myHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 			var boardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
+			var pokerOdds = MockRepository.GenerateStrictMock<PokerOdds>(_utilitiesService);
 
 			var clonedDeck = MockRepository.GenerateStrictMock<Deck>();
 			_deck.Stub(x => x.Clone()).Return(clonedDeck);
@@ -169,65 +238,12 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			var combinedMyAndBoardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 			clonedMyHand.Stub(x => x.Operator_plus(clonedBoardHand)).Return(combinedMyAndBoardHand);
 
-			var bestOpponentHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
-			_instance.Stub(x => x.SimulateOpponentHandsAndReturnBestHand(clonedDeck, clonedBoardHand, numOpponents)).Return(bestOpponentHand);
-
 			var myHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
 			combinedMyAndBoardHand.Stub(x => x.Rank).Return(myHandRank);
 
-			myHandRank.Stub(x => x.PokerHand).Return(pokerHand);
-
-			var bestOpponentHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
-			bestOpponentHand.Stub(x => x.Rank).Return(bestOpponentHandRank);
-
-			myHandRank.Stub(x => x.Operator_LessThan(bestOpponentHandRank)).Return(false);
-			myHandRank.Stub(x => x.Operator_GreaterThan(bestOpponentHandRank)).Return(true);
-
-			//act
-			var actual = _instance.CalculatePokerOdds(_deck, myHand, boardHand, numOpponents, 1);
-
-			//assert
-			_instance.VerifyAllExpectations();
-			Assert.That(actual.NumWins, Is.EqualTo(1));
-			Assert.That(actual.NumDraws, Is.EqualTo(0));
-			Assert.That(actual.NumLosses, Is.EqualTo(0));
-
-			foreach (var pokerHandFrequency in actual.PokerHandFrequencies)
-			{
-				var expectedFrequency = pokerHandFrequency.Key == pokerHand ? 1 : 0;
-				Assert.That(pokerHandFrequency.Value, Is.EqualTo(expectedFrequency));
-			}
-		}
-
-		[Test, TestCaseSource(typeof(PokerHandComparisonTestCaseData), nameof(PokerHandComparisonTestCaseData.AllPokerHands))]
-		public void CalculatePokerOdds_WHERE_single_iteration_and_my_hand_draws_against_opponent_SHOULD_record_draw_in_odds(PokerHand pokerHand)
-		{
-			//arrange
-			const int numOpponents = 2;
-			var myHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
-			var boardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
-
-			var clonedDeck = MockRepository.GenerateStrictMock<Deck>();
-			_deck.Stub(x => x.Clone()).Return(clonedDeck);
-
-			var clonedMyHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
-			myHand.Stub(x => x.Clone()).Return(clonedMyHand);
-			_instance.Expect(x => x.DealRequiredNumberOfCardsToHand(clonedMyHand, clonedDeck, 2));
-
-			var clonedBoardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
-			boardHand.Stub(x => x.Clone()).Return(clonedBoardHand);
-			_instance.Expect(x => x.DealRequiredNumberOfCardsToHand(clonedBoardHand, clonedDeck, 5));
-
-			var combinedMyAndBoardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
-			clonedMyHand.Stub(x => x.Operator_plus(clonedBoardHand)).Return(combinedMyAndBoardHand);
-
+			const int numOpponents = 6;
 			var bestOpponentHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 			_instance.Stub(x => x.SimulateOpponentHandsAndReturnBestHand(clonedDeck, clonedBoardHand, numOpponents)).Return(bestOpponentHand);
-
-			var myHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
-			combinedMyAndBoardHand.Stub(x => x.Rank).Return(myHandRank);
-
-			myHandRank.Stub(x => x.PokerHand).Return(pokerHand);
 
 			var bestOpponentHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
 			bestOpponentHand.Stub(x => x.Rank).Return(bestOpponentHandRank);
@@ -235,104 +251,90 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			myHandRank.Stub(x => x.Operator_LessThan(bestOpponentHandRank)).Return(false);
 			myHandRank.Stub(x => x.Operator_GreaterThan(bestOpponentHandRank)).Return(false);
 
+			const int initialNumDraws = 41;
+			pokerOdds.Stub(x => x.NumDraws).Return(initialNumDraws);
+			pokerOdds.Expect(x => x.NumDraws = initialNumDraws + 1);
+
+			const PokerHand myHandRankPokerHand = PokerHand.Pair;
+			myHandRank.Stub(x => x.PokerHand).Return(myHandRankPokerHand);
+
+			const int initialPokerHandValud = 54;
+			var pokerHandFrequencies = new Dictionary<PokerHand, int>
+			{
+				{ PokerHand.ThreeOfAKind, 0 },
+				{ myHandRankPokerHand, initialPokerHandValud }
+			};
+			pokerOdds.Stub(x => x.PokerHandFrequencies).Return(pokerHandFrequencies);
+
 			//act
-			var actual = _instance.CalculatePokerOdds(_deck, myHand, boardHand, numOpponents, 1);
+			_instance.ExecuteCalculatePokerOddsForIteration(_deck, myHand, boardHand, numOpponents, pokerOdds);
 
 			//assert
-			_instance.VerifyAllExpectations();
-			Assert.That(actual.NumWins, Is.EqualTo(0));
-			Assert.That(actual.NumDraws, Is.EqualTo(1));
-			Assert.That(actual.NumLosses, Is.EqualTo(0));
-
-			foreach (var pokerHandFrequency in actual.PokerHandFrequencies)
-			{
-				var expectedFrequency = pokerHandFrequency.Key == pokerHand ? 1 : 0;
-				Assert.That(pokerHandFrequency.Value, Is.EqualTo(expectedFrequency));
-			}
+			pokerOdds.VerifyAllExpectations();
+			Assert.That(pokerHandFrequencies[PokerHand.ThreeOfAKind], Is.EqualTo(0));
+			Assert.That(pokerHandFrequencies[myHandRankPokerHand], Is.EqualTo(initialPokerHandValud + 1));
 		}
 
 		[Test]
-		public void CalculatePokerOdds_WHERE_multiple_iteration_SHOULD_record_results_in_odds()
+		public void ExecuteCalculatePokerOddsForIteration_WHERE_my_hand_wins_against_opponent_SHOULD_record_draw_in_odds()
 		{
 			//arrange
-			const int numOpponents = 2;
 			var myHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 			var boardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
+			var pokerOdds = MockRepository.GenerateStrictMock<PokerOdds>(_utilitiesService);
 
-			var clonedDeck1 = MockRepository.GenerateStrictMock<Deck>();
-			_deck.Stub(x => x.Clone()).Return(clonedDeck1).Repeat.Once();
+			var clonedDeck = MockRepository.GenerateStrictMock<Deck>();
+			_deck.Stub(x => x.Clone()).Return(clonedDeck);
 
-			var clonedMyHand1 = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
-			myHand.Stub(x => x.Clone()).Return(clonedMyHand1).Repeat.Once();
-			_instance.Expect(x => x.DealRequiredNumberOfCardsToHand(clonedMyHand1, clonedDeck1, 2));
+			var clonedMyHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
+			myHand.Stub(x => x.Clone()).Return(clonedMyHand);
+			_instance.Expect(x => x.DealRequiredNumberOfCardsToHand(clonedMyHand, clonedDeck, 2));
 
-			var clonedBoardHand1 = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
-			boardHand.Stub(x => x.Clone()).Return(clonedBoardHand1).Repeat.Once();
-			_instance.Expect(x => x.DealRequiredNumberOfCardsToHand(clonedBoardHand1, clonedDeck1, 5));
+			var clonedBoardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
+			boardHand.Stub(x => x.Clone()).Return(clonedBoardHand);
+			_instance.Expect(x => x.DealRequiredNumberOfCardsToHand(clonedBoardHand, clonedDeck, 5));
 
-			var combinedMyAndBoardHand1 = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
-			clonedMyHand1.Stub(x => x.Operator_plus(clonedBoardHand1)).Return(combinedMyAndBoardHand1);
+			var combinedMyAndBoardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
+			clonedMyHand.Stub(x => x.Operator_plus(clonedBoardHand)).Return(combinedMyAndBoardHand);
 
-			var bestOpponentHand1 = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
-			_instance.Stub(x => x.SimulateOpponentHandsAndReturnBestHand(clonedDeck1, clonedBoardHand1, numOpponents)).Return(bestOpponentHand1);
+			var myHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
+			combinedMyAndBoardHand.Stub(x => x.Rank).Return(myHandRank);
 
-			var myHandRank1 = MockRepository.GenerateStrictMock<HandRank>(null, null);
-			combinedMyAndBoardHand1.Stub(x => x.Rank).Return(myHandRank1);
+			const int numOpponents = 6;
+			var bestOpponentHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
+			_instance.Stub(x => x.SimulateOpponentHandsAndReturnBestHand(clonedDeck, clonedBoardHand, numOpponents)).Return(bestOpponentHand);
 
-			myHandRank1.Stub(x => x.PokerHand).Return(PokerHand.ThreeOfAKind);
+			var bestOpponentHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
+			bestOpponentHand.Stub(x => x.Rank).Return(bestOpponentHandRank);
 
-			var bestOpponentHandRank1 = MockRepository.GenerateStrictMock<HandRank>(null, null);
-			bestOpponentHand1.Stub(x => x.Rank).Return(bestOpponentHandRank1);
+			myHandRank.Stub(x => x.Operator_LessThan(bestOpponentHandRank)).Return(false);
+			myHandRank.Stub(x => x.Operator_GreaterThan(bestOpponentHandRank)).Return(true);
 
-			myHandRank1.Stub(x => x.Operator_LessThan(bestOpponentHandRank1)).Return(false);
-			myHandRank1.Stub(x => x.Operator_GreaterThan(bestOpponentHandRank1)).Return(true);
+			const int initialNumWins = 51;
+			pokerOdds.Stub(x => x.NumWins).Return(initialNumWins);
+			pokerOdds.Expect(x => x.NumWins = initialNumWins + 1);
 
+			const PokerHand myHandRankPokerHand = PokerHand.StraightFlush;
+			myHandRank.Stub(x => x.PokerHand).Return(myHandRankPokerHand);
 
-
-			var clonedDeck2 = MockRepository.GenerateStrictMock<Deck>();
-			_deck.Stub(x => x.Clone()).Return(clonedDeck2);
-
-			var clonedMyHand2 = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
-			myHand.Stub(x => x.Clone()).Return(clonedMyHand2).Repeat.Once();
-			_instance.Expect(x => x.DealRequiredNumberOfCardsToHand(clonedMyHand2, clonedDeck2, 2));
-
-			var clonedBoardHand2 = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
-			boardHand.Stub(x => x.Clone()).Return(clonedBoardHand2).Repeat.Once();
-			_instance.Expect(x => x.DealRequiredNumberOfCardsToHand(clonedBoardHand2, clonedDeck2, 5));
-
-			var combinedMyAndBoardHand2 = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
-			clonedMyHand2.Stub(x => x.Operator_plus(clonedBoardHand2)).Return(combinedMyAndBoardHand2);
-
-			var bestOpponentHand2 = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
-			_instance.Stub(x => x.SimulateOpponentHandsAndReturnBestHand(clonedDeck2, clonedBoardHand2, numOpponents)).Return(bestOpponentHand2);
-
-			var myHandRank2 = MockRepository.GenerateStrictMock<HandRank>(null, null);
-			combinedMyAndBoardHand2.Stub(x => x.Rank).Return(myHandRank2);
-
-			myHandRank2.Stub(x => x.PokerHand).Return(PokerHand.StraightFlush);
-
-			var bestOpponentHandRank2 = MockRepository.GenerateStrictMock<HandRank>(null, null);
-			bestOpponentHand2.Stub(x => x.Rank).Return(bestOpponentHandRank2);
-
-			myHandRank2.Stub(x => x.Operator_LessThan(bestOpponentHandRank2)).Return(true);
+			const int initialPokerHandValud = 54;
+			var pokerHandFrequencies = new Dictionary<PokerHand, int>
+			{
+				{ PokerHand.Straight, 0 },
+				{ myHandRankPokerHand, initialPokerHandValud }
+			};
+			pokerOdds.Stub(x => x.PokerHandFrequencies).Return(pokerHandFrequencies);
 
 			//act
-			var actual = _instance.CalculatePokerOdds(_deck, myHand, boardHand, numOpponents, 2);
+			_instance.ExecuteCalculatePokerOddsForIteration(_deck, myHand, boardHand, numOpponents, pokerOdds);
 
 			//assert
-			_instance.VerifyAllExpectations();
-			Assert.That(actual.NumWins, Is.EqualTo(1));
-			Assert.That(actual.NumDraws, Is.EqualTo(0));
-			Assert.That(actual.NumLosses, Is.EqualTo(1));
-
-			foreach (var pokerHandFrequency in actual.PokerHandFrequencies)
-			{
-				var expectedFrequency = pokerHandFrequency.Key == PokerHand.ThreeOfAKind ||
-										pokerHandFrequency.Key == PokerHand.StraightFlush
-											? 1 : 0;
-				Assert.That(pokerHandFrequency.Value, Is.EqualTo(expectedFrequency));
-			}
+			pokerOdds.VerifyAllExpectations();
+			Assert.That(pokerHandFrequencies[PokerHand.Straight], Is.EqualTo(0));
+			Assert.That(pokerHandFrequencies[myHandRankPokerHand], Is.EqualTo(initialPokerHandValud + 1));
 		}
+
+		#endregion
 
 		#region DealRequiredNumberOfCardsToHand
 

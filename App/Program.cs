@@ -101,15 +101,15 @@ namespace PokerCalculator.App
 		{
 			Console.WriteLine();
 			Console.WriteLine($"Results (calculated in {stopwatch.ElapsedMilliseconds}ms):");
-			Console.WriteLine($"Win : {pokerOdds.WinPercentage:P1}");
-			Console.WriteLine($"Draw : {pokerOdds.DrawPercentage:P1}");
-			Console.WriteLine($"Loss : {pokerOdds.LossPercentage:P1}");
+			Console.WriteLine($"Win : {pokerOdds.WinPercentageWithError}");
+			Console.WriteLine($"Draw : {pokerOdds.DrawPercentageWithError}");
+			Console.WriteLine($"Loss : {pokerOdds.LossPercentageWithError}");
 
 			Console.WriteLine();
 			Console.WriteLine("Hand Odds:");
-			foreach (var pokerHandOdds in pokerOdds.PokerHandPercentages.OrderByDescending(x => x.Key))
+			foreach (var pokerHandOdds in pokerOdds.PokerHandPercentagesWithErrors.OrderByDescending(x => x.Key))
 			{
-				Console.WriteLine($"{pokerHandOdds.Key} : {pokerHandOdds.Value:P1}");
+				Console.WriteLine($"{pokerHandOdds.Key} : {pokerHandOdds.Value}");
 			}
 		}
 	}
