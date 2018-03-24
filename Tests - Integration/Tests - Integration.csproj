@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="HandRankCalculator\HandRankCalculatorIntegrationTests.cs" />
     <Compile Include="LocalTestBase.cs" />
+    <Compile Include="Helpers\PercentageWithErrorIntegrationTests.cs" />
     <Compile Include="PokerCalculator\PokerCalculatorIntegrationTests.cs" />
     <Compile Include="PokerObjects\DeckIntegrationTests.cs" />
     <Compile Include="PokerObjects\HandRankIntegrationTests.cs" />

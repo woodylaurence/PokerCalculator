@@ -40,6 +40,7 @@
     <Compile Include="Helpers\IUtilitiesService.cs" />
     <Compile Include="Helpers\RandomNumberGenerator.cs" />
     <Compile Include="PokerCalculator\IPokerCalculator.cs" />
+    <Compile Include="Helpers\PercentageWithError.cs" />
     <Compile Include="PokerCalculator\PokerCalculator.cs" />
     <Compile Include="PokerCalculator\PokerOdds.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

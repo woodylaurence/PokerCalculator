@@ -22,33 +22,72 @@ namespace PokerCalculator.Domain.PokerCalculator
 
 		#region Instance Methods
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="deck"></param>
+		/// <param name="myHand"></param>
+		/// <param name="boardHand"></param>
+		/// <param name="numOpponents"></param>
+		/// <param name="numIterations"></param>
+		/// <returns></returns>
 		public PokerOdds CalculatePokerOdds(Deck deck, Hand myHand, Hand boardHand, int numOpponents, int numIterations)
 		{
-			var pokerOdds = new PokerOdds(ServiceLocator.Current.GetInstance<IUtilitiesService>());
-			for (var i = 0; i < numIterations; i++)
+			const int numBatches = 5;
+			var listOfPokerOdds = new List<PokerOdds>();
+			for (var i = 0; i < numBatches; i++)
 			{
-				var clonedDeck = deck.Clone();
-				var clonedMyHand = myHand.Clone();
-				DealRequiredNumberOfCardsToHand(clonedMyHand, clonedDeck, 2);
-
-				var clonedBoardHand = boardHand.Clone();
-				DealRequiredNumberOfCardsToHand(clonedBoardHand, clonedDeck, 5);
-				clonedMyHand += clonedBoardHand;
-
-				var myHandRank = _handRankCalculator.CalculateHandRank(clonedMyHand);
-
-				var bestOpponentHand = SimulateOpponentHandsAndReturnBestHand(clonedDeck, clonedBoardHand, numOpponents);
-				var bestOpponentHandRank = bestOpponentHand == null ? null : _handRankCalculator.CalculateHandRank(bestOpponentHand);
-
-				if (myHandRank < bestOpponentHandRank) pokerOdds.NumLosses++;
-				else if (myHandRank > bestOpponentHandRank) pokerOdds.NumWins++;
-				else pokerOdds.NumDraws++;
-
-				pokerOdds.PokerHandFrequencies[myHandRank.PokerHand]++;
+				var pokerOddsForBatch = InitializePokerOdds();
+				for (var j = 0; j < numIterations / numBatches; j++)
+				{
+					ExecuteCalculatePokerOddsForIteration(deck, myHand, boardHand, numOpponents, pokerOddsForBatch);
+				}
+				listOfPokerOdds.Add(pokerOddsForBatch);
 			}
-
-			return pokerOdds;
+			return PokerOdds.AggregatePokerOdds(listOfPokerOdds);
 		}
+
+		#region InitializePokerOdds
+
+		protected internal virtual PokerOdds InitializePokerOdds()
+		{
+			return new PokerOdds(ServiceLocator.Current.GetInstance<IUtilitiesService>());
+		}
+
+		#endregion
+
+		#region ExecuteCalculatePokerOddsForIteration
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="deck"></param>
+		/// <param name="myHand"></param>
+		/// <param name="boardHand"></param>
+		/// <param name="numOpponents"></param>
+		/// <param name="pokerOdds"></param>
+		protected internal virtual void ExecuteCalculatePokerOddsForIteration(Deck deck, Hand myHand, Hand boardHand, int numOpponents, PokerOdds pokerOdds)
+		{
+			var clonedDeck = deck.Clone();
+			var clonedMyHand = myHand.Clone();
+			DealRequiredNumberOfCardsToHand(clonedMyHand, clonedDeck, 2);
+
+			var clonedBoardHand = boardHand.Clone();
+			DealRequiredNumberOfCardsToHand(clonedBoardHand, clonedDeck, 5);
+			clonedMyHand += clonedBoardHand;
+
+			var myHandRank = _handRankCalculator.CalculateHandRank(clonedMyHand);
+			var bestOpponentHand = SimulateOpponentHandsAndReturnBestHand(clonedDeck, clonedBoardHand, numOpponents);
+			var bestOpponentHandRank = bestOpponentHand == null ? null : _handRankCalculator.CalculateHandRank(bestOpponentHand);
+
+			if (myHandRank < bestOpponentHandRank) pokerOdds.NumLosses++;
+			else if (myHandRank > bestOpponentHandRank) pokerOdds.NumWins++;
+			else pokerOdds.NumDraws++;
+
+			pokerOdds.PokerHandFrequencies[myHandRank.PokerHand]++;
+		}
+
+		#endregion
 
 		#region DealRequiredNumberOfCardsToHand
 
