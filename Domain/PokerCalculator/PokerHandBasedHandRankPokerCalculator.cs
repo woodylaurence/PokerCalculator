@@ -1,19 +1,20 @@
 ﻿using Microsoft.Practices.ServiceLocation;
 using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.Helpers;
+using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace PokerCalculator.Domain.PokerCalculator
 {
-	public class PokerCalculator : IPokerCalculator
+	public class PokerHandBasedHandRankPokerCalculator : IPokerCalculator
 	{
-		private IHandRankCalculator _handRankCalculator { get; }
+		private readonly IHandRankCalculator<PokerHandBasedHandRank, PokerHand> _handRankCalculator;
 
 		#region Constructor
 
-		public PokerCalculator(IHandRankCalculator handRankCalculator)
+		public PokerHandBasedHandRankPokerCalculator(IHandRankCalculator<PokerHandBasedHandRank, PokerHand> handRankCalculator)
 		{
 			_handRankCalculator = handRankCalculator;
 		}
@@ -80,8 +81,8 @@ namespace PokerCalculator.Domain.PokerCalculator
 			var bestOpponentHand = SimulateOpponentHandsAndReturnBestHand(clonedDeck, clonedBoardHand, numOpponents);
 			var bestOpponentHandRank = bestOpponentHand == null ? null : _handRankCalculator.CalculateHandRank(bestOpponentHand);
 
-			if (myHandRank < bestOpponentHandRank) pokerOdds.NumLosses++;
-			else if (myHandRank > bestOpponentHandRank) pokerOdds.NumWins++;
+			if (myHandRank.IsLessThan(bestOpponentHandRank)) pokerOdds.NumLosses++;
+			else if (myHandRank.IsGreaterThan(bestOpponentHandRank)) pokerOdds.NumWins++;
 			else pokerOdds.NumDraws++;
 
 			pokerOdds.PokerHandFrequencies[myHandRank.PokerHand]++;

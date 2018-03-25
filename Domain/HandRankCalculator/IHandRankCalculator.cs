@@ -2,8 +2,8 @@
 
 namespace PokerCalculator.Domain.HandRankCalculator
 {
-	public interface IHandRankCalculator
+	public interface IHandRankCalculator<out THandRank, TRank> where THandRank : IHandRank<TRank>
 	{
-		HandRank CalculateHandRank(Hand hand);
+		THandRank CalculateHandRank(Hand hand);
 	}
 }

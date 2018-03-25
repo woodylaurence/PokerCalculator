@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
@@ -9,9 +10,9 @@ using System.Collections.Generic;
 namespace PokerCalculator.Tests.Unit.HandRankCalculator
 {
 	[TestFixture]
-	public class HandRankCalculatorUnitTests : AbstractUnitTestBase
+	public class PokerHandBasedHandRankCalculatorUnitTests : AbstractUnitTestBase
 	{
-		private Domain.HandRankCalculator.HandRankCalculator _instance;
+		private PokerHandBasedHandRankCalculator _instance;
 		private Hand _hand;
 
 		[SetUp]
@@ -20,7 +21,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 			base.Setup();
 
 			var cardComparer = MockRepository.GenerateStrictMock<IEqualityComparer<Card>>();
-			_instance = MockRepository.GeneratePartialMock<Domain.HandRankCalculator.HandRankCalculator>();
+			_instance = MockRepository.GeneratePartialMock<PokerHandBasedHandRankCalculator>();
 
 			_hand = MockRepository.GenerateStrictMock<Hand>(new List<Card>(), cardComparer);
 		}
@@ -45,7 +46,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 
 			_instance.Stub(x => x.GetFlushValues(cards)).Return(flushCardValues);
 
-			var expected = new HandRank(PokerHand.FourOfAKind);
+			var expected = new PokerHandBasedHandRank(PokerHand.FourOfAKind);
 			_instance.Stub(x => x.GetFlushBasedHandRank(flushCardValues)).Return(expected);
 
 			//act
@@ -74,7 +75,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 
 			_instance.Stub(x => x.GetFlushValues(cards)).Return(flushCardValues);
 
-			var expected = new HandRank(PokerHand.Pair);
+			var expected = new PokerHandBasedHandRank(PokerHand.Pair);
 			_instance.Stub(x => x.GetFlushBasedHandRank(flushCardValues)).Return(expected);
 
 			//act
@@ -149,7 +150,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 			var straightValues = new List<CardValue> { CardValue.King, CardValue.Six };
 			_instance.Stub(x => x.GetStraightValues(cards)).Return(straightValues);
 
-			var expected = new HandRank(PokerHand.FourOfAKind);
+			var expected = new PokerHandBasedHandRank(PokerHand.FourOfAKind);
 			_instance.Stub(x => x.GetMultiCardOrHighCardHandRank(cards)).Return(expected);
 
 			//act
@@ -279,7 +280,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 			};
 			_instance.Stub(x => x.GetOrderedCardGroups(cards)).Return(cardGroups);
 
-			var expected = new HandRank(PokerHand.FullHouse);
+			var expected = new PokerHandBasedHandRank(PokerHand.FullHouse);
 			_instance.Stub(x => x.GetFourOfAKindHandRank(cardGroups)).Return(expected);
 
 			//act
@@ -302,7 +303,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 			};
 			_instance.Stub(x => x.GetOrderedCardGroups(cards)).Return(cardGroups);
 
-			var expected = new HandRank(PokerHand.HighCard);
+			var expected = new PokerHandBasedHandRank(PokerHand.HighCard);
 			_instance.Stub(x => x.GetFullHouseOrThreeOfAKindHandRank(cardGroups)).Return(expected);
 
 			//act
@@ -324,7 +325,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 			};
 			_instance.Stub(x => x.GetOrderedCardGroups(cards)).Return(cardGroups);
 
-			var expected = new HandRank(PokerHand.StraightFlush);
+			var expected = new PokerHandBasedHandRank(PokerHand.StraightFlush);
 			_instance.Stub(x => x.GetPairBasedHandRank(cardGroups)).Return(expected);
 
 			//act
@@ -348,7 +349,7 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 			};
 			_instance.Stub(x => x.GetOrderedCardGroups(cards)).Return(cardGroups);
 
-			var expected = new HandRank(PokerHand.Pair);
+			var expected = new PokerHandBasedHandRank(PokerHand.Pair);
 			_instance.Stub(x => x.GetHighCardHandRank(cardGroups)).Return(expected);
 
 			//act

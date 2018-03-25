@@ -1,7 +1,4 @@
-﻿using Castle.MicroKernel.Registration;
-using Castle.Windsor;
-using NUnit.Framework;
-using PokerCalculator.Domain.HandRankCalculator;
+﻿using NUnit.Framework;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using System.Collections.Generic;
@@ -19,12 +16,6 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			base.Setup();
 
 			_instance = new Hand(new List<Card>());
-		}
-
-		protected override void RegisterComponentsToWindsor(IWindsorContainer windsorContainer)
-		{
-			base.RegisterComponentsToWindsor(windsorContainer);
-			windsorContainer.Register(Component.For<IHandRankCalculator>().ImplementedBy<Domain.HandRankCalculator.HandRankCalculator>());
 		}
 
 		#region Constructor

@@ -54,15 +54,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PokerCalculator\PokerCalculatorUnitTests.cs" />
+    <Compile Include="Helpers\IComparableExtensionMethodsUnitTests.cs" />
+    <Compile Include="PokerCalculator\PokerHandBasedHandRankPokerCalculatorUnitTests.cs" />
     <Compile Include="PokerCalculator\PokerOddsUnitTests.cs" />
     <Compile Include="PokerObjects\DeckUnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PokerObjects\CardUnitTests.cs" />
     <Compile Include="PokerObjects\HandUnitTests.cs" />
     <Compile Include="Helpers\CardComparerUnitTests.cs" />
-    <Compile Include="PokerObjects\HandRankUnitTests.cs" />
-    <Compile Include="HandRankCalculator\HandRankCalculatorUnitTests.cs" />
+    <Compile Include="HandRankCalculator\PokerHandBasedHandRankUnitTests.cs" />
+    <Compile Include="HandRankCalculator\PokerHandBasedHandRankCalculatorUnitTests.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

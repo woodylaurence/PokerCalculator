@@ -14,11 +14,11 @@ using Card = PokerCalculator.Domain.PokerObjects.Card;
 namespace PokerCalculator.Tests.Unit.PokerCalculator
 {
 	[TestFixture]
-	public class PokerCalculatorUnitTests : AbstractUnitTestBase
+	public class PokerHandBasedHandRankPokerCalculatorUnitTests : AbstractUnitTestBase
 	{
-		private Domain.PokerCalculator.PokerCalculator _instance;
+		private PokerHandBasedHandRankPokerCalculator _instance;
 		private Deck _deck;
-		private IHandRankCalculator _handRankCalculator;
+		private IHandRankCalculator<PokerHandBasedHandRank, PokerHand> _handRankCalculator;
 		private IRandomNumberGenerator _randomNumberGenerator;
 		private IUtilitiesService _utilitiesService;
 
@@ -27,20 +27,22 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 		{
 			_utilitiesService = new UtilitiesService();
 			_randomNumberGenerator = MockRepository.GenerateStrictMock<IRandomNumberGenerator>();
-			_handRankCalculator = MockRepository.GenerateStrictMock<IHandRankCalculator>();
+			_handRankCalculator = MockRepository.GenerateStrictMock<IHandRankCalculator<PokerHandBasedHandRank, PokerHand>>();
 
 			base.Setup();
 
-			_instance = MockRepository.GeneratePartialMock<Domain.PokerCalculator.PokerCalculator>(_handRankCalculator);
+			_instance = MockRepository.GeneratePartialMock<PokerHandBasedHandRankPokerCalculator>(_handRankCalculator);
 			_deck = MockRepository.GenerateStrictMock<Deck>(_randomNumberGenerator, _utilitiesService);
 
 			PokerOdds.MethodObject = MockRepository.GenerateStrictMock<PokerOdds>(_utilitiesService);
+			IComparableExtensionMethods.MethodObject = MockRepository.GenerateStrictMock<IComparableExtensionMethodsConcreteObject>();
 		}
 
 		[TearDown]
 		protected void TearDown()
 		{
 			PokerOdds.MethodObject = new PokerOdds(_utilitiesService);
+			IComparableExtensionMethods.MethodObject = new IComparableExtensionMethodsConcreteObject();
 		}
 
 		protected override void RegisterComponentsToWindsor(IWindsorContainer windsorContainer)
@@ -49,7 +51,7 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			windsorContainer.Register(Component.For<IUtilitiesService>().Instance(_utilitiesService));
 			windsorContainer.Register(Component.For<IRandomNumberGenerator>().Instance(_randomNumberGenerator));
 			windsorContainer.Register(Component.For<IEqualityComparer<Card>>().Instance(new CardComparer()));
-			windsorContainer.Register(Component.For<IHandRankCalculator>().Instance(_handRankCalculator));
+			windsorContainer.Register(Component.For<IHandRankCalculator<PokerHandBasedHandRank, PokerHand>>().Instance(_handRankCalculator));
 		}
 
 		#region Instance Methods
@@ -126,13 +128,14 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			var combinedMyAndBoardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 			clonedMyHand.Stub(x => x.Operator_plus(clonedBoardHand)).Return(combinedMyAndBoardHand);
 
-			var myHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
+			var myHandRank = MockRepository.GenerateStrictMock<PokerHandBasedHandRank>(null, null);
 			_handRankCalculator.Stub(x => x.CalculateHandRank(combinedMyAndBoardHand)).Return(myHandRank);
 
 			_instance.Stub(x => x.SimulateOpponentHandsAndReturnBestHand(clonedDeck, clonedBoardHand, 0)).Return(null);
 
-			myHandRank.Stub(x => x.Operator_LessThan(null)).Return(false);
-			myHandRank.Stub(x => x.Operator_GreaterThan(null)).Return(true);
+			IComparableExtensionMethods.MethodObject.Stub(x => x.IsLessThanSlave(myHandRank, null)).Return(false);
+			IComparableExtensionMethods.MethodObject.Stub(x => x.IsGreaterThanSlave(myHandRank, null)).Return(true);
+
 			const int initialNumWins = 4;
 			pokerOdds.Stub(x => x.NumWins).Return(initialNumWins);
 			pokerOdds.Expect(x => x.NumWins = initialNumWins + 1);
@@ -179,17 +182,17 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			var combinedMyAndBoardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 			clonedMyHand.Stub(x => x.Operator_plus(clonedBoardHand)).Return(combinedMyAndBoardHand);
 
-			var myHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
+			var myHandRank = MockRepository.GenerateStrictMock<PokerHandBasedHandRank>(null, null);
 			_handRankCalculator.Stub(x => x.CalculateHandRank(combinedMyAndBoardHand)).Return(myHandRank);
 
 			const int numOpponents = 3;
 			var bestOpponentHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 			_instance.Stub(x => x.SimulateOpponentHandsAndReturnBestHand(clonedDeck, clonedBoardHand, numOpponents)).Return(bestOpponentHand);
 
-			var bestOpponentHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
+			var bestOpponentHandRank = MockRepository.GenerateStrictMock<PokerHandBasedHandRank>(null, null);
 			_handRankCalculator.Stub(x => x.CalculateHandRank(bestOpponentHand)).Return(bestOpponentHandRank);
 
-			myHandRank.Stub(x => x.Operator_LessThan(bestOpponentHandRank)).Return(true);
+			IComparableExtensionMethods.MethodObject.Stub(x => x.IsLessThanSlave(myHandRank, bestOpponentHandRank)).Return(true);
 
 			const int initialNumLosses = 545;
 			pokerOdds.Stub(x => x.NumLosses).Return(initialNumLosses);
@@ -237,18 +240,18 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			var combinedMyAndBoardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 			clonedMyHand.Stub(x => x.Operator_plus(clonedBoardHand)).Return(combinedMyAndBoardHand);
 
-			var myHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
+			var myHandRank = MockRepository.GenerateStrictMock<PokerHandBasedHandRank>(null, null);
 			_handRankCalculator.Stub(x => x.CalculateHandRank(combinedMyAndBoardHand)).Return(myHandRank);
 
 			const int numOpponents = 6;
 			var bestOpponentHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 			_instance.Stub(x => x.SimulateOpponentHandsAndReturnBestHand(clonedDeck, clonedBoardHand, numOpponents)).Return(bestOpponentHand);
 
-			var bestOpponentHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
+			var bestOpponentHandRank = MockRepository.GenerateStrictMock<PokerHandBasedHandRank>(null, null);
 			_handRankCalculator.Stub(x => x.CalculateHandRank(bestOpponentHand)).Return(bestOpponentHandRank);
 
-			myHandRank.Stub(x => x.Operator_LessThan(bestOpponentHandRank)).Return(false);
-			myHandRank.Stub(x => x.Operator_GreaterThan(bestOpponentHandRank)).Return(false);
+			IComparableExtensionMethods.MethodObject.Stub(x => x.IsLessThanSlave(myHandRank, bestOpponentHandRank)).Return(false);
+			IComparableExtensionMethods.MethodObject.Stub(x => x.IsGreaterThanSlave(myHandRank, bestOpponentHandRank)).Return(false);
 
 			const int initialNumDraws = 41;
 			pokerOdds.Stub(x => x.NumDraws).Return(initialNumDraws);
@@ -296,18 +299,18 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			var combinedMyAndBoardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 			clonedMyHand.Stub(x => x.Operator_plus(clonedBoardHand)).Return(combinedMyAndBoardHand);
 
-			var myHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
+			var myHandRank = MockRepository.GenerateStrictMock<PokerHandBasedHandRank>(null, null);
 			_handRankCalculator.Stub(x => x.CalculateHandRank(combinedMyAndBoardHand)).Return(myHandRank);
 
 			const int numOpponents = 6;
 			var bestOpponentHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 			_instance.Stub(x => x.SimulateOpponentHandsAndReturnBestHand(clonedDeck, clonedBoardHand, numOpponents)).Return(bestOpponentHand);
 
-			var bestOpponentHandRank = MockRepository.GenerateStrictMock<HandRank>(null, null);
+			var bestOpponentHandRank = MockRepository.GenerateStrictMock<PokerHandBasedHandRank>(null, null);
 			_handRankCalculator.Stub(x => x.CalculateHandRank(bestOpponentHand)).Return(bestOpponentHandRank);
 
-			myHandRank.Stub(x => x.Operator_LessThan(bestOpponentHandRank)).Return(false);
-			myHandRank.Stub(x => x.Operator_GreaterThan(bestOpponentHandRank)).Return(true);
+			IComparableExtensionMethods.MethodObject.Stub(x => x.IsLessThanSlave(myHandRank, bestOpponentHandRank)).Return(false);
+			IComparableExtensionMethods.MethodObject.Stub(x => x.IsGreaterThanSlave(myHandRank, bestOpponentHandRank)).Return(true);
 
 			const int initialNumWins = 51;
 			pokerOdds.Stub(x => x.NumWins).Return(initialNumWins);
@@ -500,13 +503,13 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			var opponentHand2 = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 			var opponentHand3 = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 
-			var opponentHand1Rank = MockRepository.GeneratePartialMock<HandRank>(PokerHand.ThreeOfAKind, null);
+			var opponentHand1Rank = MockRepository.GeneratePartialMock<PokerHandBasedHandRank>(PokerHand.ThreeOfAKind, null);
 			_handRankCalculator.Stub(x => x.CalculateHandRank(opponentHand1)).Return(opponentHand1Rank);
 
-			var opponentHand2Rank = MockRepository.GeneratePartialMock<HandRank>(PokerHand.Straight, null);
+			var opponentHand2Rank = MockRepository.GeneratePartialMock<PokerHandBasedHandRank>(PokerHand.Straight, null);
 			_handRankCalculator.Stub(x => x.CalculateHandRank(opponentHand2)).Return(opponentHand2Rank);
 
-			var opponentHand3Rank = MockRepository.GeneratePartialMock<HandRank>(PokerHand.HighCard, null);
+			var opponentHand3Rank = MockRepository.GeneratePartialMock<PokerHandBasedHandRank>(PokerHand.HighCard, null);
 			_handRankCalculator.Stub(x => x.CalculateHandRank(opponentHand3)).Return(opponentHand3Rank);
 
 			opponentHand1Rank.Stub(x => x.CompareTo(opponentHand2Rank)).Return(-1);

@@ -11,16 +11,16 @@ using System.Linq;
 
 namespace PokerCalculator.Tests.Speed.HandRankCalculator
 {
-	public abstract class BaseHandRankCalculatorSpeedTests : LocalTestBase
+	public abstract class BaseHandRankCalculatorSpeedTests<THandRank, TRank> : LocalTestBase where THandRank : IHandRank<TRank>
 	{
-		private IHandRankCalculator _instance;
+		private IHandRankCalculator<THandRank, TRank> _instance;
 
 		[SetUp]
 		protected override void Setup()
 		{
 			base.Setup();
 
-			_instance = ServiceLocator.Current.GetInstance<IHandRankCalculator>();
+			_instance = ServiceLocator.Current.GetInstance<IHandRankCalculator<THandRank, TRank>>();
 		}
 
 		[Test]
@@ -48,7 +48,7 @@ namespace PokerCalculator.Tests.Speed.HandRankCalculator
 
 		private class HandRankSpeedResults
 		{
-			private IUtilitiesService _utilitiesService;
+			private readonly IUtilitiesService _utilitiesService;
 
 			private long TotalCalculationTime => HandRankCalculationTimes.Sum(x => x.Value);
 			private Dictionary<PokerHand, double> HandRankAverageCalculationTimes => HandRankCalculationTimes.ToDictionary(x => x.Key, x => HandRankFrequency[x.Key] == 0 ? 0 : x.Value / (double)HandRankFrequency[x.Key]);
