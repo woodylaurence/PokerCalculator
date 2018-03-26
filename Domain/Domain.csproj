@@ -39,7 +39,6 @@
     <Compile Include="HandRankCalculator\IHandRank.cs" />
     <Compile Include="Helpers\IComparableExtensionMethods.cs" />
     <Compile Include="Helpers\IRandomNumberGenerator.cs" />
-    <Compile Include="Helpers\IUtilitiesService.cs" />
     <Compile Include="Helpers\RandomNumberGenerator.cs" />
     <Compile Include="PokerCalculator\IPokerCalculator.cs" />
     <Compile Include="Helpers\PercentageWithError.cs" />
@@ -52,7 +51,7 @@
     <Compile Include="PokerEnums\CardValue.cs" />
     <Compile Include="PokerEnums\CardSuit.cs" />
     <Compile Include="PokerEnums\PokerHand.cs" />
-    <Compile Include="Helpers\UtilitiesService.cs" />
+    <Compile Include="Helpers\Utilities.cs" />
     <Compile Include="VisibleTo.cs" />
     <Compile Include="Helpers\CardComparer.cs" />
     <Compile Include="HandRankCalculator\PokerHandBasedHandRank.cs" />

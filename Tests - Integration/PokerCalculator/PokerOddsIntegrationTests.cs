@@ -14,7 +14,7 @@ namespace PokerCalculator.Tests.Integration.PokerCalculator
 		public void Constructor()
 		{
 			//act
-			var actual = new PokerOdds(UtilitiesService);
+			var actual = new PokerOdds();
 
 			//assert
 			Assert.That(actual.NumWins, Is.EqualTo(0));
@@ -63,7 +63,7 @@ namespace PokerCalculator.Tests.Integration.PokerCalculator
 		public void AggregatePokerOdds_WHERE_multiple_poker_odds_SHOULD_return_aggregated_poker_odds()
 		{
 			//arrange
-			var pokerOdds1 = new PokerOdds(UtilitiesService)
+			var pokerOdds1 = new PokerOdds
 			{
 				NumWins = 3871,
 				NumDraws = 891,
@@ -83,7 +83,7 @@ namespace PokerCalculator.Tests.Integration.PokerCalculator
 				}
 			};
 
-			var pokerOdds2 = new PokerOdds(UtilitiesService)
+			var pokerOdds2 = new PokerOdds
 			{
 				NumWins = 2168,
 				NumDraws = 1021,
@@ -103,7 +103,7 @@ namespace PokerCalculator.Tests.Integration.PokerCalculator
 				}
 			};
 
-			var pokerOdds3 = new PokerOdds(UtilitiesService)
+			var pokerOdds3 = new PokerOdds
 			{
 				NumWins = 3056,
 				NumDraws = 945,

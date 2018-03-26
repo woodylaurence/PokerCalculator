@@ -1,5 +1,4 @@
-﻿using Microsoft.Practices.ServiceLocation;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Tests.Shared.TestObjects;
 using System;
@@ -10,23 +9,13 @@ namespace PokerCalculator.Tests.Integration.Helpers
 	[TestFixture]
 	public class UtilitiesIntegrationTests : LocalTestBase
 	{
-		private UtilitiesService _instance;
-
-		[SetUp]
-		protected override void Setup()
-		{
-			base.Setup();
-
-			_instance = ServiceLocator.Current.GetInstance<IUtilitiesService>() as UtilitiesService;
-		}
-
 		#region GetEnumValues
 
 		[Test]
 		public void GetEnumValues()
 		{
 			//act
-			var actual = _instance.GetEnumValues<TestEnum>();
+			var actual = Utilities.GetEnumValues<TestEnum>();
 
 			//assert
 			Assert.That(actual, Has.Count.EqualTo(3));
@@ -43,7 +32,7 @@ namespace PokerCalculator.Tests.Integration.Helpers
 		public void GetEnumValueFromDescription_WHERE_type_to_return_is_not_enum_SHOULD_throw_error()
 		{
 			//act + assert
-			var actualException = Assert.Throws<InvalidOperationException>(() => _instance.GetEnumValueFromDescription<int>("some string"));
+			var actualException = Assert.Throws<InvalidOperationException>(() => Utilities.GetEnumValueFromDescription<int>("some string"));
 			Assert.That(actualException.Message, Is.EqualTo("Type to return must be an enum."));
 		}
 
@@ -51,7 +40,7 @@ namespace PokerCalculator.Tests.Integration.Helpers
 		public void GetEnumValueFromDescription_WHERE_no_enum_has_name_or_description_matching_supplied_string_SHOULD_throw_error()
 		{
 			//act + assert
-			var actualException = Assert.Throws<ArgumentException>(() => _instance.GetEnumValueFromDescription<TestEnum>("some string"));
+			var actualException = Assert.Throws<ArgumentException>(() => Utilities.GetEnumValueFromDescription<TestEnum>("some string"));
 			Assert.That(actualException.Message, Is.EqualTo("Cannot find enum value by supplied string"));
 		}
 
@@ -59,7 +48,7 @@ namespace PokerCalculator.Tests.Integration.Helpers
 		public void GetEnumValueFromDescription_WHERE_enum_doesnt_exist_with_correct_description_but_one_does_exist_with_correct_name_SHOULD_return_enum_value()
 		{
 			//act
-			var actual = _instance.GetEnumValueFromDescription<TestEnum>("SecondValue");
+			var actual = Utilities.GetEnumValueFromDescription<TestEnum>("SecondValue");
 
 			//assert
 			Assert.That(actual, Is.EqualTo(TestEnum.SecondValue));
@@ -69,7 +58,7 @@ namespace PokerCalculator.Tests.Integration.Helpers
 		public void GetEnumValueFromDescription_WHERE_enum_exists_with_correct_description_SHOULD_return_enum_value()
 		{
 			//act
-			var actual = _instance.GetEnumValueFromDescription<TestEnum>("The Final Value");
+			var actual = Utilities.GetEnumValueFromDescription<TestEnum>("The Final Value");
 
 			//assert
 			Assert.That(actual, Is.EqualTo(TestEnum.ValueThree));
@@ -87,8 +76,8 @@ namespace PokerCalculator.Tests.Integration.Helpers
 			var ticks2 = Stopwatch.Frequency * 159.8;
 
 			//act
-			var actual1 = _instance.GetTicksAsStringWithUnit(ticks1);
-			var actual2 = _instance.GetTicksAsStringWithUnit(ticks2);
+			var actual1 = Utilities.GetTicksAsStringWithUnit(ticks1);
+			var actual2 = Utilities.GetTicksAsStringWithUnit(ticks2);
 
 			//assert
 			Assert.That(actual1, Is.EqualTo("10.0s"));
@@ -104,9 +93,9 @@ namespace PokerCalculator.Tests.Integration.Helpers
 			var ticks3 = Stopwatch.Frequency * 7.2567;
 
 			//act
-			var actual1 = _instance.GetTicksAsStringWithUnit(ticks1);
-			var actual2 = _instance.GetTicksAsStringWithUnit(ticks2);
-			var actual3 = _instance.GetTicksAsStringWithUnit(ticks3);
+			var actual1 = Utilities.GetTicksAsStringWithUnit(ticks1);
+			var actual2 = Utilities.GetTicksAsStringWithUnit(ticks2);
+			var actual3 = Utilities.GetTicksAsStringWithUnit(ticks3);
 
 			//assert
 			Assert.That(actual1, Is.EqualTo("1.0ms"));
@@ -124,10 +113,10 @@ namespace PokerCalculator.Tests.Integration.Helpers
 			var ticks4 = Stopwatch.Frequency * 0.00099991;
 
 			//act
-			var actual1 = _instance.GetTicksAsStringWithUnit(ticks1);
-			var actual2 = _instance.GetTicksAsStringWithUnit(ticks2);
-			var actual3 = _instance.GetTicksAsStringWithUnit(ticks3);
-			var actual4 = _instance.GetTicksAsStringWithUnit(ticks4);
+			var actual1 = Utilities.GetTicksAsStringWithUnit(ticks1);
+			var actual2 = Utilities.GetTicksAsStringWithUnit(ticks2);
+			var actual3 = Utilities.GetTicksAsStringWithUnit(ticks3);
+			var actual4 = Utilities.GetTicksAsStringWithUnit(ticks4);
 
 			//assert
 			Assert.That(actual1, Is.EqualTo("1.0μs"));
@@ -146,10 +135,10 @@ namespace PokerCalculator.Tests.Integration.Helpers
 			var ticks4 = Stopwatch.Frequency * 0.000000000159;
 
 			//act
-			var actual1 = _instance.GetTicksAsStringWithUnit(ticks1);
-			var actual2 = _instance.GetTicksAsStringWithUnit(ticks2);
-			var actual3 = _instance.GetTicksAsStringWithUnit(ticks3);
-			var actual4 = _instance.GetTicksAsStringWithUnit(ticks4);
+			var actual1 = Utilities.GetTicksAsStringWithUnit(ticks1);
+			var actual2 = Utilities.GetTicksAsStringWithUnit(ticks2);
+			var actual3 = Utilities.GetTicksAsStringWithUnit(ticks3);
+			var actual4 = Utilities.GetTicksAsStringWithUnit(ticks4);
 
 			//assert
 			Assert.That(actual1, Is.EqualTo("900.0ns"));

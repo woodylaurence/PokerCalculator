@@ -1,5 +1,4 @@
-﻿using Microsoft.Practices.ServiceLocation;
-using PokerCalculator.Domain.HandRankCalculator;
+﻿using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
@@ -52,7 +51,7 @@ namespace PokerCalculator.Domain.PokerCalculator
 
 		protected internal virtual PokerOdds InitializePokerOdds()
 		{
-			return new PokerOdds(ServiceLocator.Current.GetInstance<IUtilitiesService>());
+			return new PokerOdds();
 		}
 
 		#endregion

@@ -9,17 +9,14 @@ namespace PokerCalculator.Tests.Shared.TestData
 {
 	public static class CardTestCaseData
 	{
-		private static readonly IUtilitiesService _utilitiesService = new UtilitiesService();
-
 		public static IEnumerable<TestCaseData> AllCardsTestCaseData => AllCards.Select(x => new TestCaseData(x.Value, x.Suit));
 
 		public static List<Card> AllCards
 		{
 			get
 			{
-				var utilities = new UtilitiesService();
-				var cardSuits = utilities.GetEnumValues<CardSuit>();
-				var cardValues = utilities.GetEnumValues<CardValue>();
+				var cardSuits = Utilities.GetEnumValues<CardSuit>();
+				var cardValues = Utilities.GetEnumValues<CardValue>();
 				return cardSuits.SelectMany(cardSuit => cardValues.Select(cardValue => new Card(cardValue, cardSuit))).ToList();
 			}
 		}
@@ -32,8 +29,8 @@ namespace PokerCalculator.Tests.Shared.TestData
 			{
 				return CardValuesAsStrings.SelectMany(x => CardSuitsAsStrings, (value, suit) =>
 				{
-					var cardValueEnum = _utilitiesService.GetEnumValueFromDescription<CardValue>(value);
-					var cardSuitEnum = _utilitiesService.GetEnumValueFromDescription<CardSuit>(suit);
+					var cardValueEnum = Utilities.GetEnumValueFromDescription<CardValue>(value);
+					var cardSuitEnum = Utilities.GetEnumValueFromDescription<CardSuit>(suit);
 					var cardAsString = $"{value}{suit}";
 					return new TestCaseData(cardAsString, cardValueEnum, cardSuitEnum).SetName(cardAsString);
 				});

@@ -26,7 +26,7 @@ namespace PokerCalculator.Tests.Integration.PokerCalculator
 			base.Setup();
 
 			_instance = ServiceLocator.Current.GetInstance<IPokerCalculator>();
-			_deck = new Deck(_randomNumberGenerator, UtilitiesService);
+			_deck = new Deck(_randomNumberGenerator);
 		}
 
 		protected override void RegisterComponentsToWindsor(IWindsorContainer windsorContainer)

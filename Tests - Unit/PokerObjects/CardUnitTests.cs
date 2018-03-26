@@ -12,14 +12,16 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 	[TestFixture]
 	public class CardUnitTests : AbstractUnitTestBase
 	{
-		private IUtilitiesService _utilitiesService;
-
 		[SetUp]
 		protected override void Setup()
 		{
-			base.Setup();
+			Utilities.MethodObject = MockRepository.GenerateStrictMock<Utilities>();
+		}
 
-			_utilitiesService = MockRepository.GenerateStrictMock<IUtilitiesService>();
+		[TearDown]
+		protected void TearDown()
+		{
+			Utilities.MethodObject = new Utilities();
 		}
 
 		#region Constructor
@@ -41,7 +43,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void Constructor_string_WHERE_string_is_null_or_whitespace_SHOULD_throw_error(string cardAsString)
 		{
 			//act + assert
-			var actualException = Assert.Throws<ArgumentException>(() => new Card(cardAsString, _utilitiesService));
+			var actualException = Assert.Throws<ArgumentException>(() => new Card(cardAsString));
 			Assert.That(actualException.Message, Is.EqualTo("Must provide string representation of Card"));
 		}
 
@@ -54,7 +56,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void Constructor_string_WHERE_string_does_not_conform_to_card_regex_SHOULD_throw_error(string input)
 		{
 			//act
-			var actualException = Assert.Throws<ArgumentException>(() => new Card(input, _utilitiesService));
+			var actualException = Assert.Throws<ArgumentException>(() => new Card(input));
 			Assert.That(actualException.Message, Is.EqualTo("Supplied string does not conform to allowed Card values"));
 		}
 
@@ -74,13 +76,13 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			var cardSuitAsStringUppercase = cardSuitAsString.ToUpper();
 
 			const CardValue expectedValue = CardValue.Jack;
-			_utilitiesService.Stub(x => x.GetEnumValueFromDescription<CardValue>(cardValueAsStringUppercase)).Return(expectedValue);
+			Utilities.MethodObject.Stub(x => x.GetEnumValueFromDescriptionSlave<CardValue>(cardValueAsStringUppercase)).Return(expectedValue);
 
 			const CardSuit expectedSuit = CardSuit.Hearts;
-			_utilitiesService.Stub(x => x.GetEnumValueFromDescription<CardSuit>(cardSuitAsStringUppercase)).Return(expectedSuit);
+			Utilities.MethodObject.Stub(x => x.GetEnumValueFromDescriptionSlave<CardSuit>(cardSuitAsStringUppercase)).Return(expectedSuit);
 
 			//act
-			var actual = new Card(cardAsString, _utilitiesService);
+			var actual = new Card(cardAsString);
 
 			//assert
 			Assert.That(actual.Value, Is.EqualTo(expectedValue));

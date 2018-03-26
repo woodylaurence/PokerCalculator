@@ -20,35 +20,32 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 		private Deck _deck;
 		private IHandRankCalculator<PokerHandBasedHandRank, PokerHand> _handRankCalculator;
 		private IRandomNumberGenerator _randomNumberGenerator;
-		private IUtilitiesService _utilitiesService;
 
 		[SetUp]
 		protected override void Setup()
 		{
-			_utilitiesService = new UtilitiesService();
 			_randomNumberGenerator = MockRepository.GenerateStrictMock<IRandomNumberGenerator>();
 			_handRankCalculator = MockRepository.GenerateStrictMock<IHandRankCalculator<PokerHandBasedHandRank, PokerHand>>();
 
 			base.Setup();
 
 			_instance = MockRepository.GeneratePartialMock<PokerHandBasedHandRankPokerCalculator>(_handRankCalculator);
-			_deck = MockRepository.GenerateStrictMock<Deck>(_randomNumberGenerator, _utilitiesService);
+			_deck = MockRepository.GenerateStrictMock<Deck>(_randomNumberGenerator);
 
-			PokerOdds.MethodObject = MockRepository.GenerateStrictMock<PokerOdds>(_utilitiesService);
+			PokerOdds.MethodObject = MockRepository.GenerateStrictMock<PokerOdds>();
 			IComparableExtensionMethods.MethodObject = MockRepository.GenerateStrictMock<IComparableExtensionMethodsConcreteObject>();
 		}
 
 		[TearDown]
 		protected void TearDown()
 		{
-			PokerOdds.MethodObject = new PokerOdds(_utilitiesService);
+			PokerOdds.MethodObject = new PokerOdds();
 			IComparableExtensionMethods.MethodObject = new IComparableExtensionMethodsConcreteObject();
 		}
 
 		protected override void RegisterComponentsToWindsor(IWindsorContainer windsorContainer)
 		{
 			base.RegisterComponentsToWindsor(windsorContainer);
-			windsorContainer.Register(Component.For<IUtilitiesService>().Instance(_utilitiesService));
 			windsorContainer.Register(Component.For<IRandomNumberGenerator>().Instance(_randomNumberGenerator));
 			windsorContainer.Register(Component.For<IEqualityComparer<Card>>().Instance(new CardComparer()));
 			windsorContainer.Register(Component.For<IHandRankCalculator<PokerHandBasedHandRank, PokerHand>>().Instance(_handRankCalculator));
@@ -66,27 +63,27 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			var myHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 			var boardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 
-			var pokerOdds1 = MockRepository.GenerateStub<PokerOdds>(_utilitiesService);
+			var pokerOdds1 = MockRepository.GenerateStub<PokerOdds>();
 			_instance.Stub(x => x.InitializePokerOdds()).Return(pokerOdds1).Repeat.Once();
 			_instance.Expect(x => x.ExecuteCalculatePokerOddsForIteration(_deck, myHand, boardHand, numOpponents, pokerOdds1)).Repeat.Times(5);
 
-			var pokerOdds2 = MockRepository.GenerateStub<PokerOdds>(_utilitiesService);
+			var pokerOdds2 = MockRepository.GenerateStub<PokerOdds>();
 			_instance.Stub(x => x.InitializePokerOdds()).Return(pokerOdds2).Repeat.Once();
 			_instance.Expect(x => x.ExecuteCalculatePokerOddsForIteration(_deck, myHand, boardHand, numOpponents, pokerOdds2)).Repeat.Times(5);
 
-			var pokerOdds3 = MockRepository.GenerateStub<PokerOdds>(_utilitiesService);
+			var pokerOdds3 = MockRepository.GenerateStub<PokerOdds>();
 			_instance.Stub(x => x.InitializePokerOdds()).Return(pokerOdds3).Repeat.Once();
 			_instance.Expect(x => x.ExecuteCalculatePokerOddsForIteration(_deck, myHand, boardHand, numOpponents, pokerOdds3)).Repeat.Times(5);
 
-			var pokerOdds4 = MockRepository.GenerateStub<PokerOdds>(_utilitiesService);
+			var pokerOdds4 = MockRepository.GenerateStub<PokerOdds>();
 			_instance.Stub(x => x.InitializePokerOdds()).Return(pokerOdds4).Repeat.Once();
 			_instance.Expect(x => x.ExecuteCalculatePokerOddsForIteration(_deck, myHand, boardHand, numOpponents, pokerOdds4)).Repeat.Times(5);
 
-			var pokerOdds5 = MockRepository.GenerateStub<PokerOdds>(_utilitiesService);
+			var pokerOdds5 = MockRepository.GenerateStub<PokerOdds>();
 			_instance.Stub(x => x.InitializePokerOdds()).Return(pokerOdds5).Repeat.Once();
 			_instance.Expect(x => x.ExecuteCalculatePokerOddsForIteration(_deck, myHand, boardHand, numOpponents, pokerOdds5)).Repeat.Times(5);
 
-			var aggregatedPokerOdds = MockRepository.GenerateStrictMock<PokerOdds>(_utilitiesService);
+			var aggregatedPokerOdds = MockRepository.GenerateStrictMock<PokerOdds>();
 			PokerOdds.MethodObject.Stub(x =>
 					x.AggregatePokerOddsSlave(Arg<List<PokerOdds>>.Matches(y => y.Count == 5 &&
 																				y.Contains(pokerOdds1) &&
@@ -112,7 +109,7 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			//arrange
 			var myHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 			var boardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
-			var pokerOdds = MockRepository.GenerateStrictMock<PokerOdds>(_utilitiesService);
+			var pokerOdds = MockRepository.GenerateStrictMock<PokerOdds>();
 
 			var clonedDeck = MockRepository.GenerateStrictMock<Deck>();
 			_deck.Stub(x => x.Clone()).Return(clonedDeck);
@@ -166,7 +163,7 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			//arrange
 			var myHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 			var boardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
-			var pokerOdds = MockRepository.GenerateStrictMock<PokerOdds>(_utilitiesService);
+			var pokerOdds = MockRepository.GenerateStrictMock<PokerOdds>();
 
 			var clonedDeck = MockRepository.GenerateStrictMock<Deck>();
 			_deck.Stub(x => x.Clone()).Return(clonedDeck);
@@ -224,7 +221,7 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			//arrange
 			var myHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 			var boardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
-			var pokerOdds = MockRepository.GenerateStrictMock<PokerOdds>(_utilitiesService);
+			var pokerOdds = MockRepository.GenerateStrictMock<PokerOdds>();
 
 			var clonedDeck = MockRepository.GenerateStrictMock<Deck>();
 			_deck.Stub(x => x.Clone()).Return(clonedDeck);
@@ -283,7 +280,7 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			//arrange
 			var myHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
 			var boardHand = MockRepository.GenerateStrictMock<Hand>(new List<Card>());
-			var pokerOdds = MockRepository.GenerateStrictMock<PokerOdds>(_utilitiesService);
+			var pokerOdds = MockRepository.GenerateStrictMock<PokerOdds>();
 
 			var clonedDeck = MockRepository.GenerateStrictMock<Deck>();
 			_deck.Stub(x => x.Clone()).Return(clonedDeck);

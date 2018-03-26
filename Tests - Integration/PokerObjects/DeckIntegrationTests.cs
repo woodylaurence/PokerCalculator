@@ -22,7 +22,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			base.Setup();
 
 			_fakeRandomNumberGenerator = new FakeRandomNumberGenerator();
-			_instance = new Deck(_fakeRandomNumberGenerator, UtilitiesService);
+			_instance = new Deck(_fakeRandomNumberGenerator);
 		}
 
 		[TearDown]

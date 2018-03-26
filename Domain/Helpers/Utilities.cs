@@ -7,8 +7,10 @@ using System.Reflection;
 
 namespace PokerCalculator.Domain.Helpers
 {
-	public class UtilitiesService : IUtilitiesService
+	public class Utilities
 	{
+		internal static Utilities MethodObject = new Utilities();
+
 		#region GetEnumValues
 
 		/// <summary>
@@ -16,7 +18,8 @@ namespace PokerCalculator.Domain.Helpers
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <returns></returns>
-		public List<T> GetEnumValues<T>() where T : struct
+		public static List<T> GetEnumValues<T>() where T : struct => MethodObject.GetEnumValuesSlave<T>();
+		protected internal virtual List<T> GetEnumValuesSlave<T>() where T : struct
 		{
 			return Enum.GetValues(typeof(T)).Cast<T>().ToList();
 		}
@@ -25,14 +28,14 @@ namespace PokerCalculator.Domain.Helpers
 
 		#region GetEnumValueFromDescription
 
-		public T GetEnumValueFromDescription<T>(string description) where T : struct
+		public static T GetEnumValueFromDescription<T>(string description) where T : struct => MethodObject.GetEnumValueFromDescriptionSlave<T>(description);
+		protected internal virtual T GetEnumValueFromDescriptionSlave<T>(string description) where T : struct
 		{
 			var enumType = typeof(T);
 			if (enumType.IsEnum == false) throw new InvalidOperationException("Type to return must be an enum.");
 
 			var enumValueMatchingDescription = enumType.GetFields()
-													   .FirstOrDefault(x => x.GetCustomAttribute<DescriptionAttribute>()?.Description == description ||
-																			x.Name == description);
+													   .FirstOrDefault(x => x.GetCustomAttribute<DescriptionAttribute>()?.Description == description || x.Name == description);
 
 			if (enumValueMatchingDescription == null) throw new ArgumentException("Cannot find enum value by supplied string");
 			return (T)enumValueMatchingDescription.GetValue(null);
@@ -47,7 +50,8 @@ namespace PokerCalculator.Domain.Helpers
 		/// </summary>
 		/// <param name="ticks"></param>
 		/// <returns></returns>
-		public string GetTicksAsStringWithUnit(double ticks)
+		public static string GetTicksAsStringWithUnit(double ticks) => MethodObject.GetTicksAsStringWithUnitSlave(ticks);
+		protected internal virtual string GetTicksAsStringWithUnitSlave(double ticks)
 		{
 			var microseconds = 1000000 * ticks / Stopwatch.Frequency;
 			switch (microseconds)

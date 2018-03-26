@@ -1,7 +1,7 @@
-﻿using PokerCalculator.Domain.Helpers;
-using PokerCalculator.Domain.PokerEnums;
+﻿using PokerCalculator.Domain.PokerEnums;
 using System;
 using System.Text.RegularExpressions;
+using PokerCalculator.Domain.Helpers;
 
 namespace PokerCalculator.Domain.PokerObjects
 {
@@ -31,8 +31,7 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// 
 		/// </summary>
 		/// <param name="cardAsString"></param>
-		/// <param name="utilitiesService"></param>
-		public Card(string cardAsString, IUtilitiesService utilitiesService)
+		public Card(string cardAsString)
 		{
 			if (string.IsNullOrWhiteSpace(cardAsString)) throw new ArgumentException("Must provide string representation of Card");
 
@@ -41,8 +40,8 @@ namespace PokerCalculator.Domain.PokerObjects
 			var cardValueAsString = cardRegex.Match(cardAsString).Groups[1].Value.ToUpper();
 			var cardSuitAsString = cardRegex.Match(cardAsString).Groups[2].Value.ToUpper();
 
-			Value = utilitiesService.GetEnumValueFromDescription<CardValue>(cardValueAsString);
-			Suit = utilitiesService.GetEnumValueFromDescription<CardSuit>(cardSuitAsString);
+			Value = Utilities.GetEnumValueFromDescription<CardValue>(cardValueAsString);
+			Suit = Utilities.GetEnumValueFromDescription<CardSuit>(cardSuitAsString);
 		}
 
 		#endregion

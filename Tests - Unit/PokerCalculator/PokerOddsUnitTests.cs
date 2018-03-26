@@ -1,5 +1,4 @@
-﻿using Castle.MicroKernel.Registration;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerCalculator;
 using PokerCalculator.Domain.PokerEnums;
@@ -14,23 +13,26 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 	public class PokerOddsUnitTests : AbstractUnitTestBase
 	{
 		private PokerOdds _instance;
-		private IUtilitiesService _utilitiesService;
 
 		[SetUp]
 		protected override void Setup()
 		{
 			base.Setup();
 
-			_utilitiesService = new UtilitiesService();
-			_instance = MockRepository.GeneratePartialMock<PokerOdds>(_utilitiesService);
+			Utilities.MethodObject = MockRepository.GenerateStrictMock<Utilities>();
+			Utilities.MethodObject.Stub(x => x.GetEnumValuesSlave<PokerHand>()).Return(new List<PokerHand>()).Repeat.Times(2);
 
-			PokerOdds.MethodObject = MockRepository.GenerateStrictMock<PokerOdds>(_utilitiesService);
+			_instance = MockRepository.GeneratePartialMock<PokerOdds>();
+
+			PokerOdds.MethodObject = MockRepository.GenerateStrictMock<PokerOdds>();
 		}
 
 		[TearDown]
 		protected void TearDown()
 		{
-			PokerOdds.MethodObject = new PokerOdds(new UtilitiesService());
+			Utilities.MethodObject.Stub(x => x.GetEnumValuesSlave<PokerHand>()).Return(new List<PokerHand>()).Repeat.Once();
+			PokerOdds.MethodObject = new PokerOdds();
+			Utilities.MethodObject = new Utilities();
 		}
 
 		#region Properties and Fields
@@ -218,8 +220,7 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 		public void Constructor()
 		{
 			//arrange
-			_utilitiesService = MockRepository.GenerateStrictMock<IUtilitiesService>();
-			_utilitiesService.Stub(x => x.GetEnumValues<PokerHand>()).Return(new List<PokerHand>
+			Utilities.MethodObject.Stub(x => x.GetEnumValuesSlave<PokerHand>()).Return(new List<PokerHand>
 			{
 				PokerHand.Flush,
 				PokerHand.Pair,
@@ -227,7 +228,7 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			});
 
 			//act
-			var actual = new PokerOdds(_utilitiesService);
+			var actual = new PokerOdds();
 
 			//assert
 			Assert.That(actual.PokerHandFrequencies, Has.Count.EqualTo(3));
@@ -245,7 +246,8 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 		public void AggregatePokerOdds_calls_slave()
 		{
 			//arrange
-			var pokerOdds = new List<PokerOdds> { new PokerOdds(_utilitiesService) };
+			Utilities.MethodObject.Stub(x => x.GetEnumValuesSlave<PokerHand>()).Return(new List<PokerHand>());
+			var pokerOdds = new List<PokerOdds> { new PokerOdds() };
 			PokerOdds.MethodObject.Stub(x => x.AggregatePokerOddsSlave(pokerOdds)).Return(_instance);
 
 			//act
@@ -259,8 +261,8 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 		public void AggregatePokerOdds_WHERE_single_item_supplied_SHOULD_throw_error()
 		{
 			//arrange
-			var pokerOdds = MockRepository.GenerateStrictMock<PokerOdds>(_utilitiesService);
-			WindsorContainer.Register(Component.For<IUtilitiesService>().Instance(_utilitiesService));
+			Utilities.MethodObject.Stub(x => x.GetEnumValuesSlave<PokerHand>()).Return(new List<PokerHand>());
+			var pokerOdds = MockRepository.GenerateStrictMock<PokerOdds>();
 
 			//act + assert
 			var actualException = Assert.Throws<ArgumentException>(() => _instance.AggregatePokerOddsSlave(new List<PokerOdds> { pokerOdds }));
