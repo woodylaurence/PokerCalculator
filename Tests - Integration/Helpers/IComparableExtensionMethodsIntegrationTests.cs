@@ -15,7 +15,6 @@ namespace PokerCalculator.Tests.Integration.Helpers
 			_comparableObject = new ComparableObject { IntegerField = 10 };
 		}
 
-
 		#region IsLessThan
 
 		[Test]
