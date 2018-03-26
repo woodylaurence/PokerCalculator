@@ -51,18 +51,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HandRankCalculator\HandRankCalculatorIntegrationTests.cs" />
+    <Compile Include="Helpers\IComparableExtensionMethodsIntegrationTests.cs" />
     <Compile Include="LocalTestBase.cs" />
-    <Compile Include="PokerCalculator\PercentageWithErrorIntegrationTests.cs" />
-    <Compile Include="PokerCalculator\PokerCalculatorIntegrationTests.cs" />
+    <Compile Include="Helpers\PercentageWithErrorIntegrationTests.cs" />
+    <Compile Include="PokerCalculator\BasePokerCalculatorIntegrationTests.cs" />
+    <Compile Include="PokerCalculator\PokerHandBasedHandRankPokerCalculatorIntegrationTests.cs" />
     <Compile Include="PokerObjects\DeckIntegrationTests.cs" />
-    <Compile Include="PokerObjects\HandRankIntegrationTests.cs" />
+    <Compile Include="HandRankCalculator\PokerHandBasedHandRankIntegrationTests.cs" />
     <Compile Include="PokerCalculator\PokerOddsIntegrationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PokerObjects\CardIntegrationTests.cs" />
     <Compile Include="PokerObjects\HandIntegrationTests.cs" />
     <Compile Include="Helpers\CardComparerIntegrationTests.cs" />
-    <Compile Include="HandRankCalculator\BaseHandRankCalculatorIntegrationTests.cs" />
+    <Compile Include="HandRankCalculator\PokerHandBasedHandRankCalculatorIntegrationTests.cs" />
     <Compile Include="Helpers\UtilitiesIntegrationTests.cs" />
   </ItemGroup>
   <ItemGroup>

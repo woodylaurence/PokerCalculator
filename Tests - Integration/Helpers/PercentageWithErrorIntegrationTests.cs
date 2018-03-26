@@ -3,7 +3,7 @@ using PokerCalculator.Domain.Helpers;
 using System;
 using System.Collections.Generic;
 
-namespace PokerCalculator.Tests.Integration.PokerCalculator
+namespace PokerCalculator.Tests.Integration.Helpers
 {
 	[TestFixture]
 	public class PercentageWithErrorIntegrationTests : LocalTestBase

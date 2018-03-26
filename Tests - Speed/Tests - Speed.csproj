@@ -51,10 +51,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HandRankCalculator\BaseHandRankCalculatorSpeedTests.cs" />
-    <Compile Include="HandRankCalculator\HandRankCalculatorSpeedTests.cs" />
+    <Compile Include="HandRankCalculator\PokerHandBasedHandRankCalculatorSpeedTests.cs" />
     <Compile Include="LocalTestBase.cs" />
     <Compile Include="PokerCalculator\BasePokerCalculatorSpeedTests.cs" />
-    <Compile Include="PokerCalculator\PokerCalculatorWithHandRankCalculatorSpeedTests.cs" />
+    <Compile Include="PokerCalculator\PokerCalculatorWithPokerHandBasedHandRankCalculatorSpeedTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

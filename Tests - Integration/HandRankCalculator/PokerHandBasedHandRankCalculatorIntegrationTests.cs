@@ -1,4 +1,7 @@
-﻿using NUnit.Framework;
+﻿using Castle.MicroKernel.Registration;
+using Castle.Windsor;
+using Microsoft.Practices.ServiceLocation;
+using NUnit.Framework;
 using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
@@ -6,10 +9,24 @@ using System.Collections.Generic;
 
 namespace PokerCalculator.Tests.Integration.HandRankCalculator
 {
-	public abstract class BaseHandRankCalculatorIntegrationTests : LocalTestBase
+	[TestFixture]
+	public class PokerHandBasedHandRankCalculatorIntegrationTests : LocalTestBase
 	{
-		protected IHandRankCalculator _instance;
+		protected IHandRankCalculator<PokerHandBasedHandRank, PokerHand> _instance;
 		private Hand _hand;
+
+		[SetUp]
+		protected override void Setup()
+		{
+			base.Setup();
+			_instance = ServiceLocator.Current.GetInstance<IHandRankCalculator<PokerHandBasedHandRank, PokerHand>>();
+		}
+
+		protected override void RegisterComponentsToWindsor(IWindsorContainer windsorContainer)
+		{
+			base.RegisterComponentsToWindsor(windsorContainer);
+			windsorContainer.Register(Component.For<IHandRankCalculator<PokerHandBasedHandRank, PokerHand>>().ImplementedBy<PokerHandBasedHandRankCalculator>());
+		}
 
 		#region CalculateHandRank
 
@@ -38,6 +55,7 @@ namespace PokerCalculator.Tests.Integration.HandRankCalculator
 
 			//assert
 			Assert.That(actual.PokerHand, Is.EqualTo(PokerHand.RoyalFlush));
+
 			Assert.That(actual.KickerCardValues, Is.Empty);
 		}
 

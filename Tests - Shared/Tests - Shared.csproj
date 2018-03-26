@@ -63,6 +63,7 @@
     <Compile Include="TestData\PokerHandComparisonTestCaseData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestData\CardTestCaseData.cs" />
+    <Compile Include="TestObjects\ComparableObject.cs" />
     <Compile Include="TestObjects\FakeRandomNumberGenerator.cs" />
     <Compile Include="TestObjects\TestEnum.cs" />
   </ItemGroup>

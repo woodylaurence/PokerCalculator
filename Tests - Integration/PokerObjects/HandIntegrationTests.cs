@@ -1,7 +1,4 @@
-﻿using Castle.MicroKernel.Registration;
-using Castle.Windsor;
-using NUnit.Framework;
-using PokerCalculator.Domain.HandRankCalculator;
+﻿using NUnit.Framework;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using System.Collections.Generic;
@@ -20,60 +17,6 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 
 			_instance = new Hand(new List<Card>());
 		}
-
-		protected override void RegisterComponentsToWindsor(IWindsorContainer windsorContainer)
-		{
-			base.RegisterComponentsToWindsor(windsorContainer);
-			windsorContainer.Register(Component.For<IHandRankCalculator>().ImplementedBy<Domain.HandRankCalculator.HandRankCalculator>());
-		}
-
-		#region Properties and Fields
-
-		[Test]
-		public void Rank_get_WHERE_backing_field_already_set_SHOULD_return_value_of_backing_field()
-		{
-			//arrange
-			var handRank = new HandRank(PokerHand.Pair);
-			_instance._rank = handRank;
-
-			//act
-			var actual = _instance.Rank;
-
-			//assert
-			Assert.That(actual, Is.EqualTo(handRank));
-		}
-
-		[Test]
-		public void Rank_get_WHERE_backing_field_is_null_SHOULD_calculate_value_and_set_backing_field_and_return_rank()
-		{
-			//arrange
-			_instance._rank = null;
-			_instance.AddCard(new Card(CardValue.Queen, CardSuit.Diamonds));
-			_instance.AddCard(new Card(CardValue.Queen, CardSuit.Clubs));
-
-			//act
-			var actual = _instance.Rank;
-
-			//assert
-			Assert.That(actual, Is.Not.Null);
-			Assert.That(_instance._rank, Is.Not.Null);
-		}
-
-		[Test]
-		public void Rank_set_SHOULD_set_backing_field_value()
-		{
-			//arrange
-			var handRank = new HandRank(PokerHand.Straight);
-
-			//act
-			_instance.Rank = handRank;
-
-			//assert
-			Assert.That(_instance.Rank, Is.EqualTo(handRank));
-			Assert.That(_instance._rank, Is.EqualTo(handRank));
-		}
-
-		#endregion
 
 		#region Constructor
 
@@ -140,7 +83,6 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		{
 			//arrange
 			var cardToAdd = new Card(CardValue.Four, CardSuit.Hearts);
-			_instance.Rank = new HandRank(PokerHand.Flush);
 
 			//act
 			_instance.AddCard(cardToAdd);
@@ -148,7 +90,6 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			//assert
 			Assert.That(_instance.Cards, Has.Count.EqualTo(1));
 			Assert.That(_instance.Cards, Has.Some.EqualTo(cardToAdd));
-			Assert.That(_instance._rank, Is.Null);
 		}
 
 		[Test]
@@ -157,7 +98,6 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			//arrange
 			var initialCard = new Card(CardValue.Ten, CardSuit.Diamonds);
 			_instance.AddCard(initialCard);
-			_instance.Rank = new HandRank(PokerHand.ThreeOfAKind);
 
 			var cardToAdd = new Card(CardValue.Seven, CardSuit.Spades);
 
@@ -168,7 +108,6 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			Assert.That(_instance.Cards, Has.Count.EqualTo(2));
 			Assert.That(_instance.Cards, Has.Some.EqualTo(initialCard));
 			Assert.That(_instance.Cards, Has.Some.EqualTo(cardToAdd));
-			Assert.That(_instance._rank, Is.Null);
 		}
 
 		#endregion

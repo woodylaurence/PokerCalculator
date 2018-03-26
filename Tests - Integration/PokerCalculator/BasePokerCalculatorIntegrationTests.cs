@@ -2,7 +2,6 @@
 using Castle.Windsor;
 using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
-using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerCalculator;
 using PokerCalculator.Domain.PokerEnums;
@@ -13,8 +12,7 @@ using System.Configuration;
 
 namespace PokerCalculator.Tests.Integration.PokerCalculator
 {
-	[TestFixture]
-	public class PokerCalculatorIntegrationTests : LocalTestBase
+	public abstract class BasePokerCalculatorIntegrationTests : LocalTestBase
 	{
 		private IPokerCalculator _instance;
 		private IRandomNumberGenerator _randomNumberGenerator;
@@ -35,8 +33,6 @@ namespace PokerCalculator.Tests.Integration.PokerCalculator
 		{
 			base.RegisterComponentsToWindsor(windsorContainer);
 			windsorContainer.Register(Component.For<IRandomNumberGenerator>().Instance(_randomNumberGenerator));
-			windsorContainer.Register(Component.For<IHandRankCalculator>().ImplementedBy<Domain.HandRankCalculator.HandRankCalculator>());
-			windsorContainer.Register(Component.For<IPokerCalculator>().ImplementedBy<Domain.PokerCalculator.PokerCalculator>());
 		}
 
 		[TearDown]

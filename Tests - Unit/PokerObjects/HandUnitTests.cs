@@ -15,7 +15,6 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 	{
 		private Hand _instance;
 		private IEqualityComparer<Card> _cardComparer;
-		private IHandRankCalculator _handRankCalculator;
 
 		[SetUp]
 		protected override void Setup()
@@ -23,65 +22,11 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			base.Setup();
 
 			_cardComparer = MockRepository.GenerateStrictMock<IEqualityComparer<Card>>();
-			_handRankCalculator = MockRepository.GenerateStrictMock<IHandRankCalculator>();
 
-			_instance = MockRepository.GeneratePartialMock<Hand>(new List<Card>(), _cardComparer, _handRankCalculator);
+			_instance = MockRepository.GeneratePartialMock<Hand>(new List<Card>(), _cardComparer);
 
 			WindsorContainer.Register(Component.For<IEqualityComparer<Card>>().Instance(_cardComparer));
-			WindsorContainer.Register(Component.For<IHandRankCalculator>().Instance(_handRankCalculator));
 		}
-
-		#region Properties and Fields
-
-		[Test]
-		public void Rank_get_WHERE_backing_field_has_already_been_set_SHOULD_return_value_of_backing_field()
-		{
-			//arrange
-			var handRank = new HandRank(PokerHand.HighCard);
-			_instance.Stub(x => x._rank).Return(handRank);
-
-			//act
-			var actual = _instance.Rank;
-
-			//assert
-			Assert.That(actual, Is.EqualTo(handRank));
-			_handRankCalculator.AssertWasNotCalled(x => x.CalculateHandRank(_instance));
-		}
-
-		[Test]
-		public void Rank_get_WHERE_backing_field_is_null_SHOULD_return_calculate_value_of_rank_set_backing_field_and_return_rank()
-		{
-			//arrange
-			_instance.Stub(x => x._rank).Return(null).Repeat.Once();
-
-			var handRank = new HandRank(PokerHand.ThreeOfAKind);
-			_handRankCalculator.Stub(x => x.CalculateHandRank(_instance)).Return(handRank);
-
-			_instance.Expect(x => x._rank = handRank);
-
-			//act
-			var actual = _instance.Rank;
-
-			//assert
-			_instance.VerifyAllExpectations();
-			Assert.That(actual, Is.EqualTo(handRank));
-		}
-
-		[Test]
-		public void Rank_set_SHOULD_set_value_of_backing_field()
-		{
-			//arrange
-			var handRank = new HandRank(PokerHand.FullHouse);
-			_instance.Expect(x => x._rank = handRank);
-
-			//act
-			_instance.Rank = handRank;
-
-			//assert
-			_instance.VerifyAllExpectations();
-		}
-
-		#endregion
 
 		#region Constructor
 
@@ -127,7 +72,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			};
 
 			//act + assert
-			var actualException = Assert.Throws<ArgumentException>(() => new Hand(cards, _cardComparer, _handRankCalculator));
+			var actualException = Assert.Throws<ArgumentException>(() => new Hand(cards, _cardComparer));
 			Assert.That(actualException.Message, Is.EqualTo("A Hand cannot contain more than seven cards\r\nParameter name: cards"));
 			Assert.That(actualException.ParamName, Is.EqualTo("cards"));
 		}
@@ -151,7 +96,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			_cardComparer.Stub(x => x.GetHashCode(card3)).Return(3);
 
 			//act + assert
-			var actualException = Assert.Throws<ArgumentException>(() => new Hand(cards, _cardComparer, _handRankCalculator));
+			var actualException = Assert.Throws<ArgumentException>(() => new Hand(cards, _cardComparer));
 			Assert.That(actualException.Message, Is.EqualTo("A Hand cannot contain duplicate cards\r\nParameter name: cards"));
 			Assert.That(actualException.ParamName, Is.EqualTo("cards"));
 		}
@@ -171,7 +116,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			_cardComparer.Stub(x => x.GetHashCode(card3)).Return(3);
 
 			//act
-			var actual = new Hand(cards, _cardComparer, _handRankCalculator);
+			var actual = new Hand(cards, _cardComparer);
 
 			//assert
 			Assert.That(actual.Cards, Is.Not.SameAs(cards));
@@ -298,8 +243,6 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			var handCards = new List<Card> { existingCard };
 			_instance.Stub(x => x.Cards).Return(handCards);
 
-			_instance.Expect(x => x.Rank = null);
-
 			//act
 			_instance.AddCards(new List<Card>());
 
@@ -323,8 +266,6 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			var existingcard2 = new Card(CardValue.Ace, CardSuit.Clubs);
 			var handCards = new List<Card> { existingcard1, existingcard2 };
 			_instance.Stub(x => x.Cards).Return(handCards);
-
-			_instance.Expect(x => x.Rank = null);
 
 			//act
 			_instance.AddCards(cardsToAdd);
@@ -351,8 +292,6 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			var existingcard2 = new Card(CardValue.Ace, CardSuit.Clubs);
 			var handCards = new List<Card> { existingcard1, existingcard2 };
 			_instance.Stub(x => x.Cards).Return(handCards);
-
-			_instance.Expect(x => x.Rank = null);
 
 			//act
 			_instance.AddCards(cardsToAdd);
