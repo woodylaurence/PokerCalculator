@@ -31,7 +31,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		public void Constructor_string_WHERE_different_casing_SHOULD_not_care_about_casing(string stringValue, CardValue expectedValue, CardSuit expectedSuit)
 		{
 			//act
-			var actual = new Card(stringValue, UtilitiesService);
+			var actual = new Card(stringValue);
 
 			//assert
 			Assert.That(actual.Value, Is.EqualTo(expectedValue));
@@ -42,7 +42,7 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		public void Constructor_string(string cardAsString, CardValue expectedCardValue, CardSuit expectedCardSuit)
 		{
 			//act
-			var actual = new Card(cardAsString, UtilitiesService);
+			var actual = new Card(cardAsString);
 
 			//assert
 			Assert.That(actual.Value, Is.EqualTo(expectedCardValue));

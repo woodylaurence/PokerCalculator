@@ -22,7 +22,6 @@ namespace PokerCalculator.App
 
 		private static void RegisterComponentsToWindsor(IWindsorContainer container)
 		{
-			container.Register(Component.For<IUtilitiesService>().ImplementedBy<UtilitiesService>().LifestyleTransient());
 			container.Register(Component.For<IEqualityComparer<Card>>().ImplementedBy<CardComparer>().LifestyleTransient());
 			container.Register(Component.For<IRandomNumberGenerator>().ImplementedBy<RandomNumberGenerator>().LifestyleTransient());
 			container.Register(Component.For<IHandRankCalculator<PokerHandBasedHandRank, PokerHand>>().ImplementedBy<PokerHandBasedHandRankCalculator>().LifestyleTransient());

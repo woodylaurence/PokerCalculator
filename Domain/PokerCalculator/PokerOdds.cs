@@ -1,7 +1,6 @@
-﻿using System;
-using Microsoft.Practices.ServiceLocation;
-using PokerCalculator.Domain.Helpers;
+﻿using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerEnums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,7 +10,7 @@ namespace PokerCalculator.Domain.PokerCalculator
 	{
 		#region Properties and Fields
 
-		internal static PokerOdds MethodObject = new PokerOdds(new UtilitiesService());
+		internal static PokerOdds MethodObject = new PokerOdds();
 
 		protected internal virtual int NumWins { get; set; }
 		protected internal virtual int NumDraws { get; set; }
@@ -38,9 +37,9 @@ namespace PokerCalculator.Domain.PokerCalculator
 
 		#region Constructor
 
-		public PokerOdds(IUtilitiesService utilitiesService)
+		public PokerOdds()
 		{
-			PokerHandFrequencies = utilitiesService.GetEnumValues<PokerHand>().ToDictionary(x => x, x => 0);
+			PokerHandFrequencies = Utilities.GetEnumValues<PokerHand>().ToDictionary(x => x, x => 0);
 		}
 
 		#endregion
@@ -57,8 +56,7 @@ namespace PokerCalculator.Domain.PokerCalculator
 		{
 			if (pokerOdds.Count < 2) throw new ArgumentException("Cannot aggregate less than two PokerOdds.");
 
-			var utilitiesService = ServiceLocator.Current.GetInstance<IUtilitiesService>();
-			return new PokerOdds(utilitiesService)
+			return new PokerOdds
 			{
 				WinPercentageWithError = new PercentageWithError(pokerOdds.Select(x => x.WinPercentage).ToList()),
 				DrawPercentageWithError = new PercentageWithError(pokerOdds.Select(x => x.DrawPercentage).ToList()),

@@ -28,7 +28,7 @@ namespace PokerCalculator.Tests.Speed.HandRankCalculator
 		{
 			//arrange
 			var deck = new Deck();
-			var handRankSpeedResults = new HandRankSpeedResults(UtilitiesService);
+			var handRankSpeedResults = new HandRankSpeedResults();
 
 			//act
 			const int numIterations = 500000;
@@ -44,24 +44,21 @@ namespace PokerCalculator.Tests.Speed.HandRankCalculator
 			}
 
 			handRankSpeedResults.DisplaySpeedResults();
+			handRankSpeedResults.DisplayPreviousSpeedResults();
 		}
 
 		private class HandRankSpeedResults
 		{
-			private readonly IUtilitiesService _utilitiesService;
-
 			private long TotalCalculationTime => HandRankCalculationTimes.Sum(x => x.Value);
 			private Dictionary<PokerHand, double> HandRankAverageCalculationTimes => HandRankCalculationTimes.ToDictionary(x => x.Key, x => HandRankFrequency[x.Key] == 0 ? 0 : x.Value / (double)HandRankFrequency[x.Key]);
 
 			public Dictionary<PokerHand, long> HandRankCalculationTimes { get; }
 			public Dictionary<PokerHand, int> HandRankFrequency { get; }
 
-			public HandRankSpeedResults(IUtilitiesService utilitiesService)
+			public HandRankSpeedResults()
 			{
-				_utilitiesService = utilitiesService;
-
-				HandRankCalculationTimes = _utilitiesService.GetEnumValues<PokerHand>().ToDictionary(x => x, x => 0L);
-				HandRankFrequency = _utilitiesService.GetEnumValues<PokerHand>().ToDictionary(x => x, x => 0);
+				HandRankCalculationTimes = Utilities.GetEnumValues<PokerHand>().ToDictionary(x => x, x => 0L);
+				HandRankFrequency = Utilities.GetEnumValues<PokerHand>().ToDictionary(x => x, x => 0);
 			}
 
 			public void DisplaySpeedResults()
@@ -73,9 +70,34 @@ namespace PokerCalculator.Tests.Speed.HandRankCalculator
 				{
 					var pokerHand = handRankSpeedResult.Key;
 					var displayPokerHand = pokerHand.ToString().PadRight(14);
-					var averageTimeAsString = _utilitiesService.GetTicksAsStringWithUnit(handRankSpeedResult.Value);
-					var totalTimeAsString = _utilitiesService.GetTicksAsStringWithUnit(HandRankCalculationTimes[pokerHand]);
+					var averageTimeAsString = Utilities.GetTicksAsStringWithUnit(handRankSpeedResult.Value);
+					var totalTimeAsString = Utilities.GetTicksAsStringWithUnit(HandRankCalculationTimes[pokerHand]);
 					Console.WriteLine($"{displayPokerHand} : Total time - {totalTimeAsString.PadRight(11)}\tAverage time - {averageTimeAsString}");
+				}
+			}
+
+			public void DisplayPreviousSpeedResults()
+			{
+				Console.WriteLine("\r\nPrevious version");
+
+				var oldHandRankAverageCalculationTimes = new Dictionary<PokerHand, string>
+				{
+					{ PokerHand.HighCard, "19.2μs" },
+					{ PokerHand.Pair, "19.1μs" },
+					{ PokerHand.TwoPair, "17.6μs" },
+					{ PokerHand.ThreeOfAKind, "18.3μs" },
+					{ PokerHand.Straight, "14.2μs" },
+					{ PokerHand.Flush, "15.0μs" },
+					{ PokerHand.FullHouse, "16.4" },
+					{ PokerHand.FourOfAKind, "25.1μs" },
+					{ PokerHand.StraightFlush, "13.2μs" },
+					{ PokerHand.RoyalFlush, "13.3μs" }
+				};
+
+
+				foreach (var handRankSpeedResult in oldHandRankAverageCalculationTimes)
+				{
+					Console.WriteLine($"{handRankSpeedResult.Key.ToString().PadRight(14)} : Average time - {handRankSpeedResult.Value}");
 				}
 			}
 		}

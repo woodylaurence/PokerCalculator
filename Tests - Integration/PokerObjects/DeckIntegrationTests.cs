@@ -1,4 +1,5 @@
 ﻿using Castle.MicroKernel.Registration;
+using Castle.Windsor;
 using NUnit.Framework;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerEnums;
@@ -22,7 +23,13 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			base.Setup();
 
 			_fakeRandomNumberGenerator = new FakeRandomNumberGenerator();
-			_instance = new Deck(_fakeRandomNumberGenerator, UtilitiesService);
+			_instance = new Deck(_fakeRandomNumberGenerator);
+		}
+
+		protected override void RegisterComponentsToWindsor(IWindsorContainer windsorContainer)
+		{
+			base.RegisterComponentsToWindsor(windsorContainer);
+			windsorContainer.Register(Component.For<IRandomNumberGenerator>().ImplementedBy<FakeRandomNumberGenerator>().LifestyleTransient());
 		}
 
 		[TearDown]
@@ -36,9 +43,6 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		[Test]
 		public void Constructor_SHOULD_return_deck_full_of_every_card()
 		{
-			//arrange
-			WindsorContainer.Register(Component.For<IRandomNumberGenerator>().Instance(_fakeRandomNumberGenerator));
-
 			//act
 			var actual = new Deck();
 
@@ -65,6 +69,29 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 			{
 				Assert.That(_instance.Cards[i], Is.EqualTo(allCards[i]).Using(CardComparer));
 			}
+		}
+
+		[Test]
+		public void Constructor_with_cards_SHOULD_return_deck_with_supplied_cards()
+		{
+			//arrange
+			var originalDeck = new Deck();
+
+			originalDeck.RemoveCard(CardValue.Ace, CardSuit.Diamonds);
+			originalDeck.RemoveCard(CardValue.Jack, CardSuit.Hearts);
+			originalDeck.RemoveCard(CardValue.Ace, CardSuit.Spades);
+
+			//act
+			var actual = new Deck(originalDeck.Cards);
+
+			//assert
+			Assert.That(actual.Cards, Has.Count.EqualTo(49));
+			Assert.That(actual.Cards, Has.None.EqualTo(new Card(CardValue.Ace, CardSuit.Diamonds)).Using(CardComparer));
+			Assert.That(actual.Cards, Has.None.EqualTo(new Card(CardValue.Jack, CardSuit.Hearts)).Using(CardComparer));
+			Assert.That(actual.Cards, Has.None.EqualTo(new Card(CardValue.Ace, CardSuit.Spades)).Using(CardComparer));
+
+			originalDeck.RemoveCard(CardValue.Five, CardSuit.Diamonds);
+			Assert.That(actual.Cards, Has.Some.EqualTo(new Card(CardValue.Five, CardSuit.Diamonds)).Using(CardComparer));
 		}
 
 		#endregion
@@ -95,8 +122,6 @@ namespace PokerCalculator.Tests.Integration.PokerObjects
 		public void Clone()
 		{
 			//arrange
-			WindsorContainer.Register(Component.For<IRandomNumberGenerator>().ImplementedBy<FakeRandomNumberGenerator>().LifestyleTransient());
-
 			_instance.TakeRandomCards(4);
 			ConfigurationManager.AppSettings["PokerCalculator.Helpers.FakeRandomNumberGenerator.RandomSeedingValue"] = "123456789";
 

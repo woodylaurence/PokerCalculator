@@ -12,25 +12,33 @@ namespace PokerCalculator.Domain.PokerObjects
 		#region Properties and Fields
 
 		private IRandomNumberGenerator _randomNumberGenerator { get; }
-		private IUtilitiesService _utilities { get; }
 		public virtual List<Card> Cards { get; set; }
 
 		#endregion
 
-		#region Constructor
+		#region Constructors
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public Deck() : this(ServiceLocator.Current.GetInstance<IRandomNumberGenerator>(), ServiceLocator.Current.GetInstance<IUtilitiesService>()) { }
-		public Deck(IRandomNumberGenerator randomNumberGenerator, IUtilitiesService utilitiesService)
+		public Deck() : this(ServiceLocator.Current.GetInstance<IRandomNumberGenerator>()) { }
+		public Deck(IRandomNumberGenerator randomNumberGenerator)
 		{
 			_randomNumberGenerator = randomNumberGenerator;
-			_utilities = utilitiesService;
 
-			var cardSuits = utilitiesService.GetEnumValues<CardSuit>();
-			var cardValues = utilitiesService.GetEnumValues<CardValue>();
+			var cardSuits = Utilities.GetEnumValues<CardSuit>();
+			var cardValues = Utilities.GetEnumValues<CardValue>();
 			Cards = cardSuits.SelectMany(suit => cardValues.Select(value => new Card(value, suit))).ToList();
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="cards"></param>
+		public Deck(List<Card> cards)
+		{
+			_randomNumberGenerator = ServiceLocator.Current.GetInstance<IRandomNumberGenerator>();
+			Cards = cards.ToList();
 		}
 
 		#endregion
@@ -57,10 +65,7 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// <returns></returns>
 		public virtual Deck Clone()
 		{
-			return new Deck
-			{
-				Cards = Cards.ToList()
-			};
+			return new Deck(Cards);
 		}
 
 		#endregion

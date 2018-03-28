@@ -1,5 +1,6 @@
 ﻿using Microsoft.Practices.ServiceLocation;
 using NUnit.Framework;
+using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerCalculator;
 using PokerCalculator.Domain.PokerObjects;
 using System;
@@ -36,9 +37,12 @@ namespace PokerCalculator.Tests.Speed.PokerCalculator
 			_instance.CalculatePokerOdds(deck, myHand, boardHand, 2, numIterations);
 
 			var averageTicksPerIteration = stopwatch.ElapsedTicks / numIterations;
-			Console.WriteLine($"Average time per iteration: {UtilitiesService.GetTicksAsStringWithUnit(averageTicksPerIteration)}");
+			Console.WriteLine($"Average time per iteration: {Utilities.GetTicksAsStringWithUnit(averageTicksPerIteration)}");
 			Console.WriteLine($"Maximum iterations possible in 1 second: {TimeSpan.TicksPerSecond / averageTicksPerIteration:N0}");
-			Console.WriteLine($"Time for 1,000,000 simulations: {UtilitiesService.GetTicksAsStringWithUnit(averageTicksPerIteration * 1000000)}");
+			Console.WriteLine($"Time for 1,000,000 simulations: {Utilities.GetTicksAsStringWithUnit(averageTicksPerIteration * 1000000)}");
+
+			Console.WriteLine("\r\nPrevious verison");
+			Console.WriteLine("Average time per iteration: 164.9μs");
 		}
 
 		[Test]
@@ -57,9 +61,12 @@ namespace PokerCalculator.Tests.Speed.PokerCalculator
 			_instance.CalculatePokerOdds(deck, myHand, boardHand, 5, numIterations);
 
 			var averageTicksPerIteration = stopwatch.ElapsedTicks / numIterations;
-			Console.WriteLine($"Average time per iteration: {UtilitiesService.GetTicksAsStringWithUnit(averageTicksPerIteration)}");
+			Console.WriteLine($"Average time per iteration: {Utilities.GetTicksAsStringWithUnit(averageTicksPerIteration)}");
 			Console.WriteLine($"Maximum iterations possible in 1 second: {TimeSpan.TicksPerSecond / averageTicksPerIteration:N0}");
-			Console.WriteLine($"Time for 1,000,000 simulations: {UtilitiesService.GetTicksAsStringWithUnit(averageTicksPerIteration * 1000000)}");
+			Console.WriteLine($"Time for 1,000,000 simulations: {Utilities.GetTicksAsStringWithUnit(averageTicksPerIteration * 1000000)}");
+
+			Console.WriteLine("\r\nPrevious verison");
+			Console.WriteLine("Average time per iteration: 168.5μs");
 		}
 
 		[Test]
@@ -79,9 +86,12 @@ namespace PokerCalculator.Tests.Speed.PokerCalculator
 			_instance.CalculatePokerOdds(deck, myHand, boardHand, 2, numIterations);
 
 			var averageTicksPerIteration = stopwatch.ElapsedTicks / numIterations;
-			Console.WriteLine($"Average time per iteration: {UtilitiesService.GetTicksAsStringWithUnit(averageTicksPerIteration)}");
+			Console.WriteLine($"Average time per iteration: {Utilities.GetTicksAsStringWithUnit(averageTicksPerIteration)}");
 			Console.WriteLine($"Maximum iterations possible in 1 second: {TimeSpan.TicksPerSecond / averageTicksPerIteration:N0}");
-			Console.WriteLine($"Time for 1,000,000 simulations: {UtilitiesService.GetTicksAsStringWithUnit(averageTicksPerIteration * 1000000)}");
+			Console.WriteLine($"Time for 1,000,000 simulations: {Utilities.GetTicksAsStringWithUnit(averageTicksPerIteration * 1000000)}");
+
+			Console.WriteLine("\r\nPrevious verison");
+			Console.WriteLine("Average time per iteration: 101.6μs");
 		}
 
 		[Test]
@@ -103,9 +113,12 @@ namespace PokerCalculator.Tests.Speed.PokerCalculator
 			_instance.CalculatePokerOdds(deck, myHand, boardHand, 2, numIterations);
 
 			var averageTicksPerIteration = stopwatch.ElapsedTicks / numIterations;
-			Console.WriteLine($"Average time per iteration: {UtilitiesService.GetTicksAsStringWithUnit(averageTicksPerIteration)}");
+			Console.WriteLine($"Average time per iteration: {Utilities.GetTicksAsStringWithUnit(averageTicksPerIteration)}");
 			Console.WriteLine($"Maximum iterations possible in 1 second: {TimeSpan.TicksPerSecond / averageTicksPerIteration:N0}");
-			Console.WriteLine($"Time for 1,000,000 simulations: {UtilitiesService.GetTicksAsStringWithUnit(averageTicksPerIteration * 1000000)}");
+			Console.WriteLine($"Time for 1,000,000 simulations: {Utilities.GetTicksAsStringWithUnit(averageTicksPerIteration * 1000000)}");
+
+			Console.WriteLine("\r\nPrevious verison");
+			Console.WriteLine("Average time per iteration: 100.5μs");
 		}
 
 		[Test]
@@ -127,9 +140,12 @@ namespace PokerCalculator.Tests.Speed.PokerCalculator
 			_instance.CalculatePokerOdds(deck, myHand, boardHand, 2, numIterations);
 
 			var averageTicksPerIteration = stopwatch.ElapsedTicks / numIterations;
-			Console.WriteLine($"Average time per iteration: {UtilitiesService.GetTicksAsStringWithUnit(averageTicksPerIteration)}");
+			Console.WriteLine($"Average time per iteration: {Utilities.GetTicksAsStringWithUnit(averageTicksPerIteration)}");
 			Console.WriteLine($"Maximum iterations possible in 1 second: {TimeSpan.TicksPerSecond / averageTicksPerIteration:N0}");
-			Console.WriteLine($"Time for 1,000,000 simulations: {UtilitiesService.GetTicksAsStringWithUnit(averageTicksPerIteration * 1000000)}");
+			Console.WriteLine($"Time for 1,000,000 simulations: {Utilities.GetTicksAsStringWithUnit(averageTicksPerIteration * 1000000)}");
+
+			Console.WriteLine("\r\nPrevious verison");
+			Console.WriteLine("Average time per iteration: 99.4μs");
 		}
 
 		[Test]
@@ -151,9 +167,12 @@ namespace PokerCalculator.Tests.Speed.PokerCalculator
 			_instance.CalculatePokerOdds(deck, myHand, boardHand, 2, numIterations);
 
 			var averageTicksPerIteration = stopwatch.ElapsedTicks / numIterations;
-			Console.WriteLine($"Average time per iteration: {UtilitiesService.GetTicksAsStringWithUnit(averageTicksPerIteration)}");
+			Console.WriteLine($"Average time per iteration: {Utilities.GetTicksAsStringWithUnit(averageTicksPerIteration)}");
 			Console.WriteLine($"Maximum iterations possible in 1 second: {TimeSpan.TicksPerSecond / averageTicksPerIteration:N0}");
-			Console.WriteLine($"Time for 1,000,000 simulations: {UtilitiesService.GetTicksAsStringWithUnit(averageTicksPerIteration * 1000000)}");
+			Console.WriteLine($"Time for 1,000,000 simulations: {Utilities.GetTicksAsStringWithUnit(averageTicksPerIteration * 1000000)}");
+
+			Console.WriteLine("\r\nPrevious verison");
+			Console.WriteLine("Average time per iteration: 95.0μs");
 		}
 	}
 }

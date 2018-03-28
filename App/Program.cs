@@ -1,5 +1,4 @@
 ﻿using Microsoft.Practices.ServiceLocation;
-using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerCalculator;
 using PokerCalculator.Domain.PokerObjects;
 using System;
@@ -65,12 +64,11 @@ namespace PokerCalculator.App
 			if (string.IsNullOrWhiteSpace(handAsString)) return true;
 
 			var cardsForHand = handAsString.Split(' ').ToList();
-			var utiltiesService = ServiceLocator.Current.GetInstance<IUtilitiesService>();
 
 			var clonedDeck = deck.Clone();
 			try
 			{
-				var cards = cardsForHand.Select(x => new Card(x, utiltiesService)).ToList();
+				var cards = cardsForHand.Select(x => new Card(x)).ToList();
 				cards.ForEach(card =>
 				{
 					hand.AddCard(card);

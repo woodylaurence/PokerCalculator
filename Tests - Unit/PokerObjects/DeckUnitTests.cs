@@ -15,7 +15,6 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 	{
 		private Deck _instance;
 		private IRandomNumberGenerator _randomNumberGenerator;
-		private IUtilitiesService _utilitiesService;
 
 		[SetUp]
 		protected override void Setup()
@@ -23,12 +22,19 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			base.Setup();
 
 			_randomNumberGenerator = MockRepository.GenerateStrictMock<IRandomNumberGenerator>();
-			_utilitiesService = MockRepository.GenerateStrictMock<IUtilitiesService>();
 
-			_utilitiesService.Stub(x => x.GetEnumValues<CardSuit>()).Return(new List<CardSuit>()).Repeat.Once();
-			_utilitiesService.Stub(x => x.GetEnumValues<CardValue>()).Return(new List<CardValue>()).Repeat.Once();
+			Utilities.MethodObject = MockRepository.GenerateStrictMock<Utilities>();
 
-			_instance = MockRepository.GeneratePartialMock<Deck>(_randomNumberGenerator, _utilitiesService);
+			Utilities.MethodObject.Stub(x => x.GetEnumValuesSlave<CardSuit>()).Return(new List<CardSuit>()).Repeat.Once();
+			Utilities.MethodObject.Stub(x => x.GetEnumValuesSlave<CardValue>()).Return(new List<CardValue>()).Repeat.Once();
+
+			_instance = MockRepository.GeneratePartialMock<Deck>(_randomNumberGenerator);
+		}
+
+		[TearDown]
+		protected void TearDown()
+		{
+			Utilities.MethodObject = new Utilities();
 		}
 
 		#region Constructor
@@ -37,14 +43,13 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void Constructor()
 		{
 			//arrange
-			WindsorContainer.Register(Component.For<IUtilitiesService>().Instance(_utilitiesService));
 			WindsorContainer.Register(Component.For<IRandomNumberGenerator>().Instance(_randomNumberGenerator));
 
 			var cardSuits = new List<CardSuit> { CardSuit.Clubs, CardSuit.Hearts };
-			_utilitiesService.Stub(x => x.GetEnumValues<CardSuit>()).Return(cardSuits);
+			Utilities.MethodObject.Stub(x => x.GetEnumValuesSlave<CardSuit>()).Return(cardSuits);
 
 			var cardValues = new List<CardValue> { CardValue.Eight, CardValue.King };
-			_utilitiesService.Stub(x => x.GetEnumValues<CardValue>()).Return(cardValues);
+			Utilities.MethodObject.Stub(x => x.GetEnumValuesSlave<CardValue>()).Return(cardValues);
 
 			//act
 			var actual = new Deck();
@@ -59,6 +64,30 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 																  x.Suit == CardSuit.Clubs));
 			Assert.That(actual.Cards, Has.Some.Matches<Card>(x => x.Value == CardValue.King &&
 																  x.Suit == CardSuit.Hearts));
+		}
+
+		[Test]
+		public void Constructor_supplying_cards_SHOULD_create_deck_with_supplied_cardS_in_as_new_list()
+		{
+			//arrange
+			var newRandomNumberGenerator = MockRepository.GenerateStrictMock<IRandomNumberGenerator>();
+			WindsorContainer.Register(Component.For<IRandomNumberGenerator>().Instance(newRandomNumberGenerator));
+
+			var card1 = MockRepository.GenerateStrictMock<Card>(CardValue.Seven, CardSuit.Clubs);
+			var card2 = MockRepository.GenerateStrictMock<Card>(CardValue.Nine, CardSuit.Diamonds);
+			var card3 = MockRepository.GenerateStrictMock<Card>(CardValue.Ace, CardSuit.Hearts);
+
+			var cards = new List<Card> { card1, card2, card3 };
+
+			//act
+			var actual = new Deck(cards);
+
+			//assert
+			Assert.That(actual.Cards, Has.Count.EqualTo(3));
+			Assert.That(actual.Cards, Has.Some.EqualTo(card1));
+			Assert.That(actual.Cards, Has.Some.EqualTo(card2));
+			Assert.That(actual.Cards, Has.Some.EqualTo(card3));
+			Assert.That(actual.Cards, Is.Not.SameAs(cards));
 		}
 
 		#endregion
@@ -114,14 +143,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void Clone()
 		{
 			//arrange
-			WindsorContainer.Register(Component.For<IUtilitiesService>().Instance(_utilitiesService));
 			WindsorContainer.Register(Component.For<IRandomNumberGenerator>().Instance(_randomNumberGenerator));
-
-			var cardSuits = new List<CardSuit> { CardSuit.Clubs, CardSuit.Hearts };
-			_utilitiesService.Stub(x => x.GetEnumValues<CardSuit>()).Return(cardSuits);
-
-			var cardValues = new List<CardValue> { CardValue.Eight, CardValue.King };
-			_utilitiesService.Stub(x => x.GetEnumValues<CardValue>()).Return(cardValues);
 
 			var card1InOriginalDeck = new Card(CardValue.Eight, CardSuit.Clubs);
 			var card2InOriginalDeck = new Card(CardValue.Seven, CardSuit.Spades);
