@@ -66,6 +66,30 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 																  x.Suit == CardSuit.Hearts));
 		}
 
+		[Test]
+		public void Constructor_supplying_cards_SHOULD_create_deck_with_supplied_cardS_in_as_new_list()
+		{
+			//arrange
+			var newRandomNumberGenerator = MockRepository.GenerateStrictMock<IRandomNumberGenerator>();
+			WindsorContainer.Register(Component.For<IRandomNumberGenerator>().Instance(newRandomNumberGenerator));
+
+			var card1 = MockRepository.GenerateStrictMock<Card>(CardValue.Seven, CardSuit.Clubs);
+			var card2 = MockRepository.GenerateStrictMock<Card>(CardValue.Nine, CardSuit.Diamonds);
+			var card3 = MockRepository.GenerateStrictMock<Card>(CardValue.Ace, CardSuit.Hearts);
+
+			var cards = new List<Card> { card1, card2, card3 };
+
+			//act
+			var actual = new Deck(cards);
+
+			//assert
+			Assert.That(actual.Cards, Has.Count.EqualTo(3));
+			Assert.That(actual.Cards, Has.Some.EqualTo(card1));
+			Assert.That(actual.Cards, Has.Some.EqualTo(card2));
+			Assert.That(actual.Cards, Has.Some.EqualTo(card3));
+			Assert.That(actual.Cards, Is.Not.SameAs(cards));
+		}
+
 		#endregion
 
 		#region Instance Methods
@@ -120,12 +144,6 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		{
 			//arrange
 			WindsorContainer.Register(Component.For<IRandomNumberGenerator>().Instance(_randomNumberGenerator));
-
-			var cardSuits = new List<CardSuit> { CardSuit.Clubs, CardSuit.Hearts };
-			Utilities.MethodObject.Stub(x => x.GetEnumValuesSlave<CardSuit>()).Return(cardSuits);
-
-			var cardValues = new List<CardValue> { CardValue.Eight, CardValue.King };
-			Utilities.MethodObject.Stub(x => x.GetEnumValuesSlave<CardValue>()).Return(cardValues);
 
 			var card1InOriginalDeck = new Card(CardValue.Eight, CardSuit.Clubs);
 			var card2InOriginalDeck = new Card(CardValue.Seven, CardSuit.Spades);

@@ -22,12 +22,16 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// </summary>
 		/// <param name="cards"></param>
 		public Hand(List<Card> cards) : this(cards, ServiceLocator.Current.GetInstance<IEqualityComparer<Card>>()) { }
-		public Hand(List<Card> cards, IEqualityComparer<Card> cardComparer)
+		public Hand(List<Card> cards, IEqualityComparer<Card> cardComparer, bool checkCards = true)
 		{
 			_cardComparer = cardComparer;
 
-			if (cards.Count > 7) throw new ArgumentException("A Hand cannot contain more than seven cards", nameof(cards));
-			if (cards.Distinct(_cardComparer).Count() != cards.Count) throw new ArgumentException("A Hand cannot contain duplicate cards", nameof(cards));
+			if (checkCards)
+			{
+				if (cards.Count > 7) throw new ArgumentException("A Hand cannot contain more than seven cards", nameof(cards));
+				if (cards.Distinct(_cardComparer).Count() != cards.Count) throw new ArgumentException("A Hand cannot contain duplicate cards", nameof(cards));
+			}
+
 			Cards = cards.ToList();
 		}
 
@@ -74,7 +78,7 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// <returns></returns>
 		protected internal virtual Hand Clone()
 		{
-			return new Hand(Cards, _cardComparer);
+			return new Hand(Cards, _cardComparer, false);
 		}
 
 		/// <summary>

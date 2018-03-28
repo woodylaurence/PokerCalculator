@@ -1,6 +1,5 @@
 ﻿using Castle.MicroKernel.Registration;
 using NUnit.Framework;
-using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
@@ -23,7 +22,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 
 			_cardComparer = MockRepository.GenerateStrictMock<IEqualityComparer<Card>>();
 
-			_instance = MockRepository.GeneratePartialMock<Hand>(new List<Card>(), _cardComparer);
+			_instance = MockRepository.GeneratePartialMock<Hand>(new List<Card>(), _cardComparer, true);
 
 			WindsorContainer.Register(Component.For<IEqualityComparer<Card>>().Instance(_cardComparer));
 		}
@@ -56,7 +55,23 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		}
 
 		[Test]
-		public void Constructor_full_WHERE_more_than_seven_cards_in_supplied_cards_SHOULD_throw_error()
+		public void Constructor_full_WHERE_setting_check_cards_as_false_SHOULD_not_do_any_checks_before_setting_cards()
+		{
+			//arrange
+			var card1 = new Card(CardValue.Jack, CardSuit.Diamonds);
+			var card2 = new Card(CardValue.Jack, CardSuit.Clubs);
+
+			var cards = new List<Card> { card1, card2, card1 };
+
+			//act
+			var actual = new Hand(cards, _cardComparer, false);
+
+			//asert
+			Assert.That(actual.Cards, Is.EqualTo(cards));
+		}
+
+		[Test]
+		public void Constructor_full_WHERE_setting_check_cards_not_supplied_SHOULD_default_to_true()
 		{
 			//arrange
 			var cards = new List<Card>
@@ -73,6 +88,28 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 
 			//act + assert
 			var actualException = Assert.Throws<ArgumentException>(() => new Hand(cards, _cardComparer));
+			Assert.That(actualException.Message, Is.EqualTo("A Hand cannot contain more than seven cards\r\nParameter name: cards"));
+			Assert.That(actualException.ParamName, Is.EqualTo("cards"));
+		}
+
+		[Test]
+		public void Constructor_full_WHERE_more_than_seven_cards_in_supplied_cards_SHOULD_throw_error()
+		{
+			//arrange
+			var cards = new List<Card>
+			{
+				new Card(CardValue.Ace, CardSuit.Diamonds),
+				new Card(CardValue.Two, CardSuit.Hearts),
+				new Card(CardValue.Four, CardSuit.Spades),
+				new Card(CardValue.Ace, CardSuit.Spades),
+				new Card(CardValue.Nine, CardSuit.Diamonds),
+				new Card(CardValue.Eight, CardSuit.Clubs),
+				new Card(CardValue.King, CardSuit.Diamonds),
+				new Card(CardValue.Three, CardSuit.Clubs)
+			};
+
+			//act + assert
+			var actualException = Assert.Throws<ArgumentException>(() => new Hand(cards, _cardComparer, true));
 			Assert.That(actualException.Message, Is.EqualTo("A Hand cannot contain more than seven cards\r\nParameter name: cards"));
 			Assert.That(actualException.ParamName, Is.EqualTo("cards"));
 		}
@@ -96,7 +133,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			_cardComparer.Stub(x => x.GetHashCode(card3)).Return(3);
 
 			//act + assert
-			var actualException = Assert.Throws<ArgumentException>(() => new Hand(cards, _cardComparer));
+			var actualException = Assert.Throws<ArgumentException>(() => new Hand(cards, _cardComparer, true));
 			Assert.That(actualException.Message, Is.EqualTo("A Hand cannot contain duplicate cards\r\nParameter name: cards"));
 			Assert.That(actualException.ParamName, Is.EqualTo("cards"));
 		}
@@ -116,7 +153,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			_cardComparer.Stub(x => x.GetHashCode(card3)).Return(3);
 
 			//act
-			var actual = new Hand(cards, _cardComparer);
+			var actual = new Hand(cards, _cardComparer, true);
 
 			//assert
 			Assert.That(actual.Cards, Is.Not.SameAs(cards));

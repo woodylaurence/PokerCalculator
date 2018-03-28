@@ -16,7 +16,7 @@ namespace PokerCalculator.Domain.PokerObjects
 
 		#endregion
 
-		#region Constructor
+		#region Constructors
 
 		/// <summary>
 		/// 
@@ -29,6 +29,16 @@ namespace PokerCalculator.Domain.PokerObjects
 			var cardSuits = Utilities.GetEnumValues<CardSuit>();
 			var cardValues = Utilities.GetEnumValues<CardValue>();
 			Cards = cardSuits.SelectMany(suit => cardValues.Select(value => new Card(value, suit))).ToList();
+		}
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="cards"></param>
+		public Deck(List<Card> cards)
+		{
+			_randomNumberGenerator = ServiceLocator.Current.GetInstance<IRandomNumberGenerator>();
+			Cards = cards.ToList();
 		}
 
 		#endregion
@@ -55,10 +65,7 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// <returns></returns>
 		public virtual Deck Clone()
 		{
-			return new Deck
-			{
-				Cards = Cards.ToList()
-			};
+			return new Deck(Cards);
 		}
 
 		#endregion
