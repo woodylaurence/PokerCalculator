@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PokerCalculator.Domain.Helpers
+namespace PokerCalculator.Domain.Extensions
 {
 	public static class IComparableExtensionMethods
 	{

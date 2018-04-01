@@ -1,5 +1,5 @@
-﻿using PokerCalculator.Domain.HandRankCalculator;
-using PokerCalculator.Domain.Helpers;
+﻿using PokerCalculator.Domain.Extensions;
+using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using System.Collections.Generic;

@@ -63,7 +63,7 @@ namespace PokerCalculator.Tests.Speed.HandRankCalculator
 
 			public void DisplaySpeedResults()
 			{
-				Console.WriteLine($"Total time spent: {TotalCalculationTime / TimeSpan.TicksPerMillisecond}ms");
+				Console.WriteLine($"Total time spent: {Utilities.GetTicksAsStringWithUnit(TotalCalculationTime)}");
 				Console.WriteLine("PokerHand breakdown:");
 
 				foreach (var handRankSpeedResult in HandRankAverageCalculationTimes)

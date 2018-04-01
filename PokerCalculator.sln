@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App", "App\App.csproj", "{D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests - Shared", "Tests - Shared\Tests - Shared.csproj", "{A303CA74-8D43-45E0-BE0E-0A039CFF30DA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokerArraysGenerator", "PokerArraysGenerator\PokerArraysGenerator.csproj", "{F0A2ACEB-8018-4919-890E-228C1946381C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -70,6 +72,14 @@ Global
 		{A303CA74-8D43-45E0-BE0E-0A039CFF30DA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A303CA74-8D43-45E0-BE0E-0A039CFF30DA}.Release|x86.ActiveCfg = Release|Any CPU
 		{A303CA74-8D43-45E0-BE0E-0A039CFF30DA}.Release|x86.Build.0 = Release|Any CPU
+		{F0A2ACEB-8018-4919-890E-228C1946381C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0A2ACEB-8018-4919-890E-228C1946381C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0A2ACEB-8018-4919-890E-228C1946381C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F0A2ACEB-8018-4919-890E-228C1946381C}.Debug|x86.Build.0 = Debug|Any CPU
+		{F0A2ACEB-8018-4919-890E-228C1946381C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0A2ACEB-8018-4919-890E-228C1946381C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0A2ACEB-8018-4919-890E-228C1946381C}.Release|x86.ActiveCfg = Release|Any CPU
+		{F0A2ACEB-8018-4919-890E-228C1946381C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

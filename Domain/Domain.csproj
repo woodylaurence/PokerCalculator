@@ -36,8 +36,9 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\DeckExtensionMethods.cs" />
     <Compile Include="HandRankCalculator\IHandRank.cs" />
-    <Compile Include="Helpers\IComparableExtensionMethods.cs" />
+    <Compile Include="Extensions\IComparableExtensionMethods.cs" />
     <Compile Include="Helpers\IRandomNumberGenerator.cs" />
     <Compile Include="Helpers\RandomNumberGenerator.cs" />
     <Compile Include="PokerCalculator\IPokerCalculator.cs" />

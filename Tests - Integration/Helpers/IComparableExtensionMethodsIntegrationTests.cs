@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using PokerCalculator.Domain.Helpers;
+using PokerCalculator.Domain.Extensions;
 using PokerCalculator.Tests.Shared.TestObjects;
 
 namespace PokerCalculator.Tests.Integration.Helpers

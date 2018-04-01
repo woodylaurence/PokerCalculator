@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HandRankCalculator\BaseHandRankCalculatorIntegrationTests.cs" />
     <Compile Include="Helpers\IComparableExtensionMethodsIntegrationTests.cs" />
     <Compile Include="LocalTestBase.cs" />
     <Compile Include="Helpers\PercentageWithErrorIntegrationTests.cs" />

@@ -3,6 +3,7 @@ using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Tests.Shared;
 using Rhino.Mocks;
 using System;
+using PokerCalculator.Domain.Extensions;
 
 namespace PokerCalculator.Tests.Unit.Helpers
 {

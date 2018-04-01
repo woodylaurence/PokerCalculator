@@ -9,6 +9,7 @@ using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
 using Rhino.Mocks;
 using System.Collections.Generic;
+using PokerCalculator.Domain.Extensions;
 using Card = PokerCalculator.Domain.PokerObjects.Card;
 
 namespace PokerCalculator.Tests.Unit.PokerCalculator
