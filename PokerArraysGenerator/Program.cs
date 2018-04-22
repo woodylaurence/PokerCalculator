@@ -1,6 +1,7 @@
 ﻿using Microsoft.Practices.ServiceLocation;
 using PokerCalculator.Domain.Extensions;
 using PokerCalculator.Domain.HandRankCalculator;
+using PokerCalculator.Domain.HandRankCalculator.PokerHandBased;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using System;

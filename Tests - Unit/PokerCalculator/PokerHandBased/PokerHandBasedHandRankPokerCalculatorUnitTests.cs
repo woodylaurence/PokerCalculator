@@ -1,18 +1,20 @@
-﻿using Castle.MicroKernel.Registration;
+﻿using System.Collections.Generic;
+using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using NUnit.Framework;
+using PokerCalculator.Domain.Extensions;
 using PokerCalculator.Domain.HandRankCalculator;
+using PokerCalculator.Domain.HandRankCalculator.PokerHandBased;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerCalculator;
+using PokerCalculator.Domain.PokerCalculator.PokerHandBased;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
 using Rhino.Mocks;
-using System.Collections.Generic;
-using PokerCalculator.Domain.Extensions;
 using Card = PokerCalculator.Domain.PokerObjects.Card;
 
-namespace PokerCalculator.Tests.Unit.PokerCalculator
+namespace PokerCalculator.Tests.Unit.PokerCalculator.PokerHandBased
 {
 	[TestFixture]
 	public class PokerHandBasedHandRankPokerCalculatorUnitTests : AbstractUnitTestBase

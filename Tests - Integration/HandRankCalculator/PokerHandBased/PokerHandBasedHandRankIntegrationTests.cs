@@ -1,10 +1,10 @@
 ﻿using NUnit.Framework;
-using PokerCalculator.Domain.HandRankCalculator;
+using PokerCalculator.Domain.HandRankCalculator.PokerHandBased;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Tests.Shared.TestData;
 using System.Collections.Generic;
 
-namespace PokerCalculator.Tests.Integration.HandRankCalculator
+namespace PokerCalculator.Tests.Integration.HandRankCalculator.PokerHandBased
 {
 	[TestFixture]
 	public class PokerHandBasedHandRankIntegrationTests : LocalTestBase

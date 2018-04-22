@@ -2,11 +2,12 @@
 using Castle.Windsor;
 using NUnit.Framework;
 using PokerCalculator.Domain.HandRankCalculator;
+using PokerCalculator.Domain.HandRankCalculator.PokerHandBased;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using System.Collections.Generic;
 
-namespace PokerCalculator.Tests.Integration.HandRankCalculator
+namespace PokerCalculator.Tests.Integration.HandRankCalculator.PokerHandBased
 {
 	[TestFixture]
 	public class PokerHandBasedHandRankCalculatorIntegrationTests : BaseHandRankCalculatorIntegrationTests<PokerHandBasedHandRank, PokerHand>

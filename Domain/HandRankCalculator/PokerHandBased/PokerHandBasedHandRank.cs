@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace PokerCalculator.Domain.HandRankCalculator
+namespace PokerCalculator.Domain.HandRankCalculator.PokerHandBased
 {
 	public class PokerHandBasedHandRank : IHandRank<PokerHand>
 	{

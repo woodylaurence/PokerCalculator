@@ -2,6 +2,7 @@
 using Castle.Windsor;
 using NUnit.Framework;
 using PokerCalculator.Domain.HandRankCalculator;
+using PokerCalculator.Domain.HandRankCalculator.PokerHandBased;
 using PokerCalculator.Domain.PokerEnums;
 
 namespace PokerCalculator.Tests.Speed.HandRankCalculator

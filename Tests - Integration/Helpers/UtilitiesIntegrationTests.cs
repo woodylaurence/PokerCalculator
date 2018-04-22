@@ -107,7 +107,7 @@ namespace PokerCalculator.Tests.Integration.Helpers
 		public void GetTicksAsStringWithUnit_WHERE_ticks_is_between_1_microsecond_and_1_millisecond_SHOULD_return_formatted_value_with_microseconds_as_unit()
 		{
 			//arrange
-			var ticks1 = Stopwatch.Frequency * 0.000001;
+			var ticks1 = Stopwatch.Frequency * 0.000001000001;
 			var ticks2 = Stopwatch.Frequency * 0.0000022;
 			var ticks3 = Stopwatch.Frequency * 0.0001597;
 			var ticks4 = Stopwatch.Frequency * 0.00099991;

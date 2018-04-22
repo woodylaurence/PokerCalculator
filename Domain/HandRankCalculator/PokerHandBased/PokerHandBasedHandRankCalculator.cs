@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace PokerCalculator.Domain.HandRankCalculator
+namespace PokerCalculator.Domain.HandRankCalculator.PokerHandBased
 {
 	public class PokerHandBasedHandRankCalculator : IHandRankCalculator<PokerHandBasedHandRank, PokerHand>
 	{

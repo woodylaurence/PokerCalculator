@@ -1,13 +1,14 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.Collections.Generic;
+using NUnit.Framework;
 using PokerCalculator.Domain.HandRankCalculator;
+using PokerCalculator.Domain.HandRankCalculator.PokerHandBased;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Tests.Shared;
 using PokerCalculator.Tests.Shared.TestData;
 using Rhino.Mocks;
-using System;
-using System.Collections.Generic;
 
-namespace PokerCalculator.Tests.Unit.HandRankCalculator
+namespace PokerCalculator.Tests.Unit.HandRankCalculator.PokerHandBased
 {
 	[TestFixture]
 	public class PokerHandBasedHandRankUnitTests : AbstractUnitTestBase

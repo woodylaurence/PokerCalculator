@@ -1,11 +1,12 @@
 ﻿using PokerCalculator.Domain.Extensions;
 using PokerCalculator.Domain.HandRankCalculator;
+using PokerCalculator.Domain.HandRankCalculator.PokerHandBased;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace PokerCalculator.Domain.PokerCalculator
+namespace PokerCalculator.Domain.PokerCalculator.PokerHandBased
 {
 	public class PokerHandBasedHandRankPokerCalculator : IPokerCalculator
 	{

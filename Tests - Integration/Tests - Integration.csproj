@@ -56,22 +56,25 @@
     <Compile Include="LocalTestBase.cs" />
     <Compile Include="Helpers\PercentageWithErrorIntegrationTests.cs" />
     <Compile Include="PokerCalculator\BasePokerCalculatorIntegrationTests.cs" />
-    <Compile Include="PokerCalculator\PokerHandBasedHandRankPokerCalculatorIntegrationTests.cs" />
+    <Compile Include="PokerCalculator\PokerHandBased\PokerHandBasedHandRankPokerCalculatorIntegrationTests.cs" />
     <Compile Include="PokerObjects\DeckIntegrationTests.cs" />
-    <Compile Include="HandRankCalculator\PokerHandBasedHandRankIntegrationTests.cs" />
+    <Compile Include="HandRankCalculator\PokerHandBased\PokerHandBasedHandRankIntegrationTests.cs" />
     <Compile Include="PokerCalculator\PokerOddsIntegrationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PokerObjects\CardIntegrationTests.cs" />
     <Compile Include="PokerObjects\HandIntegrationTests.cs" />
     <Compile Include="Helpers\CardComparerIntegrationTests.cs" />
-    <Compile Include="HandRankCalculator\PokerHandBasedHandRankCalculatorIntegrationTests.cs" />
+    <Compile Include="HandRankCalculator\PokerHandBased\PokerHandBasedHandRankCalculatorIntegrationTests.cs" />
     <Compile Include="Helpers\UtilitiesIntegrationTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="HandRankCalculator\IntegerBased\" />
+    <Folder Include="PokerCalculator\IntegerBased\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj">
       <Project>{059495E2-3B00-4184-BAE8-B50FF4787166}</Project>
