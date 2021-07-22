@@ -1,10 +1,8 @@
 ﻿using NUnit.Framework;
-using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
 using PokerCalculator.Tests.Shared.TestData;
-using Rhino.Mocks;
 using System;
 
 namespace PokerCalculator.Tests.Unit.PokerObjects
@@ -12,18 +10,6 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 	[TestFixture]
 	public class CardUnitTests : AbstractUnitTestBase
 	{
-		[SetUp]
-		protected override void Setup()
-		{
-			Utilities.MethodObject = MockRepository.GenerateStrictMock<Utilities>();
-		}
-
-		[TearDown]
-		protected void TearDown()
-		{
-			Utilities.MethodObject = new Utilities();
-		}
-
 		#region Constructor
 
 		[Test, TestCaseSource(typeof(CardTestCaseData), nameof(CardTestCaseData.AllCardsTestCaseData))]
@@ -42,6 +28,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		[TestCase(null)]
 		public void Constructor_string_WHERE_string_is_null_or_whitespace_SHOULD_throw_error(string cardAsString)
 		{
+			//todo this can probably be moved out of here
 			//act + assert
 			var actualException = Assert.Throws<ArgumentException>(() => new Card(cardAsString));
 			Assert.That(actualException.Message, Is.EqualTo("Must provide string representation of Card"));
@@ -60,27 +47,10 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			Assert.That(actualException.Message, Is.EqualTo("Supplied string does not conform to allowed Card values"));
 		}
 
-		[TestCase("4", "D")]
-		[TestCase("10", "S")]
-		[TestCase("a", "H")]
-		[TestCase("K", "H")]
-		[TestCase("j", "S")]
-		[TestCase("Q", "C")]
-		[TestCase("4", "C")]
-		public void Constructor_string(string cardValueAsString, string cardSuitAsString)
+
+		[Test, TestCaseSource(typeof(CardTestCaseData), nameof(CardTestCaseData.AllCardsAsString))]
+		public void Constructor_string(string cardAsString, CardValue expectedValue, CardSuit expectedSuit)
 		{
-			//arrange
-			var cardAsString = $"{cardValueAsString}{cardSuitAsString}";
-
-			var cardValueAsStringUppercase = cardValueAsString.ToUpper();
-			var cardSuitAsStringUppercase = cardSuitAsString.ToUpper();
-
-			const CardValue expectedValue = CardValue.Jack;
-			Utilities.MethodObject.Stub(x => x.GetEnumValueFromDescriptionSlave<CardValue>(cardValueAsStringUppercase)).Return(expectedValue);
-
-			const CardSuit expectedSuit = CardSuit.Hearts;
-			Utilities.MethodObject.Stub(x => x.GetEnumValueFromDescriptionSlave<CardSuit>(cardSuitAsStringUppercase)).Return(expectedSuit);
-
 			//act
 			var actual = new Card(cardAsString);
 
@@ -89,6 +59,16 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			Assert.That(actual.Suit, Is.EqualTo(expectedSuit));
 		}
 
+		[Test, TestCaseSource(typeof(CardTestCaseData), nameof(CardTestCaseData.AllCardsAsString))]
+		public void Constructor_string_SHOULD_ignore_casing(string cardAsString, CardValue expectedValue, CardSuit expectedSuit)
+		{
+			//act
+			var actual = new Card(cardAsString.ToLower());
+
+			//assert
+			Assert.That(actual.Value, Is.EqualTo(expectedValue));
+			Assert.That(actual.Suit, Is.EqualTo(expectedSuit));
+		}
 
 		#endregion
 	}
