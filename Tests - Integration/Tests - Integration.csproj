@@ -56,7 +56,6 @@
     <Compile Include="Helpers\PercentageWithErrorIntegrationTests.cs" />
     <Compile Include="PokerCalculator\BasePokerCalculatorIntegrationTests.cs" />
     <Compile Include="PokerCalculator\PokerHandBasedHandRankPokerCalculatorIntegrationTests.cs" />
-    <Compile Include="PokerObjects\DeckIntegrationTests.cs" />
     <Compile Include="HandRankCalculator\PokerHandBasedHandRankIntegrationTests.cs" />
     <Compile Include="PokerCalculator\PokerOddsIntegrationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
