@@ -56,6 +56,8 @@
   <ItemGroup>
     <Compile Include="Helpers\IComparableExtensionMethodsUnitTests.cs" />
     <Compile Include="Helpers\UtilitiesUnitTests.cs" />
+    <Compile Include="PokerCalculator\BasePokerCalculatorFunctionalTests.cs" />
+    <Compile Include="PokerCalculator\PokerHandBasedHandRankPokerCalculatorFunctionalTests.cs" />
     <Compile Include="PokerCalculator\PokerHandBasedHandRankPokerCalculatorUnitTests.cs" />
     <Compile Include="PokerCalculator\PokerOddsUnitTests.cs" />
     <Compile Include="PokerObjects\DeckFunctionalTests.cs" />
