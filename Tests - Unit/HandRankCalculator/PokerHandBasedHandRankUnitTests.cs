@@ -2,7 +2,7 @@
 using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Tests.Shared;
-using PokerCalculator.Tests.Shared.TestData;
+using PokerCalculator.Tests.Unit.TestData;
 using Rhino.Mocks;
 using System;
 using System.Collections.Generic;

@@ -4,7 +4,7 @@ using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
-using PokerCalculator.Tests.Shared.TestData;
+using PokerCalculator.Tests.Unit.TestData;
 using Rhino.Mocks;
 using System;
 using System.Collections.Generic;

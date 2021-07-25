@@ -2,7 +2,7 @@
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
-using PokerCalculator.Tests.Shared.TestData;
+using PokerCalculator.Tests.Unit.TestData;
 using System;
 
 namespace PokerCalculator.Tests.Unit.PokerObjects

@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\IComparableExtensionMethodsUnitTests.cs" />
+    <Compile Include="Helpers\PercentageWithErrorUnitTests.cs" />
     <Compile Include="Helpers\UtilitiesUnitTests.cs" />
     <Compile Include="PokerCalculator\BasePokerCalculatorFunctionalTests.cs" />
     <Compile Include="PokerCalculator\PokerHandBasedHandRankPokerCalculatorFunctionalTests.cs" />
@@ -68,6 +69,10 @@
     <Compile Include="Helpers\CardComparerUnitTests.cs" />
     <Compile Include="HandRankCalculator\PokerHandBasedHandRankUnitTests.cs" />
     <Compile Include="HandRankCalculator\PokerHandBasedHandRankCalculatorUnitTests.cs" />
+    <Compile Include="TestData\CardTestCaseData.cs" />
+    <Compile Include="TestData\PokerHandComparisonTestCaseData.cs" />
+    <Compile Include="TestObjects\ComparableObject.cs" />
+    <Compile Include="TestObjects\TestEnum.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

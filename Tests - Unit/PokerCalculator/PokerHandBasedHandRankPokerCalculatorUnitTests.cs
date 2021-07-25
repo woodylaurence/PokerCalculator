@@ -7,13 +7,12 @@ using PokerCalculator.Domain.PokerCalculator;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
-using PokerCalculator.Tests.Shared.TestData;
 using PokerCalculator.Tests.Shared.TestObjects;
+using PokerCalculator.Tests.Unit.TestData;
 using Rhino.Mocks;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using Card = PokerCalculator.Domain.PokerObjects.Card;
 
 namespace PokerCalculator.Tests.Unit.PokerCalculator
 {

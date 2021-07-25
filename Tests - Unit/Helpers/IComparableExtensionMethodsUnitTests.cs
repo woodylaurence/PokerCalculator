@@ -1,197 +1,332 @@
 ﻿using NUnit.Framework;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Tests.Shared;
-using Rhino.Mocks;
-using System;
+using PokerCalculator.Tests.Unit.TestObjects;
 
 namespace PokerCalculator.Tests.Unit.Helpers
 {
 	[TestFixture]
 	public class IComparableExtensionMethodsUnitTests : AbstractUnitTestBase
 	{
-		private IComparable<object> _lhsComparableObject;
-		private IComparable<object> _rhsComparableObject;
-		private IComparableExtensionMethodsConcreteObject _concreteObject;
+		private ComparableObject _comparableObject;
 
 		[SetUp]
 		protected override void Setup()
 		{
-			base.Setup();
-
-			_concreteObject = MockRepository.GeneratePartialMock<IComparableExtensionMethodsConcreteObject>();
-			_lhsComparableObject = MockRepository.GenerateStrictMock<IComparable<object>>();
-			_rhsComparableObject = MockRepository.GenerateStrictMock<IComparable<object>>();
-
-			IComparableExtensionMethods.MethodObject = MockRepository.GenerateStrictMock<IComparableExtensionMethodsConcreteObject>();
-		}
-
-		[TearDown]
-		protected void TearDown()
-		{
-			IComparableExtensionMethods.MethodObject = new IComparableExtensionMethodsConcreteObject();
+			_comparableObject = new ComparableObject { IntegerField = 10 };
 		}
 
 		#region IsLessThan
 
-		[TestCase(true)]
-		[TestCase(false)]
-		public void IsLessThan_SHOULD_call_slave(bool expected)
+		[Test]
+		public void IsLessThan_WHERE_two_objects_are_same_object_SHOULD_return_false()
 		{
-			//arrange
-			IComparableExtensionMethods.MethodObject.Stub(x => x.IsLessThanSlave(_lhsComparableObject, _rhsComparableObject)).Return(expected);
-
 			//act
-			var actual = IComparableExtensionMethods.IsLessThan(_lhsComparableObject, _rhsComparableObject);
+			var actual = _comparableObject.IsLessThan(_comparableObject);
 
 			//assert
-			Assert.That(actual, Is.EqualTo(expected));
+			Assert.That(actual, Is.False);
 		}
 
-		[TestCase(1, false)]
-		[TestCase(0, false)]
-		[TestCase(-1, true)]
-		public void IsLessThanSlave(int comparisonResult, bool expected)
+		[Test]
+		public void IsLessThan_WHERE_comparing_to_null_SHOULD_return_false()
 		{
-			//arrange
-			_lhsComparableObject.Stub(x => x.CompareTo(_rhsComparableObject)).Return(comparisonResult);
-
 			//act
-			var actual = _concreteObject.IsLessThanSlave(_lhsComparableObject, _rhsComparableObject);
+			var actual = _comparableObject.IsLessThan(null);
 
 			//assert
-			Assert.That(actual, Is.EqualTo(expected));
+			Assert.That(actual, Is.False);
+		}
+
+		[Test]
+		public void IsLessThan_WHERE_comparing_to_comparable_object_which_is_greater_SHOULD_return_true()
+		{
+			//arrange
+			var otherComparableObject = new ComparableObject { IntegerField = 18 };
+
+			//act
+			var actual = _comparableObject.IsLessThan(otherComparableObject);
+
+			//assert
+			Assert.That(actual, Is.True);
+		}
+
+		[Test]
+		public void IsLessThan_WHERE_comparing_to_comparable_object_which_is_equal_SHOULD_return_false()
+		{
+			//arrange
+			var otherComparableObject = new ComparableObject { IntegerField = _comparableObject.IntegerField };
+
+			//act
+			var actual = _comparableObject.IsLessThan(otherComparableObject);
+
+			//assert
+			Assert.That(actual, Is.False);
+		}
+
+		[Test]
+		public void IsLessThan_WHERE_comparing_to_comparable_object_which_is_less_SHOULD_return_false()
+		{
+			//arrange
+			var otherComparableObject = new ComparableObject { IntegerField = 1 };
+
+			//act
+			var actual = _comparableObject.IsLessThan(otherComparableObject);
+
+			//assert
+			Assert.That(actual, Is.False);
 		}
 
 		#endregion
 
 		#region IsLessThanOrEqualTo
 
-		[TestCase(true)]
-		[TestCase(false)]
-		public void IsLessThanOrEqualTo_SHOULD_call_slave(bool expected)
+		[Test]
+		public void IsLessThanOrEqualTo_WHERE_two_objects_are_same_object_SHOULD_return_true()
 		{
-			//arrange
-			IComparableExtensionMethods.MethodObject.Stub(x => x.IsLessThanOrEqualToSlave(_lhsComparableObject, _rhsComparableObject)).Return(expected);
-
 			//act
-			var actual = IComparableExtensionMethods.IsLessThanOrEqualTo(_lhsComparableObject, _rhsComparableObject);
+			var actual = _comparableObject.IsLessThanOrEqualTo(_comparableObject);
 
 			//assert
-			Assert.That(actual, Is.EqualTo(expected));
+			Assert.That(actual, Is.True);
 		}
 
-		[TestCase(1, false)]
-		[TestCase(0, true)]
-		[TestCase(-1, true)]
-		public void IsLessThanOrEqualToSlave(int comparisonResult, bool expected)
+		[Test]
+		public void IsLessThanOrEqualTo_WHERE_comparing_to_null_SHOULD_return_false()
 		{
-			//arrange
-			_lhsComparableObject.Stub(x => x.CompareTo(_rhsComparableObject)).Return(comparisonResult);
-
 			//act
-			var actual = _concreteObject.IsLessThanOrEqualToSlave(_lhsComparableObject, _rhsComparableObject);
+			var actual = _comparableObject.IsLessThanOrEqualTo(null);
 
 			//assert
-			Assert.That(actual, Is.EqualTo(expected));
+			Assert.That(actual, Is.False);
+		}
+
+		[Test]
+		public void IsLessThanOrEqualTo_WHERE_comparing_to_comparable_object_which_is_greater_SHOULD_return_true()
+		{
+			//arrange
+			var otherComparableObject = new ComparableObject { IntegerField = 18 };
+
+			//act
+			var actual = _comparableObject.IsLessThanOrEqualTo(otherComparableObject);
+
+			//assert
+			Assert.That(actual, Is.True);
+		}
+
+		[Test]
+		public void IsLessThanOrEqualTo_WHERE_comparing_to_comparable_object_which_is_equal_SHOULD_return_true()
+		{
+			//arrange
+			var otherComparableObject = new ComparableObject { IntegerField = _comparableObject.IntegerField };
+
+			//act
+			var actual = _comparableObject.IsLessThanOrEqualTo(otherComparableObject);
+
+			//assert
+			Assert.That(actual, Is.True);
+		}
+
+		[Test]
+		public void IsLessThanOrEqualTo_WHERE_comparing_to_comparable_object_which_is_less_SHOULD_return_false()
+		{
+			//arrange
+			var otherComparableObject = new ComparableObject { IntegerField = 1 };
+
+			//act
+			var actual = _comparableObject.IsLessThanOrEqualTo(otherComparableObject);
+
+			//assert
+			Assert.That(actual, Is.False);
 		}
 
 		#endregion
 
 		#region IsGreaterThan
 
-		[TestCase(true)]
-		[TestCase(false)]
-		public void IsGreaterThan_SHOULD_call_slave(bool expected)
+		[Test]
+		public void IsGreaterThan_WHERE_two_objects_are_same_object_SHOULD_return_false()
 		{
-			//arrange
-			IComparableExtensionMethods.MethodObject.Stub(x => x.IsGreaterThanSlave(_lhsComparableObject, _rhsComparableObject)).Return(expected);
-
 			//act
-			var actual = IComparableExtensionMethods.IsGreaterThan(_lhsComparableObject, _rhsComparableObject);
+			var actual = _comparableObject.IsGreaterThan(_comparableObject);
 
 			//assert
-			Assert.That(actual, Is.EqualTo(expected));
+			Assert.That(actual, Is.False);
 		}
 
-		[TestCase(1, true)]
-		[TestCase(0, false)]
-		[TestCase(-1, false)]
-		public void IsGreaterThanSlave(int comparisonResult, bool expected)
+		[Test]
+		public void IsGreaterThan_WHERE_comparing_to_null_SHOULD_return_true()
 		{
-			//arrange
-			_lhsComparableObject.Stub(x => x.CompareTo(_rhsComparableObject)).Return(comparisonResult);
-
 			//act
-			var actual = _concreteObject.IsGreaterThanSlave(_lhsComparableObject, _rhsComparableObject);
+			var actual = _comparableObject.IsGreaterThan(null);
 
 			//assert
-			Assert.That(actual, Is.EqualTo(expected));
+			Assert.That(actual, Is.True);
+		}
+
+		[Test]
+		public void IsGreaterThan_WHERE_comparing_to_comparable_object_which_is_greater_SHOULD_return_false()
+		{
+			//arrange
+			var otherComparableObject = new ComparableObject { IntegerField = 18 };
+
+			//act
+			var actual = _comparableObject.IsGreaterThan(otherComparableObject);
+
+			//assert
+			Assert.That(actual, Is.False);
+		}
+
+		[Test]
+		public void IsGreaterThan_WHERE_comparing_to_comparable_object_which_is_equal_SHOULD_return_false()
+		{
+			//arrange
+			var otherComparableObject = new ComparableObject { IntegerField = _comparableObject.IntegerField };
+
+			//act
+			var actual = _comparableObject.IsGreaterThan(otherComparableObject);
+
+			//assert
+			Assert.That(actual, Is.False);
+		}
+
+		[Test]
+		public void IsGreaterThan_WHERE_comparing_to_comparable_object_which_is_less_SHOULD_return_true()
+		{
+			//arrange
+			var otherComparableObject = new ComparableObject { IntegerField = 1 };
+
+			//act
+			var actual = _comparableObject.IsGreaterThan(otherComparableObject);
+
+			//assert
+			Assert.That(actual, Is.True);
 		}
 
 		#endregion
 
 		#region IsGreaterThanOrEqualTo
 
-		[TestCase(true)]
-		[TestCase(false)]
-		public void IsGreaterThanOrEqualTo_SHOULD_call_slave(bool expected)
+		[Test]
+		public void IsGreaterThanOrEqualTo_WHERE_two_objects_are_same_object_SHOULD_return_true()
 		{
-			//arrange
-			IComparableExtensionMethods.MethodObject.Stub(x => x.IsGreaterThanOrEqualToSlave(_lhsComparableObject, _rhsComparableObject)).Return(expected);
-
 			//act
-			var actual = IComparableExtensionMethods.IsGreaterThanOrEqualTo(_lhsComparableObject, _rhsComparableObject);
+			var actual = _comparableObject.IsGreaterThanOrEqualTo(_comparableObject);
 
 			//assert
-			Assert.That(actual, Is.EqualTo(expected));
+			Assert.That(actual, Is.True);
 		}
 
-		[TestCase(1, true)]
-		[TestCase(0, true)]
-		[TestCase(-1, false)]
-		public void IsGreaterThanOrEqualToSlave(int comparisonResult, bool expected)
+		[Test]
+		public void IsGreaterThanOrEqualTo_WHERE_comparing_to_null_SHOULD_return_true()
 		{
-			//arrange
-			_lhsComparableObject.Stub(x => x.CompareTo(_rhsComparableObject)).Return(comparisonResult);
-
 			//act
-			var actual = _concreteObject.IsGreaterThanOrEqualToSlave(_lhsComparableObject, _rhsComparableObject);
+			var actual = _comparableObject.IsGreaterThanOrEqualTo(null);
 
 			//assert
-			Assert.That(actual, Is.EqualTo(expected));
+			Assert.That(actual, Is.True);
+		}
+
+		[Test]
+		public void IsGreaterThanOrEqualTo_WHERE_comparing_to_comparable_object_which_is_greater_SHOULD_return_false()
+		{
+			//arrange
+			var otherComparableObject = new ComparableObject { IntegerField = 18 };
+
+			//act
+			var actual = _comparableObject.IsGreaterThanOrEqualTo(otherComparableObject);
+
+			//assert
+			Assert.That(actual, Is.False);
+		}
+
+		[Test]
+		public void IsGreaterThanOrEqualTo_WHERE_comparing_to_comparable_object_which_is_equal_SHOULD_return_true()
+		{
+			//arrange
+			var otherComparableObject = new ComparableObject { IntegerField = _comparableObject.IntegerField };
+
+			//act
+			var actual = _comparableObject.IsGreaterThanOrEqualTo(otherComparableObject);
+
+			//assert
+			Assert.That(actual, Is.True);
+		}
+
+		[Test]
+		public void IsGreaterThanOrEqualTo_WHERE_comparing_to_comparable_object_which_is_less_SHOULD_return_true()
+		{
+			//arrange
+			var otherComparableObject = new ComparableObject { IntegerField = 1 };
+
+			//act
+			var actual = _comparableObject.IsGreaterThanOrEqualTo(otherComparableObject);
+
+			//assert
+			Assert.That(actual, Is.True);
 		}
 
 		#endregion
 
 		#region IsEqualTo
 
-		[TestCase(true)]
-		[TestCase(false)]
-		public void IsEqualTo_SHOULD_call_slave(bool expected)
+		[Test]
+		public void IsEqualTo_WHERE_two_objects_are_same_object_SHOULD_return_true()
 		{
-			//arrange
-			IComparableExtensionMethods.MethodObject.Stub(x => x.IsEqualToSlave(_lhsComparableObject, _rhsComparableObject)).Return(expected);
-
 			//act
-			var actual = IComparableExtensionMethods.IsEqualTo(_lhsComparableObject, _rhsComparableObject);
+			var actual = _comparableObject.IsEqualTo(_comparableObject);
 
 			//assert
-			Assert.That(actual, Is.EqualTo(expected));
+			Assert.That(actual, Is.True);
 		}
 
-		[TestCase(1, false)]
-		[TestCase(0, true)]
-		[TestCase(-1, false)]
-		public void IsEqualToSlave(int comparisonResult, bool expected)
+		[Test]
+		public void IsEqualTo_WHERE_comparing_to_null_SHOULD_return_false()
 		{
-			//arrange
-			_lhsComparableObject.Stub(x => x.CompareTo(_rhsComparableObject)).Return(comparisonResult);
-
 			//act
-			var actual = _concreteObject.IsEqualToSlave(_lhsComparableObject, _rhsComparableObject);
+			var actual = _comparableObject.IsEqualTo(null);
 
 			//assert
-			Assert.That(actual, Is.EqualTo(expected));
+			Assert.That(actual, Is.False);
+		}
+
+		[Test]
+		public void IsEqualTo_WHERE_comparing_to_comparable_object_which_is_greater_SHOULD_return_false()
+		{
+			//arrange
+			var otherComparableObject = new ComparableObject { IntegerField = 18 };
+
+			//act
+			var actual = _comparableObject.IsEqualTo(otherComparableObject);
+
+			//assert
+			Assert.That(actual, Is.False);
+		}
+
+		[Test]
+		public void IsEqualTo_WHERE_comparing_to_comparable_object_which_is_equal_SHOULD_return_true()
+		{
+			//arrange
+			var otherComparableObject = new ComparableObject { IntegerField = _comparableObject.IntegerField };
+
+			//act
+			var actual = _comparableObject.IsEqualTo(otherComparableObject);
+
+			//assert
+			Assert.That(actual, Is.True);
+		}
+
+		[Test]
+		public void IsEqualTo_WHERE_comparing_to_comparable_object_which_is_less_SHOULD_return_false()
+		{
+			//arrange
+			var otherComparableObject = new ComparableObject { IntegerField = 1 };
+
+			//act
+			var actual = _comparableObject.IsEqualTo(otherComparableObject);
+
+			//assert
+			Assert.That(actual, Is.False);
 		}
 
 		#endregion
