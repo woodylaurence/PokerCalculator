@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Tests.Shared;
+using PokerCalculator.Tests.Unit.TestObjects;
 using System;
 using System.Diagnostics;
 
