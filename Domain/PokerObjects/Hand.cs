@@ -11,7 +11,8 @@ namespace PokerCalculator.Domain.PokerObjects
 
 		private readonly IEqualityComparer<Card> _cardComparer;
 
-		public virtual List<Card> Cards { get; }
+		//todo is a Hand actually a collection of cards, rather than having a collection of cards?
+		public virtual List<Card> Cards { get; private set; } //todo this can probably be made into an init property
 
 		#endregion
 
@@ -22,18 +23,16 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// </summary>
 		/// <param name="cards"></param>
 		public Hand(List<Card> cards) : this(cards, ServiceLocator.Current.GetInstance<IEqualityComparer<Card>>()) { }
-		public Hand(List<Card> cards, IEqualityComparer<Card> cardComparer, bool checkCards = true)
+		public Hand(List<Card> cards, IEqualityComparer<Card> cardComparer)
 		{
 			_cardComparer = cardComparer;
 
-			if (checkCards)
-			{
-				if (cards.Count > 7) throw new ArgumentException("A Hand cannot contain more than seven cards", nameof(cards));
-				if (cards.Distinct(_cardComparer).Count() != cards.Count) throw new ArgumentException("A Hand cannot contain duplicate cards", nameof(cards));
-			}
+			if (cards.Count > 7) throw new ArgumentException("A Hand cannot contain more than seven cards", nameof(cards));
+			if (cards.Distinct(_cardComparer).Count() != cards.Count) throw new ArgumentException("A Hand cannot contain duplicate cards", nameof(cards));
 
 			Cards = cards.ToList();
 		}
+		private Hand() { }
 
 		#endregion
 
@@ -48,6 +47,20 @@ namespace PokerCalculator.Domain.PokerObjects
 		public virtual void AddCard(Card cardToAdd)
 		{
 			AddCards(new List<Card> { cardToAdd });
+		}
+
+		#endregion
+
+		#region AddCards
+
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="cardsToAdd"></param>
+		public virtual void AddCards(List<Card> cardsToAdd)
+		{
+			VerifyCardsCanBeAdded(cardsToAdd);
+			Cards.AddRange(cardsToAdd);
 		}
 
 		#endregion
@@ -76,19 +89,9 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// 
 		/// </summary>
 		/// <returns></returns>
-		protected internal virtual Hand Clone()
+		public virtual Hand Clone()
 		{
-			return new Hand(Cards, _cardComparer, false);
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="cardsToAdd"></param>
-		protected internal virtual void AddCards(List<Card> cardsToAdd)
-		{
-			VerifyCardsCanBeAdded(cardsToAdd);
-			Cards.AddRange(cardsToAdd);
+			return new Hand { Cards = Cards.ToList() };
 		}
 
 		/// <summary>

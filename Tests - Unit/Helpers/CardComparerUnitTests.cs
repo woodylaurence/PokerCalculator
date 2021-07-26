@@ -3,7 +3,6 @@ using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
-using Rhino.Mocks;
 
 namespace PokerCalculator.Tests.Unit.Helpers
 {
@@ -13,9 +12,9 @@ namespace PokerCalculator.Tests.Unit.Helpers
 		CardComparer _instance;
 
 		[SetUp]
-		public new void Setup()
+		protected override void Setup()
 		{
-			_instance = MockRepository.GeneratePartialMock<CardComparer>();
+			_instance = new CardComparer();
 		}
 
 		#region Equals

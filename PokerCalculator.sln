@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2024
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29102.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{059495E2-3B00-4184-BAE8-B50FF4787166}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests - Integration", "Tests - Integration\Tests - Integration.csproj", "{7A70A8FD-B311-40DA-AA07-06001F7D1791}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests - Unit", "Tests - Unit\Tests - Unit.csproj", "{7164928E-0164-4443-8DCF-FD3AD66A69E9}"
 EndProject
@@ -31,14 +29,6 @@ Global
 		{059495E2-3B00-4184-BAE8-B50FF4787166}.Release|Any CPU.Build.0 = Release|Any CPU
 		{059495E2-3B00-4184-BAE8-B50FF4787166}.Release|x86.ActiveCfg = Release|Any CPU
 		{059495E2-3B00-4184-BAE8-B50FF4787166}.Release|x86.Build.0 = Release|Any CPU
-		{7A70A8FD-B311-40DA-AA07-06001F7D1791}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7A70A8FD-B311-40DA-AA07-06001F7D1791}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7A70A8FD-B311-40DA-AA07-06001F7D1791}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{7A70A8FD-B311-40DA-AA07-06001F7D1791}.Debug|x86.Build.0 = Debug|Any CPU
-		{7A70A8FD-B311-40DA-AA07-06001F7D1791}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7A70A8FD-B311-40DA-AA07-06001F7D1791}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7A70A8FD-B311-40DA-AA07-06001F7D1791}.Release|x86.ActiveCfg = Release|Any CPU
-		{7A70A8FD-B311-40DA-AA07-06001F7D1791}.Release|x86.Build.0 = Release|Any CPU
 		{7164928E-0164-4443-8DCF-FD3AD66A69E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7164928E-0164-4443-8DCF-FD3AD66A69E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7164928E-0164-4443-8DCF-FD3AD66A69E9}.Debug|x86.ActiveCfg = Debug|Any CPU

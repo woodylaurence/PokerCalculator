@@ -5,7 +5,7 @@ using PokerCalculator.Domain.PokerObjects;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace PokerCalculator.Tests.Shared.TestData
+namespace PokerCalculator.Tests.Unit.TestData
 {
 	public static class CardTestCaseData
 	{

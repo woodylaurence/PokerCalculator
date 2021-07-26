@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PokerCalculator.Tests.Shared.TestObjects
+namespace PokerCalculator.Tests.Unit.TestObjects
 {
 	public class ComparableObject : IComparable<ComparableObject>
 	{

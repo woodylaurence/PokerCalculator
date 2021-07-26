@@ -1,7 +1,7 @@
-﻿using PokerCalculator.Domain.PokerEnums;
+﻿using PokerCalculator.Domain.Helpers;
+using PokerCalculator.Domain.PokerEnums;
 using System;
 using System.Text.RegularExpressions;
-using PokerCalculator.Domain.Helpers;
 
 namespace PokerCalculator.Domain.PokerObjects
 {
@@ -9,8 +9,8 @@ namespace PokerCalculator.Domain.PokerObjects
 	{
 		#region Properties and Fields
 
-		public virtual CardValue Value { get; }
-		public virtual CardSuit Suit { get; }
+		public CardValue Value { get; }
+		public CardSuit Suit { get; }
 
 		#endregion
 

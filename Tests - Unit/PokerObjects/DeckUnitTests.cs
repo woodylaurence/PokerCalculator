@@ -1,12 +1,14 @@
 ﻿using Castle.MicroKernel.Registration;
+using Moq;
 using NUnit.Framework;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
-using Rhino.Mocks;
+using PokerCalculator.Tests.Unit.TestData;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PokerCalculator.Tests.Unit.PokerObjects
 {
@@ -14,81 +16,82 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 	public class DeckUnitTests : AbstractUnitTestBase
 	{
 		private Deck _instance;
-		private IRandomNumberGenerator _randomNumberGenerator;
+		private Mock<IRandomNumberGenerator> _randomNumberGenerator;
+		private CardComparer _cardComparer;
 
 		[SetUp]
 		protected override void Setup()
 		{
 			base.Setup();
+			_randomNumberGenerator = new Mock<IRandomNumberGenerator>();
+			WindsorContainer.Register(Component.For<IRandomNumberGenerator>().Instance(_randomNumberGenerator.Object));
 
-			_randomNumberGenerator = MockRepository.GenerateStrictMock<IRandomNumberGenerator>();
-
-			Utilities.MethodObject = MockRepository.GenerateStrictMock<Utilities>();
-
-			Utilities.MethodObject.Stub(x => x.GetEnumValuesSlave<CardSuit>()).Return(new List<CardSuit>()).Repeat.Once();
-			Utilities.MethodObject.Stub(x => x.GetEnumValuesSlave<CardValue>()).Return(new List<CardValue>()).Repeat.Once();
-
-			_instance = MockRepository.GeneratePartialMock<Deck>(_randomNumberGenerator);
-		}
-
-		[TearDown]
-		protected void TearDown()
-		{
-			Utilities.MethodObject = new Utilities();
+			_cardComparer = new CardComparer();
 		}
 
 		#region Constructor
 
+		#region Constructor_RandomNumberGenerator
+
 		[Test]
-		public void Constructor()
+		public void Constructor_randomnumbergenerator_SHOULD_create_deck_with_all_possible_cards()
 		{
-			//arrange
-			WindsorContainer.Register(Component.For<IRandomNumberGenerator>().Instance(_randomNumberGenerator));
-
-			var cardSuits = new List<CardSuit> { CardSuit.Clubs, CardSuit.Hearts };
-			Utilities.MethodObject.Stub(x => x.GetEnumValuesSlave<CardSuit>()).Return(cardSuits);
-
-			var cardValues = new List<CardValue> { CardValue.Eight, CardValue.King };
-			Utilities.MethodObject.Stub(x => x.GetEnumValuesSlave<CardValue>()).Return(cardValues);
-
 			//act
-			var actual = new Deck();
+			var actual = new Deck(_randomNumberGenerator.Object);
 
 			//assert
-			Assert.That(actual.Cards, Has.Count.EqualTo(4));
-			Assert.That(actual.Cards, Has.Some.Matches<Card>(x => x.Value == CardValue.Eight &&
-																  x.Suit == CardSuit.Clubs));
-			Assert.That(actual.Cards, Has.Some.Matches<Card>(x => x.Value == CardValue.Eight &&
-																  x.Suit == CardSuit.Hearts));
-			Assert.That(actual.Cards, Has.Some.Matches<Card>(x => x.Value == CardValue.King &&
-																  x.Suit == CardSuit.Clubs));
-			Assert.That(actual.Cards, Has.Some.Matches<Card>(x => x.Value == CardValue.King &&
-																  x.Suit == CardSuit.Hearts));
+			Assert.That(actual.Cards, Has.Count.EqualTo(52));
+			CardTestCaseData.AllCards.ForEach(x => Assert.That(actual.Cards.Contains(x, _cardComparer), $"Deck is missing card: {x}"));
 		}
 
+		#endregion
+
+		#region Constructor_Cards
+
 		[Test]
-		public void Constructor_supplying_cards_SHOULD_create_deck_with_supplied_cardS_in_as_new_list()
+		public void Constructor_cards_SHOULD_create_deck_with_supplied_cards()
 		{
 			//arrange
-			var newRandomNumberGenerator = MockRepository.GenerateStrictMock<IRandomNumberGenerator>();
-			WindsorContainer.Register(Component.For<IRandomNumberGenerator>().Instance(newRandomNumberGenerator));
-
-			var card1 = MockRepository.GenerateStrictMock<Card>(CardValue.Seven, CardSuit.Clubs);
-			var card2 = MockRepository.GenerateStrictMock<Card>(CardValue.Nine, CardSuit.Diamonds);
-			var card3 = MockRepository.GenerateStrictMock<Card>(CardValue.Ace, CardSuit.Hearts);
-
-			var cards = new List<Card> { card1, card2, card3 };
+			var cards = new List<Card>
+			{
+				new Card(CardValue.Nine, CardSuit.Diamonds),
+				new Card(CardValue.Seven, CardSuit.Hearts),
+				new Card(CardValue.Four, CardSuit.Spades),
+				new Card(CardValue.Four, CardSuit.Diamonds)
+			};
 
 			//act
 			var actual = new Deck(cards);
 
 			//assert
-			Assert.That(actual.Cards, Has.Count.EqualTo(3));
-			Assert.That(actual.Cards, Has.Some.EqualTo(card1));
-			Assert.That(actual.Cards, Has.Some.EqualTo(card2));
-			Assert.That(actual.Cards, Has.Some.EqualTo(card3));
-			Assert.That(actual.Cards, Is.Not.SameAs(cards));
+			Assert.That(actual.Cards, Has.Count.EqualTo(4));
+			cards.ForEach(x => Assert.That(actual.Cards.Contains(x, _cardComparer)));
 		}
+
+		[Test]
+		public void Constructor_cards_SHOULD_store_cards_in_a_new_memory_location_from_supplied_list()
+		{
+			//arrange
+			var cards = new List<Card>
+			{
+				new Card(CardValue.Nine, CardSuit.Diamonds),
+				new Card(CardValue.Seven, CardSuit.Hearts),
+				new Card(CardValue.Four, CardSuit.Spades),
+				new Card(CardValue.Four, CardSuit.Diamonds)
+			};
+
+			//act
+			var actual = new Deck(cards);
+
+			//assert
+			Assert.That(actual.Cards, Is.Not.SameAs(cards));
+
+			var cardToAddAfterDeckCreated = new Card(CardValue.Two, CardSuit.Spades);
+			cards.Add(cardToAddAfterDeckCreated);
+			Assert.That(actual.Cards, Has.None.EqualTo(cardToAddAfterDeckCreated).Using(_cardComparer));
+		}
+
+		#endregion
 
 		#endregion
 
@@ -97,42 +100,30 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		#region Shuffle
 
 		[Test]
-		public void Shuffle()
+		public void Shuffle_SHOULD_randomise_order_of_cards()
 		{
 			//arrange
 			var card1 = new Card(CardValue.Ace, CardSuit.Clubs);
 			var card2 = new Card(CardValue.Two, CardSuit.Clubs);
 			var card3 = new Card(CardValue.Three, CardSuit.Clubs);
 			var card4 = new Card(CardValue.Four, CardSuit.Clubs);
+			_instance = new Deck(new List<Card> { card1, card2, card3, card4 });
 
-			_instance.Stub(x => x.Cards).Return(new List<Card>
-			{
-				card1, card2, card3, card4
-			});
-
-			const int firstRandomNumber = 1781;
-			_randomNumberGenerator.Stub(x => x.Next(5000)).Return(firstRandomNumber).Repeat.Once();
-
-			const int secondRandomNumber = 514;
-			_randomNumberGenerator.Stub(x => x.Next(5000)).Return(secondRandomNumber).Repeat.Once();
-
-			const int thirdRandomNumber = 4981;
-			_randomNumberGenerator.Stub(x => x.Next(5000)).Return(thirdRandomNumber).Repeat.Once();
-
-			const int fourthRandomNumber = 45;
-			_randomNumberGenerator.Stub(x => x.Next(5000)).Return(fourthRandomNumber).Repeat.Once();
-
-			_instance.Expect(x => x.Cards = Arg<List<Card>>.Matches(y => y.Count == 4 &&
-																		 y[0] == card4 &&
-																		 y[1] == card2 &&
-																		 y[2] == card1 &&
-																		 y[3] == card3));
+			_randomNumberGenerator.SetupSequence(x => x.Next(5000))
+								  .Returns(1781)
+								  .Returns(514)
+								  .Returns(4981)
+								  .Returns(45);
 
 			//act
 			_instance.Shuffle();
 
 			//assert
-			_instance.VerifyAllExpectations();
+			Assert.That(_instance.Cards, Has.Count.EqualTo(4));
+			Assert.That(_instance.Cards[0], Is.EqualTo(card4).Using(_cardComparer));
+			Assert.That(_instance.Cards[1], Is.EqualTo(card2).Using(_cardComparer));
+			Assert.That(_instance.Cards[2], Is.EqualTo(card1).Using(_cardComparer));
+			Assert.That(_instance.Cards[3], Is.EqualTo(card3).Using(_cardComparer));
 		}
 
 		#endregion
@@ -140,11 +131,9 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		#region Clone
 
 		[Test]
-		public void Clone()
+		public void Clone_SHOULD_create_new_deck_with_same_cards_in_as_original_in_the_same_order()
 		{
 			//arrange
-			WindsorContainer.Register(Component.For<IRandomNumberGenerator>().Instance(_randomNumberGenerator));
-
 			var card1InOriginalDeck = new Card(CardValue.Eight, CardSuit.Clubs);
 			var card2InOriginalDeck = new Card(CardValue.Seven, CardSuit.Spades);
 			var card3InOriginalDeck = new Card(CardValue.Ace, CardSuit.Diamonds);
@@ -156,17 +145,39 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 				card3InOriginalDeck,
 				card4InOriginalDeck
 			};
-			_instance.Stub(x => x.Cards).Return(cardsInOriginalDeck);
+			_instance = new Deck(cardsInOriginalDeck);
 
 			//act
 			var actual = _instance.Clone();
 
 			//assert
-			Assert.That(actual.Cards, Is.Not.SameAs(cardsInOriginalDeck));
-			Assert.That(actual.Cards[0], Is.EqualTo(card1InOriginalDeck));
-			Assert.That(actual.Cards[1], Is.EqualTo(card2InOriginalDeck));
-			Assert.That(actual.Cards[2], Is.EqualTo(card3InOriginalDeck));
-			Assert.That(actual.Cards[3], Is.EqualTo(card4InOriginalDeck));
+			Assert.That(actual.Cards[0], Is.EqualTo(card1InOriginalDeck).Using(_cardComparer));
+			Assert.That(actual.Cards[1], Is.EqualTo(card2InOriginalDeck).Using(_cardComparer));
+			Assert.That(actual.Cards[2], Is.EqualTo(card3InOriginalDeck).Using(_cardComparer));
+			Assert.That(actual.Cards[3], Is.EqualTo(card4InOriginalDeck).Using(_cardComparer));
+		}
+
+		[Test]
+		public void Clone_SHOULD_store_cards_in_new_deck_in_new_memory_location()
+		{
+			//arrange
+			var cardsInOriginalDeck = new List<Card>
+			{
+				new Card(CardValue.Three, CardSuit.Spades),
+				new Card(CardValue.Seven, CardSuit.Hearts),
+				new Card(CardValue.Eight, CardSuit.Hearts)
+			};
+			_instance = new Deck(cardsInOriginalDeck);
+
+			//act
+			var actual = _instance.Clone();
+
+			//assert
+			Assert.That(actual.Cards, Is.Not.SameAs(_instance.Cards));
+
+			var randomCardFromOriginalDeck = _instance.TakeRandomCard();
+			Assert.That(_instance.Cards, Has.None.EqualTo(randomCardFromOriginalDeck).Using(_cardComparer));
+			Assert.That(actual.Cards, Has.One.EqualTo(randomCardFromOriginalDeck).Using(_cardComparer));
 		}
 
 		#endregion
@@ -174,18 +185,51 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		#region RemoveCard
 
 		[Test]
-		public void RemoveCard()
+		public void RemoveCard_WHERE_requested_card_to_remove_is_not_in_deck_SHOULD_throw_error()
 		{
 			//arrange
 			const CardValue value = CardValue.Four;
 			const CardSuit suit = CardSuit.Diamonds;
-			_instance.Expect(x => x.TakeCard(value, suit)).Return(new Card(CardValue.Jack, CardSuit.Clubs));
+			_instance = new Deck(new List<Card>
+			{
+				new Card(CardValue.Three, CardSuit.Hearts),
+				new Card(CardValue.Seven, CardSuit.Spades)
+			});
+
+			//act + assert
+			var actualException = Assert.Throws<Exception>(() => _instance.RemoveCard(value, suit));
+			Assert.That(actualException.Message, Is.EqualTo("Cannot remove card from deck, card is not in deck"));
+		}
+
+		[Test]
+		public void RemoveCard_SHOULD_remove_requested_card_from_deck()
+		{
+			//arrange
+			const CardValue value = CardValue.Four;
+			const CardSuit suit = CardSuit.Diamonds;
+			_instance = new Deck();
 
 			//act
 			_instance.RemoveCard(value, suit);
 
 			//assert
-			_instance.VerifyAllExpectations();
+			Assert.That(_instance.Cards, Has.None.EqualTo(new Card(value, suit)).Using(_cardComparer));
+		}
+
+		[Test]
+		public void RemoveCard_SHOULD_leave_other_cards_in_deck()
+		{
+			//arrange
+			const CardValue value = CardValue.Four;
+			const CardSuit suit = CardSuit.Diamonds;
+			_instance = new Deck();
+
+			//act
+			_instance.RemoveCard(value, suit);
+
+			//assert
+			var otherCards = CardTestCaseData.AllCards.Where(x => _cardComparer.Equals(x, new Card(value, suit)) == false).ToList();
+			otherCards.ForEach(x => Assert.That(_instance.Cards, Has.One.EqualTo(x).Using(_cardComparer)));
 		}
 
 		#endregion
@@ -193,48 +237,66 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		#region TakeCard
 
 		[Test]
-		public void TakeCard_WHERE_no_card_with_given_value_and_suit_in_deck_SHOULD_throw_error()
+		public void TakeCard_WHERE_requested_card_to_take_is_not_in_deck_SHOULD_throw_error()
 		{
 			//arrange
 			const CardValue value = CardValue.Four;
 			const CardSuit suit = CardSuit.Diamonds;
-
-			_instance.Stub(x => x.Cards).Return(new List<Card>
+			_instance = new Deck(new List<Card>
 			{
-				new Card(value, CardSuit.Clubs),
-				new Card(CardValue.Jack, suit),
-				new Card(CardValue.Ace, CardSuit.Spades)
+				new Card(CardValue.Three, CardSuit.Hearts),
+				new Card(CardValue.Seven, CardSuit.Spades)
 			});
 
 			//act + assert
 			var actualException = Assert.Throws<Exception>(() => _instance.TakeCard(value, suit));
-			Assert.That(actualException.Message, Is.EqualTo("No matching card in Deck."));
+			Assert.That(actualException.Message, Is.EqualTo("Cannot remove card from deck, card is not in deck"));
 		}
 
 		[Test]
-		public void TakeCard()
+		public void TakeCard_SHOULD_remove_requested_card_from_deck()
 		{
 			//arrange
 			const CardValue value = CardValue.Four;
 			const CardSuit suit = CardSuit.Diamonds;
+			_instance = new Deck();
 
-			var matchingCard = new Card(value, suit);
-			var cardsInDeck = new List<Card>
-			{
-				new Card(value, CardSuit.Clubs),
-				new Card(CardValue.Jack, suit),
-				new Card(CardValue.Ace, CardSuit.Spades),
-				matchingCard
-			};
-			_instance.Stub(x => x.Cards).Return(cardsInDeck);
+			//act
+			_instance.TakeCard(value, suit);
+
+			//assert
+			Assert.That(_instance.Cards, Has.None.EqualTo(new Card(value, suit)).Using(_cardComparer));
+		}
+
+		[Test]
+		public void TakeCard_SHOULD_return_requested_card()
+		{
+			//arrange
+			const CardValue value = CardValue.Four;
+			const CardSuit suit = CardSuit.Diamonds;
+			_instance = new Deck();
 
 			//act
 			var actual = _instance.TakeCard(value, suit);
 
 			//assert
-			Assert.That(actual, Is.EqualTo(matchingCard));
-			Assert.That(cardsInDeck, Has.Count.EqualTo(3));
-			Assert.That(cardsInDeck, Has.None.EqualTo(matchingCard));
+			Assert.That(actual, Is.EqualTo(new Card(value, suit)).Using(_cardComparer));
+		}
+
+		[Test]
+		public void TakeCard_SHOULD_leave_other_cards_in_deck()
+		{
+			//arrange
+			const CardValue value = CardValue.Four;
+			const CardSuit suit = CardSuit.Diamonds;
+			_instance = new Deck();
+
+			//act
+			_instance.TakeCard(value, suit);
+
+			//assert
+			var otherCards = CardTestCaseData.AllCards.Where(x => _cardComparer.Equals(x, new Card(value, suit)) == false).ToList();
+			otherCards.ForEach(x => Assert.That(_instance.Cards, Has.One.EqualTo(x).Using(_cardComparer)));
 		}
 
 		#endregion
@@ -242,18 +304,69 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		#region TakeRandomCard
 
 		[Test]
-		public void TakeRandomCard()
+		public void TakeRandomCard_WHERE_no_cards_left_in_deck_SHOULD_throw_error()
 		{
 			//arrange
-			var expected = new Card(CardValue.Five, CardSuit.Spades);
-			var notExpected = new Card(CardValue.Seven, CardSuit.Diamonds);
-			_instance.Stub(x => x.TakeRandomCards(1)).Return(new List<Card> { expected, notExpected });
+			_instance = new Deck(new List<Card>());
+
+			//act + assert
+			var actualException = Assert.Throws<ArgumentException>(() => _instance.TakeRandomCard());
+			Assert.That(actualException.Message, Is.EqualTo("Cannot take more cards than there are left in the deck"));
+		}
+
+		[Test]
+		public void TakeRandomCard_SHOULD_remove_random_card_from_the_deck()
+		{
+			//arrange
+			_instance = new Deck(_randomNumberGenerator.Object);
+
+			const int randomIndex = 33;
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count)).Returns(randomIndex);
+
+			var randomCardToTakeFromDeck = _instance.Cards[randomIndex];
+
+			//act
+			_instance.TakeRandomCard();
+
+			//assert
+			Assert.That(_instance.Cards, Has.None.EqualTo(randomCardToTakeFromDeck).Using(_cardComparer));
+		}
+
+		[Test]
+		public void TakeRandomCard_SHOULD_return_random_card()
+		{
+			//arrange
+			_instance = new Deck(_randomNumberGenerator.Object);
+
+			const int randomIndex = 13;
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count)).Returns(randomIndex);
+
+			var randomCardToTakeFromDeck = _instance.Cards[randomIndex];
 
 			//act
 			var actual = _instance.TakeRandomCard();
 
 			//assert
-			Assert.That(actual, Is.EqualTo(expected));
+			Assert.That(actual, Is.EqualTo(randomCardToTakeFromDeck).Using(_cardComparer));
+		}
+
+		[Test]
+		public void TakeRandomCard_SHOULD_leave_other_cards_in_deck()
+		{
+			//arrange
+			_instance = new Deck(_randomNumberGenerator.Object);
+
+			const int randomIndex = 44;
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count)).Returns(randomIndex);
+
+			var randomCardToTakeFromDeck = _instance.Cards[randomIndex];
+
+			//act
+			_instance.TakeRandomCard();
+
+			//assert
+			var otherCards = CardTestCaseData.AllCards.Where(x => _cardComparer.Equals(x, randomCardToTakeFromDeck) == false).ToList();
+			otherCards.ForEach(x => Assert.That(_instance.Cards, Has.One.EqualTo(x).Using(_cardComparer)));
 		}
 
 		#endregion
@@ -264,7 +377,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void TakeRandomCards_WHERE_trying_to_take_more_cards_than_there_are_left_in_deck_SHOULD_throw_error()
 		{
 			//arrange
-			_instance.Stub(x => x.Cards).Return(new List<Card>
+			_instance = new Deck(new List<Card>
 			{
 				new Card(CardValue.Queen, CardSuit.Spades),
 				new Card(CardValue.Eight, CardSuit.Diamonds)
@@ -272,44 +385,90 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 
 			//act + assert
 			var actualException = Assert.Throws<ArgumentException>(() => _instance.TakeRandomCards(3));
-			Assert.That(actualException.Message, Is.EqualTo("Cannot take more cards than there are left in the Deck."));
+			Assert.That(actualException.Message, Is.EqualTo("Cannot take more cards than there are left in the deck"));
 		}
 
 		[Test]
-		public void TakeRandomCards()
+		public void TakeRandomCards_SHOULD_remove_random_cards_from_deck()
 		{
 			//arrange
-			var card1 = new Card(CardValue.Queen, CardSuit.Spades);
-			var card2 = new Card(CardValue.Eight, CardSuit.Diamonds);
-			var card3 = new Card(CardValue.Nine, CardSuit.Clubs);
-			var card4 = new Card(CardValue.Ace, CardSuit.Hearts);
-			var card5 = new Card(CardValue.Seven, CardSuit.Spades);
+			_instance = new Deck(_randomNumberGenerator.Object);
 
-			_instance.Stub(x => x.Cards).Return(new List<Card> { card1, card2, card3, card4, card5 }).Repeat.Times(4);
-			_randomNumberGenerator.Stub(x => x.Next(5)).Return(3);
+			const int randomIndex1 = 22;
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count)).Returns(randomIndex1);
+			var randomCard1ToTakeFromDeck = _instance.Cards[randomIndex1];
 
-			_instance.Stub(x => x.Cards).Return(new List<Card> { card1, card2, card3, card5 }).Repeat.Times(3);
-			_randomNumberGenerator.Stub(x => x.Next(4)).Return(0);
+			const int randomIndex2 = 4;
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count - 1)).Returns(randomIndex2);
+			var randomCard2ToTakeFromDeck = _instance.Cards[randomIndex2];
 
-			var cardsLeftInHand = new List<Card> { card2, card3, card5 };
-			_instance.Stub(x => x.Cards).Return(cardsLeftInHand).Repeat.Times(3);
-			_randomNumberGenerator.Stub(x => x.Next(3)).Return(1);
+			const int randomIndex3 = 32;
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count - 2)).Returns(randomIndex3);
+			var randomCard3ToTakeFromDeck = _instance.Cards[randomIndex3 + 2];
+
+			//act
+			_instance.TakeRandomCards(3);
+
+			//assert
+			Assert.That(_instance.Cards, Has.None.EqualTo(randomCard1ToTakeFromDeck).Using(_cardComparer));
+			Assert.That(_instance.Cards, Has.None.EqualTo(randomCard2ToTakeFromDeck).Using(_cardComparer));
+			Assert.That(_instance.Cards, Has.None.EqualTo(randomCard3ToTakeFromDeck).Using(_cardComparer));
+		}
+
+		[Test]
+		public void TakeRandomCards_SHOULD_return_random_cards()
+		{
+			//arrange
+			_instance = new Deck(_randomNumberGenerator.Object);
+
+			const int randomIndex1 = 44;
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count)).Returns(randomIndex1);
+			var randomCard1ToTakeFromDeck = _instance.Cards[randomIndex1];
+
+			const int randomIndex2 = 25;
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count - 1)).Returns(randomIndex2);
+			var randomCard2ToTakeFromDeck = _instance.Cards[randomIndex2];
+
+			const int randomIndex3 = 49;
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count - 2)).Returns(randomIndex3);
+			var randomCard3ToTakeFromDeck = _instance.Cards[randomIndex3 + 2];
 
 			//act
 			var actual = _instance.TakeRandomCards(3);
 
 			//assert
 			Assert.That(actual, Has.Count.EqualTo(3));
-			Assert.That(actual[0], Is.EqualTo(card4));
-			Assert.That(actual[1], Is.EqualTo(card1));
-			Assert.That(actual[2], Is.EqualTo(card3));
+			Assert.That(actual, Has.One.EqualTo(randomCard1ToTakeFromDeck).Using(_cardComparer));
+			Assert.That(actual, Has.One.EqualTo(randomCard2ToTakeFromDeck).Using(_cardComparer));
+			Assert.That(actual, Has.One.EqualTo(randomCard3ToTakeFromDeck).Using(_cardComparer));
+		}
 
-			Assert.That(cardsLeftInHand, Has.Count.EqualTo(2));
-			Assert.That(cardsLeftInHand[0], Is.EqualTo(card2));
-			Assert.That(cardsLeftInHand[1], Is.EqualTo(card5));
-			Assert.That(cardsLeftInHand, Has.None.EqualTo(card1));
-			Assert.That(cardsLeftInHand, Has.None.EqualTo(card3));
-			Assert.That(cardsLeftInHand, Has.None.EqualTo(card4));
+		[Test]
+		public void TakeRandomCards_SHOULD_leave_other_cards_in_deck()
+		{
+			//arrange
+			_instance = new Deck(_randomNumberGenerator.Object);
+
+			const int randomIndex1 = 13;
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count)).Returns(randomIndex1);
+			var randomCard1ToTakeFromDeck = _instance.Cards[randomIndex1];
+
+			const int randomIndex2 = 11;
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count - 1)).Returns(randomIndex2);
+			var randomCard2ToTakeFromDeck = _instance.Cards[randomIndex2];
+
+			const int randomIndex3 = 19;
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count - 2)).Returns(randomIndex3);
+			var randomCard3ToTakeFromDeck = _instance.Cards[randomIndex3 + 2];
+
+			//act
+			_instance.TakeRandomCards(3);
+
+			//assert
+			var otherCards = CardTestCaseData.AllCards.Where(x => _cardComparer.Equals(x, randomCard1ToTakeFromDeck) &&
+																  _cardComparer.Equals(x, randomCard2ToTakeFromDeck) &&
+																  _cardComparer.Equals(x, randomCard3ToTakeFromDeck)).ToList();
+			otherCards.ForEach(x => Assert.That(_instance.Cards, Has.One.EqualTo(x), $"Deck is missing {x}"));
 		}
 
 		#endregion
@@ -317,52 +476,63 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		#region GetRandomCards
 
 		[Test]
-		public void GetRandomCards_WHERE_not_enough_cards_left_in_deck()
+		public void GetRandomCards_WHERE_trying_to_get_more_cards_than_there_are_left_in_deck_SHOULD_throw_error()
 		{
 			//arrange
-			_instance.Stub(x => x.Cards).Return(new List<Card>
+			_instance = new Deck(new List<Card>
 			{
-				new Card(CardValue.Ace, CardSuit.Hearts),
-				new Card(CardValue.Nine, CardSuit.Spades)
+				new Card(CardValue.Seven, CardSuit.Hearts),
+				new Card(CardValue.Two, CardSuit.Spades)
 			});
 
 			//act + assert
-			var actualException = Assert.Throws<Exception>(() => _instance.GetRandomCards(3));
-			Assert.That(actualException.Message, Is.EqualTo("Cannot get more cards than there are left in the Deck."));
+			var actualException = Assert.Throws<ArgumentException>(() => _instance.GetRandomCards(3));
+			Assert.That(actualException.Message, Is.EqualTo("Cannot get more cards than there are left in the deck"));
 		}
 
 		[Test]
-		public void GetRandomCards()
+		public void GetRandomCards_SHOULD_not_remove_any_cards_from_the_deck()
 		{
 			//arrange
-			var card1 = new Card(CardValue.Eight, CardSuit.Clubs);
-			var card2 = new Card(CardValue.Ace, CardSuit.Hearts);
-			var card3 = new Card(CardValue.Nine, CardSuit.Spades);
-			var card4 = new Card(CardValue.King, CardSuit.Spades);
-			var card5 = new Card(CardValue.Two, CardSuit.Clubs);
+			_instance = new Deck(_randomNumberGenerator.Object);
 
-			var cardsInDeck = new List<Card> { card1, card2, card3, card4, card5 };
-			_instance.Stub(x => x.Cards).Return(cardsInDeck);
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count)).Returns(17);
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count - 1)).Returns(2);
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count - 2)).Returns(29);
 
-			_randomNumberGenerator.Stub(x => x.Next(5)).Return(2);
-			_randomNumberGenerator.Stub(x => x.Next(4)).Return(2);
-			_randomNumberGenerator.Stub(x => x.Next(3)).Return(0);
+			//act
+			_instance.GetRandomCards(3);
+
+			//assert
+			CardTestCaseData.AllCards.ForEach(x => Assert.That(_instance.Cards, Has.One.EqualTo(x).Using(_cardComparer)));
+		}
+
+		[Test]
+		public void GetRandomCards_SHOULD_return_random_cards()
+		{
+			//arrange
+			_instance = new Deck(_randomNumberGenerator.Object);
+
+			const int randomIndex1 = 6;
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count)).Returns(randomIndex1);
+			var randomCard1ToTakeFromDeck = _instance.Cards[randomIndex1];
+
+			const int randomIndex2 = 5;
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count - 1)).Returns(randomIndex2);
+			var randomCard2ToTakeFromDeck = _instance.Cards[randomIndex2];
+
+			const int randomIndex3 = 10;
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count - 2)).Returns(randomIndex3);
+			var randomCard3ToTakeFromDeck = _instance.Cards[randomIndex3 + 2];
 
 			//act
 			var actual = _instance.GetRandomCards(3);
 
 			//assert
 			Assert.That(actual, Has.Count.EqualTo(3));
-			Assert.That(actual, Has.Some.EqualTo(card1));
-			Assert.That(actual, Has.Some.EqualTo(card3));
-			Assert.That(actual, Has.Some.EqualTo(card4));
-
-			Assert.That(cardsInDeck, Has.Count.EqualTo(5));
-			Assert.That(cardsInDeck, Has.Some.EqualTo(card1));
-			Assert.That(cardsInDeck, Has.Some.EqualTo(card2));
-			Assert.That(cardsInDeck, Has.Some.EqualTo(card3));
-			Assert.That(cardsInDeck, Has.Some.EqualTo(card4));
-			Assert.That(cardsInDeck, Has.Some.EqualTo(card5));
+			Assert.That(actual, Has.One.EqualTo(randomCard1ToTakeFromDeck).Using(_cardComparer));
+			Assert.That(actual, Has.One.EqualTo(randomCard2ToTakeFromDeck).Using(_cardComparer));
+			Assert.That(actual, Has.One.EqualTo(randomCard3ToTakeFromDeck).Using(_cardComparer));
 		}
 
 		#endregion

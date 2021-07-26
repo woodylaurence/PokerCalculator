@@ -1,9 +1,9 @@
-﻿using NUnit.Framework;
+﻿using Moq;
+using NUnit.Framework;
 using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Tests.Shared;
-using PokerCalculator.Tests.Shared.TestData;
-using Rhino.Mocks;
+using PokerCalculator.Tests.Unit.TestData;
 using System;
 using System.Collections.Generic;
 
@@ -14,26 +14,19 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 	{
 		private PokerHandBasedHandRank _instance;
 
-		[SetUp]
-		protected override void Setup()
-		{
-			_instance = MockRepository.GeneratePartialMock<PokerHandBasedHandRank>(null, null);
-		}
-
 		#region Properties and Fields
 
 		[Test]
-		public void PokerHand_getter()
+		public void PokerHand_getter_SHOULD_return_rank()
 		{
 			//arrange
-			const PokerHand pokerHand = PokerHand.Straight;
-			_instance.Stub(x => x.Rank).Return(pokerHand);
+			_instance = new PokerHandBasedHandRank(PokerHand.Straight);
 
 			//act
 			var actual = _instance.PokerHand;
 
 			//assert
-			Assert.That(actual, Is.EqualTo(pokerHand));
+			Assert.That(actual, Is.EqualTo(PokerHand.Straight));
 		}
 
 		#endregion
@@ -76,6 +69,9 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 		[Test]
 		public void CompareTo_WHERE_other_hand_rank_is_same_reference_SHOULD_return_zero()
 		{
+			//arrange
+			_instance = new PokerHandBasedHandRank(PokerHand.FullHouse);
+
 			//act
 			var actual = _instance.CompareTo(_instance);
 
@@ -86,6 +82,9 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 		[Test]
 		public void CompareTo_WHERE_other_hand_rank_is_null_SHOULD_return_one()
 		{
+			//arrange
+			_instance = new PokerHandBasedHandRank(PokerHand.FullHouse);
+
 			//act
 			var actual = _instance.CompareTo(null);
 
@@ -97,10 +96,8 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 		public void CompareTo_WHERE_other_hand_ranks_poker_hand_is_higher_SHOULD_return_minus_one(PokerHand thisPokerHand, PokerHand otherPokerHand)
 		{
 			//arrange
-			var otherHandRank = MockRepository.GenerateStrictMock<PokerHandBasedHandRank>(null, null);
-
-			_instance.Stub(x => x.Rank).Return(thisPokerHand);
-			otherHandRank.Stub(x => x.Rank).Return(otherPokerHand);
+			_instance = new PokerHandBasedHandRank(thisPokerHand);
+			var otherHandRank = new PokerHandBasedHandRank(otherPokerHand);
 
 			//act
 			var actual = _instance.CompareTo(otherHandRank);
@@ -113,10 +110,8 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 		public void CompareTo_WHERE_other_hand_ranks_poker_hand_is_lower_SHOULD_return_one(PokerHand thisPokerHand, PokerHand otherPokerHand)
 		{
 			//arrange
-			var otherHandRank = MockRepository.GenerateStrictMock<PokerHandBasedHandRank>(null, null);
-
-			_instance.Stub(x => x.Rank).Return(thisPokerHand);
-			otherHandRank.Stub(x => x.Rank).Return(otherPokerHand);
+			_instance = new PokerHandBasedHandRank(thisPokerHand);
+			var otherHandRank = new PokerHandBasedHandRank(otherPokerHand);
 
 			//act
 			var actual = _instance.CompareTo(otherHandRank);
@@ -129,148 +124,139 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 		public void CompareTo_WHERE_other_hand_ranks_poker_hand_is_identical_and_other_hand_rank_is_not_PokerHandBasedHandRank_SHOULD_throw_error(PokerHand pokerHand)
 		{
 			//arrange
-			var otherHandRank = MockRepository.GenerateStrictMock<IHandRank<PokerHand>>();
+			_instance = new PokerHandBasedHandRank(pokerHand);
 
-			_instance.Stub(x => x.Rank).Return(pokerHand);
-			otherHandRank.Stub(x => x.Rank).Return(pokerHand);
+			var otherHandRank = new Mock<IHandRank<PokerHand>>();
+			otherHandRank.Setup(x => x.Rank).Returns(pokerHand);
 
 			//act + assert
-			var actualException = Assert.Throws<ArgumentException>(() => _instance.CompareTo(otherHandRank));
+			var actualException = Assert.Throws<ArgumentException>(() => _instance.CompareTo(otherHandRank.Object));
 			Assert.That(actualException.Message, Is.EqualTo("Other HandRank is not PokerHandBasedHandRank"));
 		}
 
 		[Test, TestCaseSource(typeof(PokerHandComparisonTestCaseData), nameof(PokerHandComparisonTestCaseData.AllPokerHands))]
-		public void CompareTo_WHERE_other_hand_ranks_poker_hand_is_identical_and_other_hand_rank_is_PokerHandBasedHandRank_SHOULD_return_result_of_CompareKickers(PokerHand pokerHand)
+		public void CompareTo_WHERE_other_hand_ranks_poker_hand_is_identical_and_has_different_number_of_kickers_to_current_hand_rank_SHOULD_throw_error(PokerHand pokerHand)
 		{
 			//arrange
-			var otherHandRank = MockRepository.GenerateStrictMock<PokerHandBasedHandRank>(null, null);
+			_instance = new PokerHandBasedHandRank(pokerHand, new List<CardValue> { CardValue.Ten, CardValue.Four });
+			var otherHandRank = new PokerHandBasedHandRank(pokerHand, new List<CardValue> { CardValue.King, CardValue.Three, CardValue.Two });
 
-			_instance.Stub(x => x.Rank).Return(pokerHand);
-			otherHandRank.Stub(x => x.Rank).Return(pokerHand);
+			//act + assert
+			var actualException = Assert.Throws<Exception>(() => _instance.CompareTo(otherHandRank));
+			Assert.That(actualException.Message, Is.EqualTo("Cannot compare hand ranks, kickers have different lengths"));
+		}
 
-			const int expected = 4;
-			_instance.Stub(x => x.CompareKickers(otherHandRank)).Return(expected);
+		[Test, TestCaseSource(typeof(PokerHandComparisonTestCaseData), nameof(PokerHandComparisonTestCaseData.AllPokerHands))]
+		public void CompareTo_WHERE_other_hand_ranks_poker_hand_is_identical_and_kickers_are_identical_SHOULD_return_zero(PokerHand pokerHand)
+		{
+			//arrange
+			_instance = new PokerHandBasedHandRank(pokerHand, new List<CardValue> { CardValue.Ten, CardValue.Four, CardValue.Three });
+			var otherHandRank = new PokerHandBasedHandRank(pokerHand, new List<CardValue> { CardValue.Ten, CardValue.Four, CardValue.Three });
 
 			//act
 			var actual = _instance.CompareTo(otherHandRank);
 
 			//assert
-			Assert.That(actual, Is.EqualTo(expected));
+			Assert.That(actual, Is.Zero);
 		}
 
-		#region CompareKickers
-
-		[Test]
-		public void CompareKickers_WHERE_this_hand_rank_kickers_is_different_length_to_other_hand_rank_kickers_SHOULD_throw_error()
+		[Test, TestCaseSource(typeof(PokerHandComparisonTestCaseData), nameof(PokerHandComparisonTestCaseData.AllPokerHands))]
+		public void CompareTo_WHERE_other_hand_ranks_poker_hand_is_identical_and_no_kickers_SHOULD_return_zero(PokerHand pokerHand)
 		{
 			//arrange
-			_instance.Stub(x => x.KickerCardValues).Return(new List<CardValue> { CardValue.Jack, CardValue.Eight });
-
-			var otherHandRank = MockRepository.GenerateStrictMock<PokerHandBasedHandRank>(null, null);
-			otherHandRank.Stub(x => x.KickerCardValues).Return(new List<CardValue> { CardValue.Seven, CardValue.Four, CardValue.Queen });
-
-			//act + assert
-			var actualException = Assert.Throws<Exception>(() => _instance.CompareKickers(otherHandRank));
-			Assert.That(actualException.Message, Is.EqualTo("Kickers have different lengths."));
-		}
-
-		[Test]
-		public void CompareKickers_WHERE_no_kickers_SHOULD_return_zero()
-		{
-			//arrange
-			_instance.Stub(x => x.KickerCardValues).Return(new List<CardValue>());
-
-			var otherHandRank = MockRepository.GenerateStrictMock<PokerHandBasedHandRank>(null, null);
-			otherHandRank.Stub(x => x.KickerCardValues).Return(new List<CardValue>());
+			_instance = new PokerHandBasedHandRank(pokerHand);
+			var otherHandRank = new PokerHandBasedHandRank(pokerHand, new List<CardValue>());
 
 			//act
-			var actual = _instance.CompareKickers(otherHandRank);
+			var actual = _instance.CompareTo(otherHandRank);
 
 			//assert
-			Assert.That(actual, Is.EqualTo(0));
+			Assert.That(actual, Is.Zero);
 		}
 
-		[Test]
-		public void CompareKickers_WHERE_some_kickers_and_other_hand_rank_has_higher_first_kicker_SHOULD_return_minus_one()
+		[Test, TestCaseSource(typeof(PokerHandComparisonTestCaseData), nameof(PokerHandComparisonTestCaseData.AllPokerHands))]
+		public void CompareTo_WHERE_other_hand_ranks_poker_hand_is_identical_and_kickers_differ_in_first_kicker_with_other_hand_ranks_kicker_being_lower_SHOULD_return_one(PokerHand pokerHand)
 		{
 			//arrange
-			var otherHandRank = MockRepository.GenerateStrictMock<PokerHandBasedHandRank>(null, null);
-
-			_instance.Stub(x => x.KickerCardValues).Return(new List<CardValue> { CardValue.Five });
-			otherHandRank.Stub(x => x.KickerCardValues).Return(new List<CardValue> { CardValue.Nine });
+			_instance = new PokerHandBasedHandRank(pokerHand, new List<CardValue> { CardValue.Ten });
+			var otherHandRank = new PokerHandBasedHandRank(pokerHand, new List<CardValue> { CardValue.Eight });
 
 			//act
-			var actual = _instance.CompareKickers(otherHandRank);
-
-			//assert
-			Assert.That(actual, Is.EqualTo(-1));
-		}
-
-		[Test]
-		public void CompareKickers_WHERE_some_kickers_and_other_hand_rank_has_lower_first_kicker_SHOULD_return_one()
-		{
-			//arrange
-			var otherHandRank = MockRepository.GenerateStrictMock<PokerHandBasedHandRank>(null, null);
-
-			_instance.Stub(x => x.KickerCardValues).Return(new List<CardValue> { CardValue.Nine });
-			otherHandRank.Stub(x => x.KickerCardValues).Return(new List<CardValue> { CardValue.Five });
-
-			//act
-			var actual = _instance.CompareKickers(otherHandRank);
+			var actual = _instance.CompareTo(otherHandRank);
 
 			//assert
 			Assert.That(actual, Is.EqualTo(1));
 		}
 
-		[Test]
-		public void CompareKickers_WHERE_some_kickers_and_other_hand_rank_differs_in_third_kicker_with_higher_value_SHOULD_return_minus_one()
+		[Test, TestCaseSource(typeof(PokerHandComparisonTestCaseData), nameof(PokerHandComparisonTestCaseData.AllPokerHands))]
+		public void CompareTo_WHERE_other_hand_ranks_poker_hand_is_identical_and_kickers_differ_in_first_kicker_with_other_hand_ranks_kicker_being_higher_SHOULD_return_minus_one(PokerHand pokerHand)
 		{
 			//arrange
-			var otherHandRank = MockRepository.GenerateStrictMock<PokerHandBasedHandRank>(null, null);
-
-			_instance.Stub(x => x.KickerCardValues).Return(new List<CardValue> { CardValue.Nine, CardValue.Jack, CardValue.King });
-			otherHandRank.Stub(x => x.KickerCardValues).Return(new List<CardValue> { CardValue.Nine, CardValue.Jack, CardValue.Ace });
+			_instance = new PokerHandBasedHandRank(pokerHand, new List<CardValue> { CardValue.Ten });
+			var otherHandRank = new PokerHandBasedHandRank(pokerHand, new List<CardValue> { CardValue.Queen });
 
 			//act
-			var actual = _instance.CompareKickers(otherHandRank);
+			var actual = _instance.CompareTo(otherHandRank);
 
 			//assert
 			Assert.That(actual, Is.EqualTo(-1));
 		}
 
-		[Test]
-		public void CompareKickers_WHERE_some_kickers_and_other_hand_rank_differs_in_third_kicker_with_lower_value_SHOULD_return_one()
+		[Test, TestCaseSource(typeof(PokerHandComparisonTestCaseData), nameof(PokerHandComparisonTestCaseData.AllPokerHands))]
+		public void CompareTo_WHERE_other_hand_ranks_poker_hand_is_identical_and_kickers_differ_in_third_kicker_with_other_hand_ranks_kicker_being_lower_SHOULD_return_one(PokerHand pokerHand)
 		{
 			//arrange
-			var otherHandRank = MockRepository.GenerateStrictMock<PokerHandBasedHandRank>(null, null);
-
-			_instance.Stub(x => x.KickerCardValues).Return(new List<CardValue> { CardValue.Nine, CardValue.Jack, CardValue.Ace });
-			otherHandRank.Stub(x => x.KickerCardValues).Return(new List<CardValue> { CardValue.Nine, CardValue.Jack, CardValue.King });
+			_instance = new PokerHandBasedHandRank(pokerHand, new List<CardValue> { CardValue.Ten, CardValue.Eight, CardValue.Six });
+			var otherHandRank = new PokerHandBasedHandRank(pokerHand, new List<CardValue> { CardValue.Ten, CardValue.Eight, CardValue.Four });
 
 			//act
-			var actual = _instance.CompareKickers(otherHandRank);
+			var actual = _instance.CompareTo(otherHandRank);
 
 			//assert
 			Assert.That(actual, Is.EqualTo(1));
 		}
 
-		[Test]
-		public void CompareKickers_WHERE_some_kickers_and_kickers_match_SHOULD_return_zero()
+		[Test, TestCaseSource(typeof(PokerHandComparisonTestCaseData), nameof(PokerHandComparisonTestCaseData.AllPokerHands))]
+		public void CompareTo_WHERE_other_hand_ranks_poker_hand_is_identical_and_kickers_differ_in_third_kicker_with_other_hand_ranks_kicker_being_higher_SHOULD_return_minus_one(PokerHand pokerHand)
 		{
 			//arrange
-			var otherHandRank = MockRepository.GenerateStrictMock<PokerHandBasedHandRank>(null, null);
-
-			_instance.Stub(x => x.KickerCardValues).Return(new List<CardValue> { CardValue.Four, CardValue.Seven });
-			otherHandRank.Stub(x => x.KickerCardValues).Return(new List<CardValue> { CardValue.Four, CardValue.Seven });
+			_instance = new PokerHandBasedHandRank(pokerHand, new List<CardValue> { CardValue.Ten, CardValue.Eight, CardValue.Six });
+			var otherHandRank = new PokerHandBasedHandRank(pokerHand, new List<CardValue> { CardValue.Ten, CardValue.Eight, CardValue.Seven });
 
 			//act
-			var actual = _instance.CompareKickers(otherHandRank);
+			var actual = _instance.CompareTo(otherHandRank);
 
 			//assert
-			Assert.That(actual, Is.EqualTo(0));
+			Assert.That(actual, Is.EqualTo(-1));
 		}
 
-		#endregion
+		[Test, TestCaseSource(typeof(PokerHandComparisonTestCaseData), nameof(PokerHandComparisonTestCaseData.AllPokerHands))]
+		public void CompareTo_WHERE_other_hand_ranks_poker_hand_is_identical_and_kickers_differ_in_fifth_kicker_with_other_hand_ranks_kicker_being_lower_SHOULD_return_one(PokerHand pokerHand)
+		{
+			//arrange
+			_instance = new PokerHandBasedHandRank(pokerHand, new List<CardValue> { CardValue.King, CardValue.Ten, CardValue.Nine, CardValue.Seven, CardValue.Three });
+			var otherHandRank = new PokerHandBasedHandRank(pokerHand, new List<CardValue> { CardValue.King, CardValue.Ten, CardValue.Nine, CardValue.Seven, CardValue.Two });
+
+			//act
+			var actual = _instance.CompareTo(otherHandRank);
+
+			//assert
+			Assert.That(actual, Is.EqualTo(1));
+		}
+
+		[Test, TestCaseSource(typeof(PokerHandComparisonTestCaseData), nameof(PokerHandComparisonTestCaseData.AllPokerHands))]
+		public void CompareTo_WHERE_other_hand_ranks_poker_hand_is_identical_and_kickers_differ_in_fifth_kicker_with_other_hand_ranks_kicker_being_higher_SHOULD_return_minus_one(PokerHand pokerHand)
+		{
+			//arrange
+			_instance = new PokerHandBasedHandRank(pokerHand, new List<CardValue> { CardValue.King, CardValue.Ten, CardValue.Nine, CardValue.Seven, CardValue.Three });
+			var otherHandRank = new PokerHandBasedHandRank(pokerHand, new List<CardValue> { CardValue.King, CardValue.Ten, CardValue.Nine, CardValue.Seven, CardValue.Five });
+
+			//act
+			var actual = _instance.CompareTo(otherHandRank);
+
+			//assert
+			Assert.That(actual, Is.EqualTo(-1));
+		}
 
 		#endregion
 	}
