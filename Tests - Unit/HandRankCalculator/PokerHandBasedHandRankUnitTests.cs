@@ -1,9 +1,9 @@
-﻿using NUnit.Framework;
+﻿using Moq;
+using NUnit.Framework;
 using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Tests.Shared;
 using PokerCalculator.Tests.Unit.TestData;
-using Rhino.Mocks;
 using System;
 using System.Collections.Generic;
 
@@ -126,11 +126,11 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 			//arrange
 			_instance = new PokerHandBasedHandRank(pokerHand);
 
-			var otherHandRank = MockRepository.GenerateStrictMock<IHandRank<PokerHand>>();
-			otherHandRank.Stub(x => x.Rank).Return(pokerHand);
+			var otherHandRank = new Mock<IHandRank<PokerHand>>();
+			otherHandRank.Setup(x => x.Rank).Returns(pokerHand);
 
 			//act + assert
-			var actualException = Assert.Throws<ArgumentException>(() => _instance.CompareTo(otherHandRank));
+			var actualException = Assert.Throws<ArgumentException>(() => _instance.CompareTo(otherHandRank.Object));
 			Assert.That(actualException.Message, Is.EqualTo("Other HandRank is not PokerHandBasedHandRank"));
 		}
 

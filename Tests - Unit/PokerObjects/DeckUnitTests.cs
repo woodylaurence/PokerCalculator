@@ -1,11 +1,11 @@
 ﻿using Castle.MicroKernel.Registration;
+using Moq;
 using NUnit.Framework;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
 using PokerCalculator.Tests.Unit.TestData;
-using Rhino.Mocks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,16 +16,15 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 	public class DeckUnitTests : AbstractUnitTestBase
 	{
 		private Deck _instance;
-		private IRandomNumberGenerator _randomNumberGenerator;
+		private Mock<IRandomNumberGenerator> _randomNumberGenerator;
 		private CardComparer _cardComparer;
 
 		[SetUp]
 		protected override void Setup()
 		{
 			base.Setup();
-
-			_randomNumberGenerator = MockRepository.GenerateStrictMock<IRandomNumberGenerator>();
-			WindsorContainer.Register(Component.For<IRandomNumberGenerator>().Instance(_randomNumberGenerator));
+			_randomNumberGenerator = new Mock<IRandomNumberGenerator>();
+			WindsorContainer.Register(Component.For<IRandomNumberGenerator>().Instance(_randomNumberGenerator.Object));
 
 			_cardComparer = new CardComparer();
 		}
@@ -38,7 +37,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void Constructor_randomnumbergenerator_SHOULD_create_deck_with_all_possible_cards()
 		{
 			//act
-			var actual = new Deck(_randomNumberGenerator);
+			var actual = new Deck(_randomNumberGenerator.Object);
 
 			//assert
 			Assert.That(actual.Cards, Has.Count.EqualTo(52));
@@ -110,17 +109,11 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			var card4 = new Card(CardValue.Four, CardSuit.Clubs);
 			_instance = new Deck(new List<Card> { card1, card2, card3, card4 });
 
-			const int firstRandomNumber = 1781;
-			_randomNumberGenerator.Stub(x => x.Next(5000)).Return(firstRandomNumber).Repeat.Once();
-
-			const int secondRandomNumber = 514;
-			_randomNumberGenerator.Stub(x => x.Next(5000)).Return(secondRandomNumber).Repeat.Once();
-
-			const int thirdRandomNumber = 4981;
-			_randomNumberGenerator.Stub(x => x.Next(5000)).Return(thirdRandomNumber).Repeat.Once();
-
-			const int fourthRandomNumber = 45;
-			_randomNumberGenerator.Stub(x => x.Next(5000)).Return(fourthRandomNumber).Repeat.Once();
+			_randomNumberGenerator.SetupSequence(x => x.Next(5000))
+								  .Returns(1781)
+								  .Returns(514)
+								  .Returns(4981)
+								  .Returns(45);
 
 			//act
 			_instance.Shuffle();
@@ -182,7 +175,6 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			//assert
 			Assert.That(actual.Cards, Is.Not.SameAs(_instance.Cards));
 
-			_randomNumberGenerator.Stub(x => x.Next(_instance.Cards.Count)).Return(1);
 			var randomCardFromOriginalDeck = _instance.TakeRandomCard();
 			Assert.That(_instance.Cards, Has.None.EqualTo(randomCardFromOriginalDeck).Using(_cardComparer));
 			Assert.That(actual.Cards, Has.One.EqualTo(randomCardFromOriginalDeck).Using(_cardComparer));
@@ -326,10 +318,10 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void TakeRandomCard_SHOULD_remove_random_card_from_the_deck()
 		{
 			//arrange
-			_instance = new Deck(_randomNumberGenerator);
+			_instance = new Deck(_randomNumberGenerator.Object);
 
 			const int randomIndex = 33;
-			_randomNumberGenerator.Stub(x => x.Next(_instance.Cards.Count)).Return(randomIndex);
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count)).Returns(randomIndex);
 
 			var randomCardToTakeFromDeck = _instance.Cards[randomIndex];
 
@@ -344,10 +336,10 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void TakeRandomCard_SHOULD_return_random_card()
 		{
 			//arrange
-			_instance = new Deck(_randomNumberGenerator);
+			_instance = new Deck(_randomNumberGenerator.Object);
 
 			const int randomIndex = 13;
-			_randomNumberGenerator.Stub(x => x.Next(_instance.Cards.Count)).Return(randomIndex);
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count)).Returns(randomIndex);
 
 			var randomCardToTakeFromDeck = _instance.Cards[randomIndex];
 
@@ -362,10 +354,10 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void TakeRandomCard_SHOULD_leave_other_cards_in_deck()
 		{
 			//arrange
-			_instance = new Deck(_randomNumberGenerator);
+			_instance = new Deck(_randomNumberGenerator.Object);
 
 			const int randomIndex = 44;
-			_randomNumberGenerator.Stub(x => x.Next(_instance.Cards.Count)).Return(randomIndex);
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count)).Returns(randomIndex);
 
 			var randomCardToTakeFromDeck = _instance.Cards[randomIndex];
 
@@ -400,18 +392,18 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void TakeRandomCards_SHOULD_remove_random_cards_from_deck()
 		{
 			//arrange
-			_instance = new Deck(_randomNumberGenerator);
+			_instance = new Deck(_randomNumberGenerator.Object);
 
 			const int randomIndex1 = 22;
-			_randomNumberGenerator.Stub(x => x.Next(_instance.Cards.Count)).Return(randomIndex1);
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count)).Returns(randomIndex1);
 			var randomCard1ToTakeFromDeck = _instance.Cards[randomIndex1];
 
 			const int randomIndex2 = 4;
-			_randomNumberGenerator.Stub(x => x.Next(_instance.Cards.Count - 1)).Return(randomIndex2);
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count - 1)).Returns(randomIndex2);
 			var randomCard2ToTakeFromDeck = _instance.Cards[randomIndex2];
 
 			const int randomIndex3 = 32;
-			_randomNumberGenerator.Stub(x => x.Next(_instance.Cards.Count - 2)).Return(randomIndex3);
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count - 2)).Returns(randomIndex3);
 			var randomCard3ToTakeFromDeck = _instance.Cards[randomIndex3 + 2];
 
 			//act
@@ -427,18 +419,18 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void TakeRandomCards_SHOULD_return_random_cards()
 		{
 			//arrange
-			_instance = new Deck(_randomNumberGenerator);
+			_instance = new Deck(_randomNumberGenerator.Object);
 
 			const int randomIndex1 = 44;
-			_randomNumberGenerator.Stub(x => x.Next(_instance.Cards.Count)).Return(randomIndex1);
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count)).Returns(randomIndex1);
 			var randomCard1ToTakeFromDeck = _instance.Cards[randomIndex1];
 
 			const int randomIndex2 = 25;
-			_randomNumberGenerator.Stub(x => x.Next(_instance.Cards.Count - 1)).Return(randomIndex2);
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count - 1)).Returns(randomIndex2);
 			var randomCard2ToTakeFromDeck = _instance.Cards[randomIndex2];
 
 			const int randomIndex3 = 49;
-			_randomNumberGenerator.Stub(x => x.Next(_instance.Cards.Count - 2)).Return(randomIndex3);
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count - 2)).Returns(randomIndex3);
 			var randomCard3ToTakeFromDeck = _instance.Cards[randomIndex3 + 2];
 
 			//act
@@ -455,18 +447,18 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void TakeRandomCards_SHOULD_leave_other_cards_in_deck()
 		{
 			//arrange
-			_instance = new Deck(_randomNumberGenerator);
+			_instance = new Deck(_randomNumberGenerator.Object);
 
 			const int randomIndex1 = 13;
-			_randomNumberGenerator.Stub(x => x.Next(_instance.Cards.Count)).Return(randomIndex1);
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count)).Returns(randomIndex1);
 			var randomCard1ToTakeFromDeck = _instance.Cards[randomIndex1];
 
 			const int randomIndex2 = 11;
-			_randomNumberGenerator.Stub(x => x.Next(_instance.Cards.Count - 1)).Return(randomIndex2);
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count - 1)).Returns(randomIndex2);
 			var randomCard2ToTakeFromDeck = _instance.Cards[randomIndex2];
 
 			const int randomIndex3 = 19;
-			_randomNumberGenerator.Stub(x => x.Next(_instance.Cards.Count - 2)).Return(randomIndex3);
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count - 2)).Returns(randomIndex3);
 			var randomCard3ToTakeFromDeck = _instance.Cards[randomIndex3 + 2];
 
 			//act
@@ -502,11 +494,11 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void GetRandomCards_SHOULD_not_remove_any_cards_from_the_deck()
 		{
 			//arrange
-			_instance = new Deck(_randomNumberGenerator);
+			_instance = new Deck(_randomNumberGenerator.Object);
 
-			_randomNumberGenerator.Stub(x => x.Next(_instance.Cards.Count)).Return(17);
-			_randomNumberGenerator.Stub(x => x.Next(_instance.Cards.Count - 1)).Return(2);
-			_randomNumberGenerator.Stub(x => x.Next(_instance.Cards.Count - 2)).Return(29);
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count)).Returns(17);
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count - 1)).Returns(2);
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count - 2)).Returns(29);
 
 			//act
 			_instance.GetRandomCards(3);
@@ -519,18 +511,18 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void GetRandomCards_SHOULD_return_random_cards()
 		{
 			//arrange
-			_instance = new Deck(_randomNumberGenerator);
+			_instance = new Deck(_randomNumberGenerator.Object);
 
 			const int randomIndex1 = 6;
-			_randomNumberGenerator.Stub(x => x.Next(_instance.Cards.Count)).Return(randomIndex1);
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count)).Returns(randomIndex1);
 			var randomCard1ToTakeFromDeck = _instance.Cards[randomIndex1];
 
 			const int randomIndex2 = 5;
-			_randomNumberGenerator.Stub(x => x.Next(_instance.Cards.Count - 1)).Return(randomIndex2);
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count - 1)).Returns(randomIndex2);
 			var randomCard2ToTakeFromDeck = _instance.Cards[randomIndex2];
 
 			const int randomIndex3 = 10;
-			_randomNumberGenerator.Stub(x => x.Next(_instance.Cards.Count - 2)).Return(randomIndex3);
+			_randomNumberGenerator.Setup(x => x.Next(_instance.Cards.Count - 2)).Returns(randomIndex3);
 			var randomCard3ToTakeFromDeck = _instance.Cards[randomIndex3 + 2];
 
 			//act

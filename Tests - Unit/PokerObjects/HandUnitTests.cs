@@ -4,7 +4,6 @@ using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
-using Rhino.Mocks;
 using System;
 using System.Collections.Generic;
 
@@ -33,17 +32,11 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void Constructor_cards_SHOULD_service_locate_cardComparer_and_handRankCalculator_and_call_full_constructor()
 		{
 			//arrange
-			_cardComparer = MockRepository.GenerateStrictMock<IEqualityComparer<Card>>();
-
 			var card1 = new Card(CardValue.Six, CardSuit.Hearts);
 			var card2 = new Card(CardValue.Ten, CardSuit.Diamonds);
 			var card3 = new Card(CardValue.Ace, CardSuit.Diamonds);
 
 			var cards = new List<Card> { card1, card2, card3 };
-
-			_cardComparer.Stub(x => x.GetHashCode(card1)).Return(1);
-			_cardComparer.Stub(x => x.GetHashCode(card2)).Return(2);
-			_cardComparer.Stub(x => x.GetHashCode(card3)).Return(3);
 
 			//act
 			var actual = new Hand(cards);
@@ -60,8 +53,6 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void Constructor_cards_WHERE_more_than_seven_cards_in_supplied_cards_SHOULD_throw_error()
 		{
 			//arrange
-			_cardComparer = MockRepository.GenerateStrictMock<IEqualityComparer<Card>>();
-
 			var cards = new List<Card>
 			{
 				new Card(CardValue.Ace, CardSuit.Diamonds),
@@ -84,8 +75,6 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void Constructor_cards_WHERE_cards_contains_duplicates_SHOULD_throw_error()
 		{
 			//arrange
-			_cardComparer = MockRepository.GenerateStrictMock<IEqualityComparer<Card>>();
-
 			const CardValue cardValue = CardValue.Nine;
 			const CardSuit cardSuit = CardSuit.Clubs;
 			var duplicatedCard1 = new Card(cardValue, cardSuit);
@@ -93,12 +82,6 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			var card3 = new Card(CardValue.Eight, CardSuit.Hearts);
 
 			var cards = new List<Card> { duplicatedCard1, card3, duplicatedCard2 };
-
-			_cardComparer.Stub(x => x.GetHashCode(duplicatedCard1)).Return(1);
-			_cardComparer.Stub(x => x.GetHashCode(duplicatedCard2)).Return(1);
-			_cardComparer.Stub(x => x.Equals(duplicatedCard1, duplicatedCard2)).Return(true);
-
-			_cardComparer.Stub(x => x.GetHashCode(card3)).Return(3);
 
 			//act + assert
 			var actualException = Assert.Throws<ArgumentException>(() => new Hand(cards, _cardComparer));
@@ -110,17 +93,11 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void Constructor_cards_SHOULD_copy_supplied_cards_to_Cards_property()
 		{
 			//arrange
-			_cardComparer = MockRepository.GenerateStrictMock<IEqualityComparer<Card>>();
-
 			var card1 = new Card(CardValue.Six, CardSuit.Hearts);
 			var card2 = new Card(CardValue.Ten, CardSuit.Diamonds);
 			var card3 = new Card(CardValue.Ace, CardSuit.Diamonds);
 
 			var cards = new List<Card> { card1, card2, card3 };
-
-			_cardComparer.Stub(x => x.GetHashCode(card1)).Return(1);
-			_cardComparer.Stub(x => x.GetHashCode(card2)).Return(2);
-			_cardComparer.Stub(x => x.GetHashCode(card3)).Return(3);
 
 			//act
 			var actual = new Hand(cards, _cardComparer);
@@ -403,17 +380,11 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		public void Clone()
 		{
 			//arrange
-			_cardComparer = MockRepository.GenerateStrictMock<IEqualityComparer<Card>>();
-
 			var card1 = new Card(CardValue.Jack, CardSuit.Hearts);
 			var card2 = new Card(CardValue.Three, CardSuit.Spades);
 			var card3 = new Card(CardValue.Seven, CardSuit.Hearts);
 			var handCards = new List<Card> { card1, card2, card3 };
 			_instance.AddCards(handCards);
-
-			_cardComparer.Stub(x => x.GetHashCode(card1)).Return(1);
-			_cardComparer.Stub(x => x.GetHashCode(card2)).Return(2);
-			_cardComparer.Stub(x => x.GetHashCode(card3)).Return(3);
 
 			//act
 			var actual = _instance.Clone();

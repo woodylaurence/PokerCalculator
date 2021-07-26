@@ -1,5 +1,6 @@
 ﻿using Castle.MicroKernel.Registration;
 using Castle.Windsor;
+using Moq;
 using NUnit.Framework;
 using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.Helpers;
@@ -9,7 +10,6 @@ using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
 using PokerCalculator.Tests.Shared.TestObjects;
 using PokerCalculator.Tests.Unit.TestData;
-using Rhino.Mocks;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
@@ -21,18 +21,18 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 	{
 		private PokerHandBasedHandRankPokerCalculator _instance;
 		private Deck _deck;
-		private IHandRankCalculator<PokerHandBasedHandRank, PokerHand> _handRankCalculator;
+		private Mock<IHandRankCalculator<PokerHandBasedHandRank, PokerHand>> _handRankCalculator;
 		private CardComparer _cardComparer;
 
 		[SetUp]
 		protected override void Setup()
 		{
-			_handRankCalculator = MockRepository.GenerateStrictMock<IHandRankCalculator<PokerHandBasedHandRank, PokerHand>>();
+			_handRankCalculator = new Mock<IHandRankCalculator<PokerHandBasedHandRank, PokerHand>>();
 			_cardComparer = new CardComparer();
 
 			base.Setup();
 
-			_instance = MockRepository.GeneratePartialMock<PokerHandBasedHandRankPokerCalculator>(_handRankCalculator);
+			_instance = new PokerHandBasedHandRankPokerCalculator(_handRankCalculator.Object);
 		}
 
 		[TearDown]
@@ -46,7 +46,7 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			base.RegisterComponentsToWindsor(windsorContainer);
 			windsorContainer.Register(Component.For<IRandomNumberGenerator>().ImplementedBy<FakeRandomNumberGenerator>());
 			windsorContainer.Register(Component.For<IEqualityComparer<Card>>().Instance(_cardComparer));
-			windsorContainer.Register(Component.For<IHandRankCalculator<PokerHandBasedHandRank, PokerHand>>().Instance(_handRankCalculator));
+			windsorContainer.Register(Component.For<IHandRankCalculator<PokerHandBasedHandRank, PokerHand>>().Instance(_handRankCalculator.Object));
 		}
 
 		#region Instance Methods
@@ -68,8 +68,7 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			var boardHandCard3 = _deck.TakeRandomCard();
 			var boardHand = new Hand(new List<Card> { boardHandCard1, boardHandCard2, boardHandCard3 });
 
-			//todo won't need to do this after we change to Moq
-			_handRankCalculator.Stub(x => x.CalculateHandRank(Arg<Hand>.Is.Anything)).Return(new PokerHandBasedHandRank(PokerHand.FourOfAKind));
+			_handRankCalculator.Setup(x => x.CalculateHandRank(It.IsAny<Hand>())).Returns(new PokerHandBasedHandRank(PokerHand.FourOfAKind));
 
 			//act
 			_instance.ExecuteCalculatePokerOddsForIteration(_deck, myHand, boardHand, 3, new PokerOdds());
@@ -100,8 +99,7 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			var boardHandCard3 = _deck.TakeRandomCard();
 			var boardHand = new Hand(new List<Card> { boardHandCard1, boardHandCard2, boardHandCard3 });
 
-			//todo won't need to do this after we change to Moq
-			_handRankCalculator.Stub(x => x.CalculateHandRank(Arg<Hand>.Is.Anything)).Return(new PokerHandBasedHandRank(PokerHand.FourOfAKind));
+			_handRankCalculator.Setup(x => x.CalculateHandRank(It.IsAny<Hand>())).Returns(new PokerHandBasedHandRank(PokerHand.FourOfAKind));
 
 			//act
 			_instance.ExecuteCalculatePokerOddsForIteration(_deck, myHand, boardHand, 3, new PokerOdds());
@@ -127,8 +125,7 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			var boardHandCard3 = _deck.TakeRandomCard();
 			var boardHand = new Hand(new List<Card> { boardHandCard1, boardHandCard2, boardHandCard3 });
 
-			//todo won't need to do this after we change to Moq
-			_handRankCalculator.Stub(x => x.CalculateHandRank(Arg<Hand>.Is.Anything)).Return(new PokerHandBasedHandRank(PokerHand.FourOfAKind));
+			_handRankCalculator.Setup(x => x.CalculateHandRank(It.IsAny<Hand>())).Returns(new PokerHandBasedHandRank(PokerHand.FourOfAKind));
 
 			//act
 			_instance.ExecuteCalculatePokerOddsForIteration(_deck, myHand, boardHand, 3, new PokerOdds());
