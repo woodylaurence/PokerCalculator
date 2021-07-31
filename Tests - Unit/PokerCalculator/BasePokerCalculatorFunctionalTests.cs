@@ -1,5 +1,4 @@
-﻿using Castle.MicroKernel.Registration;
-using Castle.Windsor;
+﻿using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerCalculator;
@@ -8,7 +7,6 @@ using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
 using PokerCalculator.Tests.Shared.TestObjects;
 using System.Collections.Generic;
-using System.Configuration;
 
 namespace PokerCalculator.Tests.Unit.PokerCalculator
 {
@@ -31,18 +29,12 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 
 		protected abstract IPokerCalculator SetupPokerCalculator();
 
-		protected override void RegisterComponentsToWindsor(IWindsorContainer windsorContainer)
+		protected override void RegisterServices(IServiceCollection services)
 		{
-			base.RegisterComponentsToWindsor(windsorContainer);
+			base.RegisterServices(services);
 
-			windsorContainer.Register(Component.For<IRandomNumberGenerator>().Instance(_randomNumberGenerator).LifestyleSingleton());
-			windsorContainer.Register(Component.For<IEqualityComparer<Card>>().Instance(new CardComparer()).LifestyleSingleton());
-		}
-
-		[TearDown]
-		protected void TearDown()
-		{
-			ConfigurationManager.AppSettings["PokerCalculator.Helpers.FakeRandomNumberGenerator.RandomSeedingValue"] = "1337";
+			services.AddSingleton(_randomNumberGenerator);
+			services.AddSingleton<IEqualityComparer<Card>>(new CardComparer());
 		}
 
 		#region CalculatePokerOdds

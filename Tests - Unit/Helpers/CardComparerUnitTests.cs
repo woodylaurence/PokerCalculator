@@ -25,7 +25,7 @@ namespace PokerCalculator.Tests.Unit.Helpers
 			//act
 			var actual = _instance.Equals(null, null);
 
-			//asssert
+			//assert
 			Assert.That(actual, Is.True);
 		}
 
@@ -38,7 +38,7 @@ namespace PokerCalculator.Tests.Unit.Helpers
 			//act
 			var actual = _instance.Equals(null, card);
 
-			//asssert
+			//assert
 			Assert.That(actual, Is.False);
 		}
 
@@ -51,7 +51,7 @@ namespace PokerCalculator.Tests.Unit.Helpers
 			//act
 			var actual = _instance.Equals(card, null);
 
-			//asssert
+			//assert
 			Assert.That(actual, Is.False);
 		}
 
@@ -64,7 +64,7 @@ namespace PokerCalculator.Tests.Unit.Helpers
 			//act
 			var actual = _instance.Equals(card, card);
 
-			//asssert
+			//assert
 			Assert.That(actual, Is.True);
 		}
 

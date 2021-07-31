@@ -1,0 +1,140 @@
+[
+	{
+		"VersionOrdinal": 1,
+		"VersionName": "Initial",
+		"PokerHandResults": {
+			"HighCard": {
+				"Frequency": 250586,
+				"TotalCalculationTicks": 48112512
+			},
+			"Pair": {
+				"Frequency": 211262,
+				"TotalCalculationTicks": 40351042
+			},
+			"TwoPair": {
+				"Frequency": 23810,
+				"TotalCalculationTicks": 4190560
+			},
+			"ThreeOfAKind": {
+				"Frequency": 10596,
+				"TotalCalculationTicks": 1939068
+			},
+			"Straight": {
+				"Frequency": 1975,
+				"TotalCalculationTicks": 280450
+			},
+			"Flush": {
+				"Frequency": 953,
+				"TotalCalculationTicks": 142950
+			},
+			"FullHouse": {
+				"Frequency": 699,
+				"TotalCalculationTicks": 114636
+			},
+			"FourOfAKind": {
+				"Frequency": 110,
+				"TotalCalculationTicks": 27610
+			},
+			"StraightFlush": {
+				"Frequency": 8,
+				"TotalCalculationTicks": 1056
+			},
+			"RoyalFlush": {
+				"Frequency": 1,
+				"TotalCalculationTicks": 133
+			}
+		}
+	},
+	{
+		"VersionOrdinal": 2,
+		"VersionName": "Hand cloning improvement",
+		"PokerHandResults": {
+			"HighCard": {
+				"Frequency": 250586,
+				"TotalCalculationTicks": 41712000
+			},
+			"Pair": {
+				"Frequency": 211262,
+				"TotalCalculationTicks": 35077000
+			},
+			"TwoPair": {
+				"Frequency": 23810,
+				"TotalCalculationTicks": 3828000
+			},
+			"ThreeOfAKind": {
+				"Frequency": 10596,
+				"TotalCalculationTicks": 1757000
+			},
+			"Straight": {
+				"Frequency": 1975,
+				"TotalCalculationTicks": 267000
+			},
+			"Flush": {
+				"Frequency": 953,
+				"TotalCalculationTicks": 132000
+			},
+			"FullHouse": {
+				"Frequency": 699,
+				"TotalCalculationTicks": 110000
+			},
+			"FourOfAKind": {
+				"Frequency": 110,
+				"TotalCalculationTicks": 23000
+			},
+			"StraightFlush": {
+				"Frequency": 8,
+				"TotalCalculationTicks": 978
+			},
+			"RoyalFlush": {
+				"Frequency": 1,
+				"TotalCalculationTicks": 123
+			}
+		}
+	},
+	{
+		"VersionOrdinal": 3,
+		"VersionName": ".NET 5 Upgrade",
+		"PokerHandResults": {
+			"HighCard": {
+				"Frequency": 250586,
+				"TotalCalculationTicks": 18525000
+			},
+			"Pair": {
+				"Frequency": 211262,
+				"TotalCalculationTicks": 15868000
+			},
+			"TwoPair": {
+				"Frequency": 23810,
+				"TotalCalculationTicks": 1727000
+			},
+			"ThreeOfAKind": {
+				"Frequency": 10596,
+				"TotalCalculationTicks": 846000
+			},
+			"Straight": {
+				"Frequency": 1975,
+				"TotalCalculationTicks": 97000
+			},
+			"Flush": {
+				"Frequency": 953,
+				"TotalCalculationTicks": 57000
+			},
+			"FullHouse": {
+				"Frequency": 699,
+				"TotalCalculationTicks": 44000
+			},
+			"FourOfAKind": {
+				"Frequency": 110,
+				"TotalCalculationTicks": 12000
+			},
+			"StraightFlush": {
+				"Frequency": 8,
+				"TotalCalculationTicks": 401
+			},
+			"RoyalFlush": {
+				"Frequency": 1,
+				"TotalCalculationTicks": 47
+			}
+		}
+	}
+]

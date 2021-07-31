@@ -1,29 +1,26 @@
-﻿using Castle.Windsor;
-using CommonServiceLocator.WindsorAdapter;
-using Microsoft.Practices.ServiceLocation;
+﻿using CommonServiceLocator;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
+using PokerCalculator.Domain.Helpers;
+using System;
 
 namespace PokerCalculator.Tests.Shared
 {
 	public class AbstractUnitTestBase
 	{
-		protected internal IWindsorContainer WindsorContainer { get; set; }
+		protected IServiceProvider ServiceProvider { get; private set; }
 
 		[SetUp]
 		protected virtual void Setup()
 		{
-			WindsorContainer = SetupWindsorContainer();
-			RegisterComponentsToWindsor(WindsorContainer);
+			var services = new ServiceCollection();
+			RegisterServices(services);
+
+			ServiceProvider = services.BuildServiceProvider();
+			ServiceLocator.SetLocatorProvider(() => new ServiceProviderBackedServiceLocator(ServiceProvider));
 		}
 
-		private IWindsorContainer SetupWindsorContainer()
-		{
-			var container = new WindsorContainer();
-			ServiceLocator.SetLocatorProvider(() => new WindsorServiceLocator(container));
-			return container;
-		}
-
-		protected virtual void RegisterComponentsToWindsor(IWindsorContainer windsorContainer)
+		protected virtual void RegisterServices(IServiceCollection services)
 		{
 
 		}

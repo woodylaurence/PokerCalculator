@@ -1,4 +1,4 @@
-﻿using Castle.MicroKernel.Registration;
+﻿using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.Helpers;
@@ -21,8 +21,13 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 			base.Setup();
 
 			_instance = new PokerHandBasedHandRankCalculator();
+		}
 
-			WindsorContainer.Register(Component.For<IEqualityComparer<Card>>().ImplementedBy<CardComparer>().LifestyleSingleton());
+		protected override void RegisterServices(IServiceCollection services)
+		{
+			base.RegisterServices(services);
+
+			services.AddSingleton<IEqualityComparer<Card>, CardComparer>();
 		}
 
 		#region CalculateHandRank

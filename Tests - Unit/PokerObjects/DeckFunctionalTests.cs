@@ -1,5 +1,4 @@
-﻿using System.Configuration;
-using Castle.MicroKernel.Registration;
+﻿using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerEnums;
@@ -14,6 +13,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 	{
 		private Deck _instance;
 		private CardComparer _cardComparer;
+		private int RandomNumberGeneratorSeed { get; set; }
 
 		[SetUp]
 		protected override void Setup()
@@ -21,13 +21,19 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			base.Setup();
 
 			_cardComparer = new CardComparer();
-			WindsorContainer.Register(Component.For<IRandomNumberGenerator>().ImplementedBy<FakeRandomNumberGenerator>());
+		}
+
+		protected override void RegisterServices(IServiceCollection services)
+		{
+			base.RegisterServices(services);
+
+			services.AddTransient<IRandomNumberGenerator>(x => new FakeRandomNumberGenerator(RandomNumberGeneratorSeed));
 		}
 
 		[TearDown]
 		protected void TearDown()
 		{
-			ConfigurationManager.AppSettings["PokerCalculator.Helpers.FakeRandomNumberGenerator.RandomSeedingValue"] = "1337";
+			RandomNumberGeneratorSeed = FakeRandomNumberGenerator.DefaultRandomSeedingValue;
 		}
 
 		[Test]
@@ -55,7 +61,8 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			//arrange
 			_instance = new Deck();
 
-			ConfigurationManager.AppSettings["PokerCalculator.Helpers.FakeRandomNumberGenerator.RandomSeedingValue"] = "123456789";
+			//to show that we use a random number generator with this value, not the default one used by the above deck
+			RandomNumberGeneratorSeed = 123456789;
 
 			//act
 			var actual = _instance.Clone();

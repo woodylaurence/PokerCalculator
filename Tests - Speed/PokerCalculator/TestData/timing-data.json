@@ -1,0 +1,92 @@
+[
+	{
+		"VersionOrdinal": 1,
+		"VersionName": "Initial",
+		"Results": [
+			{
+				"TestId": 1,
+				"TicksPerIteration": 1649.0
+			},
+			{
+				"TestId": 2,
+				"TicksPerIteration": 1685.0
+			},
+			{
+				"TestId": 3,
+				"TicksPerIteration": 1016.0
+			},
+			{
+				"TestId": 4,
+				"TicksPerIteration": 1005.0
+			},
+			{
+				"TestId": 5,
+				"TicksPerIteration": 994.0
+			},
+			{
+				"TestId": 6,
+				"TicksPerIteration": 950.0
+			}
+		]
+	},
+	{
+		"VersionOrdinal": 2,
+		"VersionName": "Hand cloning improvement",
+		"Results": [
+			{
+				"TestId": 1,
+				"TicksPerIteration": 846.0
+			},
+			{
+				"TestId": 2,
+				"TicksPerIteration": 1424.0
+			},
+			{
+				"TestId": 3,
+				"TicksPerIteration": 810.0
+			},
+			{
+				"TestId": 4,
+				"TicksPerIteration": 792.0
+			},
+			{
+				"TestId": 5,
+				"TicksPerIteration": 774.0
+			},
+			{
+				"TestId": 6,
+				"TicksPerIteration": 725.0
+			}
+		]
+	},
+	{
+		"VersionOrdinal": 3,
+		"VersionName": ".NET 5 Upgrade",
+		"Results": [
+			{
+				"TestId": 1,
+				"TicksPerIteration": 418.0
+			},
+			{
+				"TestId": 2,
+				"TicksPerIteration": 714.0
+			},
+			{
+				"TestId": 3,
+				"TicksPerIteration": 409.0
+			},
+			{
+				"TestId": 4,
+				"TicksPerIteration": 398.0
+			},
+			{
+				"TestId": 5,
+				"TicksPerIteration": 387.0
+			},
+			{
+				"TestId": 6,
+				"TicksPerIteration": 348.0
+			}
+		]
+	}
+]

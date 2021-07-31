@@ -1,4 +1,4 @@
-﻿using Castle.MicroKernel.Registration;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NUnit.Framework;
 using PokerCalculator.Domain.Helpers;
@@ -22,11 +22,18 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		[SetUp]
 		protected override void Setup()
 		{
-			base.Setup();
 			_randomNumberGenerator = new Mock<IRandomNumberGenerator>();
-			WindsorContainer.Register(Component.For<IRandomNumberGenerator>().Instance(_randomNumberGenerator.Object));
+
+			base.Setup();
 
 			_cardComparer = new CardComparer();
+		}
+
+		protected override void RegisterServices(IServiceCollection services)
+		{
+			base.RegisterServices(services);
+
+			services.AddSingleton(_randomNumberGenerator.Object);
 		}
 
 		#region Constructor

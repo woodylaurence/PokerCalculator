@@ -1,17 +1,16 @@
 ﻿using PokerCalculator.Domain.Helpers;
 using System;
-using System.Configuration;
 
 namespace PokerCalculator.Tests.Shared.TestObjects
 {
 	public class FakeRandomNumberGenerator : IRandomNumberGenerator
 	{
 		private readonly Random _randomInstance;
-		private static int RandomSeedingValue => int.Parse(ConfigurationManager.AppSettings["PokerCalculator.Helpers.FakeRandomNumberGenerator.RandomSeedingValue"]);
+		public const int DefaultRandomSeedingValue = 1337;
 
-		public FakeRandomNumberGenerator()
+		public FakeRandomNumberGenerator(int randomSeedingValue = DefaultRandomSeedingValue)
 		{
-			_randomInstance = new Random(RandomSeedingValue);
+			_randomInstance = new Random(randomSeedingValue);
 		}
 
 		public int Next(int maxValue)

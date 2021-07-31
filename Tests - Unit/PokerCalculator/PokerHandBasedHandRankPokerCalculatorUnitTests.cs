@@ -1,5 +1,4 @@
-﻿using Castle.MicroKernel.Registration;
-using Castle.Windsor;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NUnit.Framework;
 using PokerCalculator.Domain.HandRankCalculator;
@@ -11,8 +10,8 @@ using PokerCalculator.Tests.Shared;
 using PokerCalculator.Tests.Shared.TestObjects;
 using PokerCalculator.Tests.Unit.TestData;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
+using System.Reflection;
 
 namespace PokerCalculator.Tests.Unit.PokerCalculator
 {
@@ -23,6 +22,7 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 		private Deck _deck;
 		private Mock<IHandRankCalculator<PokerHandBasedHandRank, PokerHand>> _handRankCalculator;
 		private CardComparer _cardComparer;
+		private MethodInfo _executeCalculatePokerOddsForIterationMethod;
 
 		[SetUp]
 		protected override void Setup()
@@ -33,21 +33,18 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			base.Setup();
 
 			_instance = new PokerHandBasedHandRankPokerCalculator(_handRankCalculator.Object);
+
+			_executeCalculatePokerOddsForIterationMethod = _instance.GetType().GetMethod("ExecuteCalculatePokerOddsForIteration", BindingFlags.Instance | BindingFlags.NonPublic);
 		}
 
-		[TearDown]
-		protected void TearDown()
+		protected override void RegisterServices(IServiceCollection services)
 		{
-			ConfigurationManager.AppSettings["PokerCalculator.Helpers.FakeRandomNumberGenerator.RandomSeedingValue"] = "1337";
+			base.RegisterServices(services);
+
+			services.AddSingleton<IRandomNumberGenerator, FakeRandomNumberGenerator>();
+			services.AddSingleton<IEqualityComparer<Card>>(_cardComparer);
 		}
 
-		protected override void RegisterComponentsToWindsor(IWindsorContainer windsorContainer)
-		{
-			base.RegisterComponentsToWindsor(windsorContainer);
-			windsorContainer.Register(Component.For<IRandomNumberGenerator>().ImplementedBy<FakeRandomNumberGenerator>());
-			windsorContainer.Register(Component.For<IEqualityComparer<Card>>().Instance(_cardComparer));
-			windsorContainer.Register(Component.For<IHandRankCalculator<PokerHandBasedHandRank, PokerHand>>().Instance(_handRankCalculator.Object));
-		}
 
 		#region Instance Methods
 
@@ -71,7 +68,7 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			_handRankCalculator.Setup(x => x.CalculateHandRank(It.IsAny<Hand>())).Returns(new PokerHandBasedHandRank(PokerHand.FourOfAKind));
 
 			//act
-			_instance.ExecuteCalculatePokerOddsForIteration(_deck, myHand, boardHand, 3, new PokerOdds());
+			_executeCalculatePokerOddsForIterationMethod.Invoke(_instance, new object[] { _deck, myHand, boardHand, 3, new PokerOdds() });
 
 			//assert
 			Assert.That(_deck.Cards, Has.Count.EqualTo(47));
@@ -102,7 +99,7 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			_handRankCalculator.Setup(x => x.CalculateHandRank(It.IsAny<Hand>())).Returns(new PokerHandBasedHandRank(PokerHand.FourOfAKind));
 
 			//act
-			_instance.ExecuteCalculatePokerOddsForIteration(_deck, myHand, boardHand, 3, new PokerOdds());
+			_executeCalculatePokerOddsForIterationMethod.Invoke(_instance, new object[] { _deck, myHand, boardHand, 3, new PokerOdds() });
 
 			//assert
 			Assert.That(myHand.Cards, Has.Count.EqualTo(2));
@@ -128,7 +125,7 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			_handRankCalculator.Setup(x => x.CalculateHandRank(It.IsAny<Hand>())).Returns(new PokerHandBasedHandRank(PokerHand.FourOfAKind));
 
 			//act
-			_instance.ExecuteCalculatePokerOddsForIteration(_deck, myHand, boardHand, 3, new PokerOdds());
+			_executeCalculatePokerOddsForIterationMethod.Invoke(_instance, new object[] { _deck, myHand, boardHand, 3, new PokerOdds() });
 
 			//assert
 			Assert.That(boardHand.Cards, Has.Count.EqualTo(3));

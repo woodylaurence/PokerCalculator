@@ -1,4 +1,4 @@
-﻿using Castle.MicroKernel.Registration;
+﻿using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerEnums;
@@ -18,12 +18,18 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 		[SetUp]
 		protected override void Setup()
 		{
+			_cardComparer = new CardComparer();
+
 			base.Setup();
 
-			_cardComparer = new CardComparer();
 			_instance = new Hand(new List<Card>(), _cardComparer);
+		}
 
-			WindsorContainer.Register(Component.For<IEqualityComparer<Card>>().Instance(_cardComparer));
+		protected override void RegisterServices(IServiceCollection services)
+		{
+			base.RegisterServices(services);
+
+			services.AddSingleton(_cardComparer);
 		}
 
 		#region Constructor
@@ -67,7 +73,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 
 			//act + assert
 			var actualException = Assert.Throws<ArgumentException>(() => new Hand(cards, _cardComparer));
-			Assert.That(actualException.Message, Is.EqualTo("A Hand cannot contain more than seven cards\r\nParameter name: cards"));
+			Assert.That(actualException.Message, Is.EqualTo("A Hand cannot contain more than seven cards (Parameter 'cards')"));
 			Assert.That(actualException.ParamName, Is.EqualTo("cards"));
 		}
 
@@ -85,7 +91,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 
 			//act + assert
 			var actualException = Assert.Throws<ArgumentException>(() => new Hand(cards, _cardComparer));
-			Assert.That(actualException.Message, Is.EqualTo("A Hand cannot contain duplicate cards\r\nParameter name: cards"));
+			Assert.That(actualException.Message, Is.EqualTo("A Hand cannot contain duplicate cards (Parameter 'cards')"));
 			Assert.That(actualException.ParamName, Is.EqualTo("cards"));
 		}
 

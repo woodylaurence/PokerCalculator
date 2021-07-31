@@ -1,5 +1,4 @@
-﻿using Castle.MicroKernel.Registration;
-using Castle.Windsor;
+﻿using Microsoft.Extensions.DependencyInjection;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
@@ -12,11 +11,12 @@ namespace PokerCalculator.Tests.Speed
 	{
 		protected IEqualityComparer<Card> CardComparer = new CardComparer();
 
-		protected override void RegisterComponentsToWindsor(IWindsorContainer windsorContainer)
+		protected override void RegisterServices(IServiceCollection services)
 		{
-			base.RegisterComponentsToWindsor(windsorContainer);
-			windsorContainer.Register(Component.For<IEqualityComparer<Card>>().Instance(CardComparer));
-			windsorContainer.Register(Component.For<IRandomNumberGenerator>().ImplementedBy<FakeRandomNumberGenerator>());
+			base.RegisterServices(services);
+
+			services.AddSingleton(CardComparer);
+			services.AddSingleton<IRandomNumberGenerator, FakeRandomNumberGenerator>();
 		}
 	}
 }
