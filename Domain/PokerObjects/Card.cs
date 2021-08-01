@@ -19,7 +19,7 @@ namespace PokerCalculator.Domain.PokerObjects
 		public bool Equals(Card other)
 		{
 			if (ReferenceEquals(this, other)) return true;
-			if (other == null) return false;
+			if (other is null) return false;
 			return Value == other.Value && Suit == other.Suit;
 		}
 
@@ -30,7 +30,12 @@ namespace PokerCalculator.Domain.PokerObjects
 
 		#region Equality Operators
 
-		public static bool operator ==(Card lhs, Card rhs) => lhs?.Equals(rhs) ?? false;
+		public static bool operator ==(Card lhs, Card rhs)
+		{
+			if (ReferenceEquals(lhs, rhs)) return true;
+			return lhs?.Equals(rhs) ?? false;
+		}
+
 		public static bool operator !=(Card lhs, Card rhs) => (lhs == rhs) == false;
 
 		#endregion

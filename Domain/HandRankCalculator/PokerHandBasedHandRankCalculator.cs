@@ -29,7 +29,7 @@ namespace PokerCalculator.Domain.HandRankCalculator
 		/// </summary>
 		/// <returns>The flush based hand rank.</returns>
 		/// <param name="flushValues">Flush values.</param>
-		protected internal virtual PokerHandBasedHandRank GetFlushBasedHandRank(List<CardValue> flushValues)
+		private PokerHandBasedHandRank GetFlushBasedHandRank(List<CardValue> flushValues)
 		{
 			var straightFlushValues = GetStraightValues(flushValues);
 			if (straightFlushValues.Count < 5) return new PokerHandBasedHandRank(PokerHand.Flush, flushValues.Take(5).ToList());
@@ -46,7 +46,7 @@ namespace PokerCalculator.Domain.HandRankCalculator
 		/// Gets the flush values.
 		/// </summary>
 		/// <returns>The flush values.</returns>
-		protected internal virtual List<CardValue> GetFlushValues(List<Card> cards)
+		private List<CardValue> GetFlushValues(List<Card> cards)
 		{
 			return cards.GroupBy(x => x.Suit)
 						.OrderByDescending(x => x.Count())
@@ -64,7 +64,7 @@ namespace PokerCalculator.Domain.HandRankCalculator
 		/// Gets the straight values.
 		/// </summary>
 		/// <returns>The straight values.</returns>
-		protected internal virtual List<CardValue> GetStraightValues(List<Card> cards)
+		private List<CardValue> GetStraightValues(List<Card> cards)
 		{
 			return GetStraightValues(cards.Select(x => x.Value).ToList());
 		}
@@ -74,7 +74,7 @@ namespace PokerCalculator.Domain.HandRankCalculator
 		/// </summary>
 		/// <returns>The straight values.</returns>
 		/// <param name="cardValues">Cards.</param>
-		protected internal virtual List<CardValue> GetStraightValues(List<CardValue> cardValues)
+		private List<CardValue> GetStraightValues(List<CardValue> cardValues)
 		{
 			var values = Enumerable.Repeat(false, 14).ToList();
 			cardValues.ForEach(x =>
@@ -113,22 +113,17 @@ namespace PokerCalculator.Domain.HandRankCalculator
 		/// 
 		/// </summary>
 		/// <returns></returns>
-		protected internal virtual PokerHandBasedHandRank GetMultiCardOrHighCardHandRank(List<Card> cards)
+		private PokerHandBasedHandRank GetMultiCardOrHighCardHandRank(List<Card> cards)
 		{
 			var cardGroups = GetOrderedCardGroups(cards);
-			switch (cardGroups.First().Key)
+			return cardGroups.First().Key switch
 			{
-				case 4:
-					return GetFourOfAKindHandRank(cardGroups);
-				case 3:
-					return GetFullHouseOrThreeOfAKindHandRank(cardGroups);
-				case 2:
-					return GetPairBasedHandRank(cardGroups);
-				case 1:
-					return GetHighCardHandRank(cardGroups);
-				default:
-					throw new Exception("Unexpected Card group");
-			}
+				4 => GetFourOfAKindHandRank(cardGroups),
+				3 => GetFullHouseOrThreeOfAKindHandRank(cardGroups),
+				2 => GetPairBasedHandRank(cardGroups),
+				1 => GetHighCardHandRank(cardGroups),
+				_ => throw new Exception("Unexpected Card group")
+			};
 		}
 
 		/// <summary>
@@ -136,7 +131,7 @@ namespace PokerCalculator.Domain.HandRankCalculator
 		/// </summary>
 		/// <returns>The four of AK ind hand rank.</returns>
 		/// <param name="cardGroups">Card groups.</param>
-		protected internal virtual PokerHandBasedHandRank GetFourOfAKindHandRank(List<KeyValuePair<int, CardValue>> cardGroups)
+		private PokerHandBasedHandRank GetFourOfAKindHandRank(List<KeyValuePair<int, CardValue>> cardGroups)
 		{
 			var fourOfAKindKickerValues = new List<CardValue> { cardGroups[0].Value };
 			fourOfAKindKickerValues.AddRange(cardGroups.Skip(1).Select(x => x.Value).OrderByDescending(x => x).Take(1));
@@ -148,7 +143,7 @@ namespace PokerCalculator.Domain.HandRankCalculator
 		/// </summary>
 		/// <returns>The full house or three of AK ind hand rank.</returns>
 		/// <param name="cardGroups">Card groups.</param>
-		protected internal virtual PokerHandBasedHandRank GetFullHouseOrThreeOfAKindHandRank(List<KeyValuePair<int, CardValue>> cardGroups)
+		private PokerHandBasedHandRank GetFullHouseOrThreeOfAKindHandRank(List<KeyValuePair<int, CardValue>> cardGroups)
 		{
 			if (cardGroups.Count > 1 && cardGroups[1].Key > 1) return new PokerHandBasedHandRank(PokerHand.FullHouse, new List<CardValue> { cardGroups[0].Value, cardGroups[1].Value });
 
@@ -162,7 +157,7 @@ namespace PokerCalculator.Domain.HandRankCalculator
 		/// </summary>
 		/// <returns>The pair based hand rank.</returns>
 		/// <param name="cardGroups">Card groups.</param>
-		protected internal virtual PokerHandBasedHandRank GetPairBasedHandRank(List<KeyValuePair<int, CardValue>> cardGroups)
+		private PokerHandBasedHandRank GetPairBasedHandRank(List<KeyValuePair<int, CardValue>> cardGroups)
 		{
 			if (cardGroups.Count > 1 && cardGroups[1].Key > 1)
 			{
@@ -181,9 +176,9 @@ namespace PokerCalculator.Domain.HandRankCalculator
 		/// </summary>
 		/// <returns>The high card hand rank.</returns>
 		/// <param name="cardGroups">Card groups.</param>
-		protected internal virtual PokerHandBasedHandRank GetHighCardHandRank(List<KeyValuePair<int, CardValue>> cardGroups)
+		private PokerHandBasedHandRank GetHighCardHandRank(List<KeyValuePair<int, CardValue>> cardGroups)
 		{
-			return new PokerHandBasedHandRank(PokerHand.HighCard, cardGroups.Select(x => x.Value).OrderByDescending(x => x).Take(5).ToList());
+			return new(PokerHand.HighCard, cardGroups.Select(x => x.Value).OrderByDescending(x => x).Take(5).ToList());
 		}
 
 		#region GetOrderedCardGroups
@@ -192,7 +187,7 @@ namespace PokerCalculator.Domain.HandRankCalculator
 		/// Gets the ordered card groups.
 		/// </summary>
 		/// <returns>The ordered card groups.</returns>
-		protected internal virtual List<KeyValuePair<int, CardValue>> GetOrderedCardGroups(List<Card> cards)
+		private List<KeyValuePair<int, CardValue>> GetOrderedCardGroups(List<Card> cards)
 		{
 			return cards.GroupBy(x => x.Value)
 						.Select(x => new KeyValuePair<int, CardValue>(x.Count(), x.Key))
