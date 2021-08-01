@@ -54,7 +54,7 @@ namespace PokerCalculator.Domain.PokerCalculator
 		public static PokerOdds AggregatePokerOdds(List<PokerOdds> pokerOdds) => MethodObject.AggregatePokerOddsSlave(pokerOdds);
 		protected internal virtual PokerOdds AggregatePokerOddsSlave(List<PokerOdds> pokerOdds)
 		{
-			if (pokerOdds.Count < 2) throw new ArgumentException("Cannot aggregate less than two PokerOdds.");
+			if (pokerOdds.Count < 2) throw new ArgumentException("Cannot aggregate less than two PokerOdds");
 
 			return new PokerOdds
 			{

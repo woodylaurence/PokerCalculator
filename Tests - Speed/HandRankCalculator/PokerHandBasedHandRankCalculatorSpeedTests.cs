@@ -1,5 +1,4 @@
-﻿using Castle.MicroKernel.Registration;
-using Castle.Windsor;
+﻿using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.PokerEnums;
@@ -9,10 +8,11 @@ namespace PokerCalculator.Tests.Speed.HandRankCalculator
 	[TestFixture]
 	public class PokerHandBasedHandRankCalculatorSpeedTests : BaseHandRankCalculatorSpeedTests<PokerHandBasedHandRank, PokerHand>
 	{
-		protected override void RegisterComponentsToWindsor(IWindsorContainer windsorContainer)
+		protected override void RegisterServices(IServiceCollection services)
 		{
-			base.RegisterComponentsToWindsor(windsorContainer);
-			windsorContainer.Register(Component.For<IHandRankCalculator<PokerHandBasedHandRank, PokerHand>>().ImplementedBy<PokerHandBasedHandRankCalculator>());
+			base.RegisterServices(services);
+
+			services.AddSingleton<IHandRankCalculator<PokerHandBasedHandRank, PokerHand>, PokerHandBasedHandRankCalculator>();
 		}
 	}
 }

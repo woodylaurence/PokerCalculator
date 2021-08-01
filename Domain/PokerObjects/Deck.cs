@@ -1,4 +1,4 @@
-﻿using Microsoft.Practices.ServiceLocation;
+﻿using CommonServiceLocator;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerEnums;
 using System;
@@ -95,7 +95,7 @@ namespace PokerCalculator.Domain.PokerObjects
 		public virtual Card TakeCard(CardValue value, CardSuit suit)
 		{
 			var cardToRemoveInDeck = Cards.FirstOrDefault(x => x.Value == value && x.Suit == suit);
-			if (cardToRemoveInDeck == null) throw new Exception("No matching card in Deck.");
+			if (cardToRemoveInDeck == null) throw new Exception("Cannot remove card from deck, card is not in deck");
 			Cards.Remove(cardToRemoveInDeck);
 			return cardToRemoveInDeck;
 		}
@@ -124,7 +124,7 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// <returns></returns>
 		public virtual List<Card> TakeRandomCards(int numCardsToTake)
 		{
-			if (Cards.Count < numCardsToTake) throw new ArgumentException("Cannot take more cards than there are left in the Deck.");
+			if (Cards.Count < numCardsToTake) throw new ArgumentException("Cannot take more cards than there are left in the deck");
 
 			var cardsToTake = new List<Card>();
 			for (var i = 0; i < numCardsToTake; i++)
@@ -149,7 +149,7 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// <param name="numCardsToGet">Number cards to get.</param>
 		public virtual List<Card> GetRandomCards(int numCardsToGet)
 		{
-			if (numCardsToGet > Cards.Count) throw new Exception("Cannot get more cards than there are left in the Deck.");
+			if (numCardsToGet > Cards.Count) throw new ArgumentException("Cannot get more cards than there are left in the deck");
 
 			var cardsToTake = new List<Card>();
 			var cardsLeftInDeckToSelectFrom = Cards.ToList();

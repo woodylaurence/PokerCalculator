@@ -1,65 +1,26 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="Current">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{059495E2-3B00-4184-BAE8-B50FF4787166}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>PokerCalculator.Domain</RootNamespace>
+    <TargetFramework>net5.0</TargetFramework>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <ProjectGuid>{C7CF02E4-9DB6-40CA-8CD3-E52DF81ADB02}</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
     <AssemblyName>PokerCalculator.Domain</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>full</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
+  <PropertyGroup>
+    <RootNamespace>PokerCalculator.Domain</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
+    <PackageReference Include="CommonServiceLocator" Version="2.0.6" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="HandRankCalculator\IHandRank.cs" />
-    <Compile Include="Helpers\IComparableExtensionMethods.cs" />
-    <Compile Include="Helpers\IRandomNumberGenerator.cs" />
-    <Compile Include="Helpers\RandomNumberGenerator.cs" />
-    <Compile Include="PokerCalculator\IPokerCalculator.cs" />
-    <Compile Include="Helpers\PercentageWithError.cs" />
-    <Compile Include="PokerCalculator\PokerHandBasedHandRankPokerCalculator.cs" />
-    <Compile Include="PokerCalculator\PokerOdds.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PokerObjects\Card.cs" />
-    <Compile Include="PokerObjects\Hand.cs" />
-    <Compile Include="PokerObjects\Deck.cs" />
-    <Compile Include="PokerEnums\CardValue.cs" />
-    <Compile Include="PokerEnums\CardSuit.cs" />
-    <Compile Include="PokerEnums\PokerHand.cs" />
-    <Compile Include="Helpers\Utilities.cs" />
-    <Compile Include="VisibleTo.cs" />
-    <Compile Include="Helpers\CardComparer.cs" />
-    <Compile Include="HandRankCalculator\PokerHandBasedHandRank.cs" />
-    <Compile Include="HandRankCalculator\IHandRankCalculator.cs" />
-    <Compile Include="HandRankCalculator\PokerHandBasedHandRankCalculator.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
