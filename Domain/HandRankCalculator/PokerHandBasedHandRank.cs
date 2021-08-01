@@ -43,7 +43,7 @@ namespace PokerCalculator.Domain.HandRankCalculator
 		/// </summary>
 		/// <param name="otherHandRank"></param>
 		/// <returns></returns>
-		protected internal virtual int CompareKickers(PokerHandBasedHandRank otherHandRank)
+		private int CompareKickers(PokerHandBasedHandRank otherHandRank)
 		{
 			if (KickerCardValues.Count != otherHandRank.KickerCardValues.Count) throw new Exception("Cannot compare hand ranks, kickers have different lengths");
 			for (var i = 0; i < KickerCardValues.Count; i++)

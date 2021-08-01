@@ -11,7 +11,7 @@ namespace PokerCalculator.Domain.PokerObjects
 	{
 		#region Properties and Fields
 
-		private IRandomNumberGenerator _randomNumberGenerator { get; }
+		private IRandomNumberGenerator RandomNumberGenerator { get; }
 		public virtual List<Card> Cards { get; set; }
 
 		#endregion
@@ -24,7 +24,7 @@ namespace PokerCalculator.Domain.PokerObjects
 		public Deck() : this(ServiceLocator.Current.GetInstance<IRandomNumberGenerator>()) { }
 		public Deck(IRandomNumberGenerator randomNumberGenerator)
 		{
-			_randomNumberGenerator = randomNumberGenerator;
+			RandomNumberGenerator = randomNumberGenerator;
 
 			var cardSuits = Utilities.GetEnumValues<CardSuit>();
 			var cardValues = Utilities.GetEnumValues<CardValue>();
@@ -37,7 +37,7 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// <param name="cards"></param>
 		public Deck(List<Card> cards)
 		{
-			_randomNumberGenerator = ServiceLocator.Current.GetInstance<IRandomNumberGenerator>();
+			RandomNumberGenerator = ServiceLocator.Current.GetInstance<IRandomNumberGenerator>();
 			Cards = cards.ToList();
 		}
 
@@ -50,10 +50,7 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// <summary>
 		/// Shuffle this instance.
 		/// </summary>
-		public virtual void Shuffle()
-		{
-			Cards = Cards.OrderBy(x => _randomNumberGenerator.Next(5000)).ToList();
-		}
+		public virtual void Shuffle() => Cards = Cards.OrderBy(_ => RandomNumberGenerator.Next(5000)).ToList();
 
 		#endregion
 
@@ -63,10 +60,7 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// 
 		/// </summary>
 		/// <returns></returns>
-		public virtual Deck Clone()
-		{
-			return new Deck(Cards);
-		}
+		public virtual Deck Clone() => new(Cards);
 
 		#endregion
 
@@ -77,10 +71,7 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// </summary>
 		/// <param name="value"></param>
 		/// <param name="suit"></param>
-		public virtual void RemoveCard(CardValue value, CardSuit suit)
-		{
-			TakeCard(value, suit);
-		}
+		public virtual void RemoveCard(CardValue value, CardSuit suit) => TakeCard(value, suit);
 
 		#endregion
 
@@ -108,10 +99,7 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// Takes the random card.
 		/// </summary>
 		/// <returns>The random card.</returns>
-		public virtual Card TakeRandomCard()
-		{
-			return TakeRandomCards(1).First();
-		}
+		public virtual Card TakeRandomCard() => TakeRandomCards(1).First();
 
 		#endregion
 
@@ -129,7 +117,7 @@ namespace PokerCalculator.Domain.PokerObjects
 			var cardsToTake = new List<Card>();
 			for (var i = 0; i < numCardsToTake; i++)
 			{
-				var indexOfCardToTake = _randomNumberGenerator.Next(Cards.Count);
+				var indexOfCardToTake = RandomNumberGenerator.Next(Cards.Count);
 				var cardToTake = Cards[indexOfCardToTake];
 				Cards.Remove(cardToTake);
 				cardsToTake.Add(cardToTake);
@@ -155,7 +143,7 @@ namespace PokerCalculator.Domain.PokerObjects
 			var cardsLeftInDeckToSelectFrom = Cards.ToList();
 			for (var i = 0; i < numCardsToGet; i++)
 			{
-				var indexOfCardToTake = _randomNumberGenerator.Next(cardsLeftInDeckToSelectFrom.Count);
+				var indexOfCardToTake = RandomNumberGenerator.Next(cardsLeftInDeckToSelectFrom.Count);
 				var cardToTake = cardsLeftInDeckToSelectFrom[indexOfCardToTake];
 				cardsToTake.Add(cardToTake);
 				cardsLeftInDeckToSelectFrom.Remove(cardToTake);

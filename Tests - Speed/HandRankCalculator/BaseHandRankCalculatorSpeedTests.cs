@@ -5,7 +5,7 @@ using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Speed.HandRankCalculator.TestData;
-using PokerCalculator.Tests.Speed.PokerCalculator;
+using PokerCalculator.Tests.Speed.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -67,13 +67,12 @@ namespace PokerCalculator.Tests.Speed.HandRankCalculator
 
 			var assembly = GetType().Assembly;
 			var stream = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.HandRankCalculator.TestData.timing-data.json");
-			using (var streamReader = new StreamReader(stream))
+
+			using var streamReader = new StreamReader(stream);
+			var timingDataObjects = JsonSerializer.Deserialize<List<HandRankCalculatorSpeedTestsDataObject>>(streamReader.ReadToEnd());
+			foreach (var x in timingDataObjects.OrderByDescending(x => x.VersionOrdinal))
 			{
-				var timingDataObjects = JsonSerializer.Deserialize<List<HandRankCalculatorSpeedTestsDataObject>>(streamReader.ReadToEnd());
-				foreach (var x in timingDataObjects.OrderByDescending(x => x.VersionOrdinal))
-				{
-					DisplaySpeedResult(x.VersionName, x, propertyAccessorFunc);
-				}
+				DisplaySpeedResult(x.VersionName, x, propertyAccessorFunc);
 			}
 		}
 

@@ -49,14 +49,14 @@ namespace PokerCalculator.Tests.Unit.Domain.PokerObjects
 			//arrange
 			var cards = new List<Card>
 			{
-				new Card(CardValue.Ace, CardSuit.Diamonds),
-				new Card(CardValue.Two, CardSuit.Hearts),
-				new Card(CardValue.Four, CardSuit.Spades),
-				new Card(CardValue.Ace, CardSuit.Spades),
-				new Card(CardValue.Nine, CardSuit.Diamonds),
-				new Card(CardValue.Eight, CardSuit.Clubs),
-				new Card(CardValue.King, CardSuit.Diamonds),
-				new Card(CardValue.Three, CardSuit.Clubs)
+				new (CardValue.Ace, CardSuit.Diamonds),
+				new (CardValue.Two, CardSuit.Hearts),
+				new (CardValue.Four, CardSuit.Spades),
+				new (CardValue.Ace, CardSuit.Spades),
+				new (CardValue.Nine, CardSuit.Diamonds),
+				new (CardValue.Eight, CardSuit.Clubs),
+				new (CardValue.King, CardSuit.Diamonds),
+				new (CardValue.Three, CardSuit.Clubs)
 			};
 
 			//act + assert
@@ -120,13 +120,13 @@ namespace PokerCalculator.Tests.Unit.Domain.PokerObjects
 			//arrange
 			_instance.AddCards(new List<Card>
 			{
-				new Card(CardValue.Ace, CardSuit.Diamonds),
-				new Card(CardValue.Two, CardSuit.Diamonds),
-				new Card(CardValue.Three, CardSuit.Diamonds),
-				new Card(CardValue.Four, CardSuit.Diamonds),
-				new Card(CardValue.Five, CardSuit.Diamonds),
-				new Card(CardValue.Six, CardSuit.Diamonds),
-				new Card(CardValue.Seven, CardSuit.Diamonds),
+				new (CardValue.Ace, CardSuit.Diamonds),
+				new (CardValue.Two, CardSuit.Diamonds),
+				new (CardValue.Three, CardSuit.Diamonds),
+				new (CardValue.Four, CardSuit.Diamonds),
+				new (CardValue.Five, CardSuit.Diamonds),
+				new (CardValue.Six, CardSuit.Diamonds),
+				new (CardValue.Seven, CardSuit.Diamonds),
 			});
 
 			//act + assert
@@ -185,18 +185,18 @@ namespace PokerCalculator.Tests.Unit.Domain.PokerObjects
 			//arrange
 			_instance.AddCards(new List<Card>
 			{
-				new Card(CardValue.Eight, CardSuit.Diamonds),
-				new Card(CardValue.Ten, CardSuit.Hearts),
-				new Card(CardValue.Seven, CardSuit.Hearts)
+				new (CardValue.Eight, CardSuit.Diamonds),
+				new (CardValue.Ten, CardSuit.Hearts),
+				new (CardValue.Seven, CardSuit.Hearts)
 			});
 
 			var cardsToAdd = new List<Card>
 			{
-				new Card(CardValue.Ten, CardSuit.Diamonds),
-				new Card(CardValue.Two, CardSuit.Spades),
-				new Card(CardValue.Three, CardSuit.Clubs),
-				new Card(CardValue.King, CardSuit.Clubs),
-				new Card(CardValue.Ace, CardSuit.Hearts)
+				new (CardValue.Ten, CardSuit.Diamonds),
+				new (CardValue.Two, CardSuit.Spades),
+				new (CardValue.Three, CardSuit.Clubs),
+				new (CardValue.King, CardSuit.Clubs),
+				new (CardValue.Ace, CardSuit.Hearts)
 			};
 
 			//act + assert
@@ -210,16 +210,16 @@ namespace PokerCalculator.Tests.Unit.Domain.PokerObjects
 			//arrange
 			_instance.AddCards(new List<Card>
 			{
-				new Card(CardValue.Eight, CardSuit.Diamonds),
-				new Card(CardValue.Ten, CardSuit.Hearts),
-				new Card(CardValue.Seven, CardSuit.Hearts)
+				new (CardValue.Eight, CardSuit.Diamonds),
+				new (CardValue.Ten, CardSuit.Hearts),
+				new (CardValue.Seven, CardSuit.Hearts)
 			});
 
 			var cardsToAdd = new List<Card>
 			{
-				new Card(CardValue.Two, CardSuit.Spades),
-				new Card(CardValue.Eight, CardSuit.Diamonds),
-				new Card(CardValue.Ten, CardSuit.Hearts)
+				new (CardValue.Two, CardSuit.Spades),
+				new (CardValue.Eight, CardSuit.Diamonds),
+				new (CardValue.Ten, CardSuit.Hearts)
 			};
 
 			//act + assert
@@ -233,15 +233,15 @@ namespace PokerCalculator.Tests.Unit.Domain.PokerObjects
 			//arrange
 			_instance.AddCards(new List<Card>
 			{
-				new Card(CardValue.Ten, CardSuit.Spades),
-				new Card(CardValue.Four, CardSuit.Diamonds),
+				new (CardValue.Ten, CardSuit.Spades),
+				new (CardValue.Four, CardSuit.Diamonds),
 			});
 
 			var cardsToAdd = new List<Card>
 			{
-				new Card(CardValue.Eight, CardSuit.Diamonds),
-				new Card(CardValue.Ten, CardSuit.Hearts),
-				new Card(CardValue.Eight, CardSuit.Diamonds)
+				new (CardValue.Eight, CardSuit.Diamonds),
+				new (CardValue.Ten, CardSuit.Hearts),
+				new (CardValue.Eight, CardSuit.Diamonds)
 			};
 
 			//act + assert
@@ -277,8 +277,8 @@ namespace PokerCalculator.Tests.Unit.Domain.PokerObjects
 
 			var cardsToAdd = new List<Card>
 			{
-				new Card(CardValue.Four, CardSuit.Spades),
-				new Card(CardValue.Ten, CardSuit.Hearts)
+				new (CardValue.Four, CardSuit.Spades),
+				new (CardValue.Ten, CardSuit.Hearts)
 			};
 
 			//act
@@ -326,14 +326,14 @@ namespace PokerCalculator.Tests.Unit.Domain.PokerObjects
 			//arrange
 			_instance.AddCards(new List<Card>
 			{
-				new Card(CardValue.Three, CardSuit.Diamonds),
-				new Card(CardValue.Seven, CardSuit.Hearts)
+				new (CardValue.Three, CardSuit.Diamonds),
+				new (CardValue.Seven, CardSuit.Hearts)
 			});
 
 			var hand2 = new Hand(new List<Card>
 			{
-				new Card(CardValue.Eight, CardSuit.Diamonds),
-				new Card(CardValue.Four, CardSuit.Hearts)
+				new (CardValue.Eight, CardSuit.Diamonds),
+				new (CardValue.Four, CardSuit.Hearts)
 			});
 
 			//act
@@ -350,14 +350,14 @@ namespace PokerCalculator.Tests.Unit.Domain.PokerObjects
 			//arrange
 			_instance.AddCards(new List<Card>
 			{
-				new Card(CardValue.Three, CardSuit.Diamonds),
-				new Card(CardValue.Seven, CardSuit.Hearts)
+				new (CardValue.Three, CardSuit.Diamonds),
+				new (CardValue.Seven, CardSuit.Hearts)
 			});
 
 			var hand2 = new Hand(new List<Card>
 			{
-				new Card(CardValue.Eight, CardSuit.Diamonds),
-				new Card(CardValue.Four, CardSuit.Hearts)
+				new (CardValue.Eight, CardSuit.Diamonds),
+				new (CardValue.Four, CardSuit.Hearts)
 			});
 
 			//act
