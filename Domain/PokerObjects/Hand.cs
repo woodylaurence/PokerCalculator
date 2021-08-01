@@ -9,7 +9,7 @@ namespace PokerCalculator.Domain.PokerObjects
 		#region Properties and Fields
 
 		//todo is a Hand actually a collection of cards, rather than having a collection of cards?
-		public virtual List<Card> Cards { get; private set; } //todo this can probably be made into an init property
+		public virtual List<Card> Cards { get; private init; }
 
 		#endregion
 
@@ -38,10 +38,7 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// Adds the card.
 		/// </summary>
 		/// <param name="cardToAdd">Card to add.</param>
-		public virtual void AddCard(Card cardToAdd)
-		{
-			AddCards(new List<Card> { cardToAdd });
-		}
+		public virtual void AddCard(Card cardToAdd) => AddCards(new List<Card> { cardToAdd });
 
 		#endregion
 
@@ -71,10 +68,9 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// <param name="hand1"></param>
 		/// <param name="hand2"></param>
 		/// <returns></returns>
-		public static Hand operator +(Hand hand1, Hand hand2) => hand1.Operator_plus(hand2);
-		protected internal virtual Hand Operator_plus(Hand hand2)
+		public static Hand operator +(Hand hand1, Hand hand2)
 		{
-			var returnHand = Clone();
+			var returnHand = hand1.Clone();
 			returnHand.AddCards(hand2.Cards.ToList());
 			return returnHand;
 		}
@@ -83,16 +79,13 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// 
 		/// </summary>
 		/// <returns></returns>
-		public virtual Hand Clone()
-		{
-			return new Hand { Cards = Cards.ToList() };
-		}
+		public virtual Hand Clone() => new() { Cards = Cards.ToList() };
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="cardsToAdd"></param>
-		protected internal virtual void VerifyCardsCanBeAdded(List<Card> cardsToAdd)
+		private void VerifyCardsCanBeAdded(List<Card> cardsToAdd)
 		{
 			if (Cards.Count + cardsToAdd.Count > 7) throw new ArgumentException("A Hand cannot have more than seven cards");
 			if (cardsToAdd.Distinct().Count() != cardsToAdd.Count) throw new ArgumentException("A Hand cannot contain duplicate cards");

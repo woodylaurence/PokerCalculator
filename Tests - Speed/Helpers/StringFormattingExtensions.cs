@@ -1,4 +1,4 @@
-﻿namespace PokerCalculator.Tests.Speed.PokerCalculator
+﻿namespace PokerCalculator.Tests.Speed.Helpers
 {
 	public static class StringFormattingExtensions
 	{

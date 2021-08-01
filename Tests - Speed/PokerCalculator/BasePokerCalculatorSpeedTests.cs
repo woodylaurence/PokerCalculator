@@ -3,6 +3,7 @@ using NUnit.Framework;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerCalculator;
 using PokerCalculator.Domain.PokerObjects;
+using PokerCalculator.Tests.Speed.Helpers;
 using PokerCalculator.Tests.Speed.PokerCalculator.TestData;
 using System;
 using System.Collections.Generic;

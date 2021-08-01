@@ -16,17 +16,6 @@ namespace PokerCalculator.Domain.Helpers
 		#region Constructors
 
 		/// <summary>
-		///
-		/// </summary>
-		/// <param name="percentage"></param>
-		/// <param name="error"></param>
-		internal PercentageWithError(double percentage, double error)
-		{
-			Percentage = percentage;
-			Error = error;
-		}
-
-		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="percentages"></param>
