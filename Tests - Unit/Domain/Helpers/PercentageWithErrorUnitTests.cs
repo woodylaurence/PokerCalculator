@@ -4,7 +4,7 @@ using PokerCalculator.Tests.Shared;
 using System;
 using System.Collections.Generic;
 
-namespace PokerCalculator.Tests.Unit.Helpers
+namespace PokerCalculator.Tests.Unit.Domain.Helpers
 {
 	[TestFixture]
 	public class PercentageWithErrorUnitTests : AbstractUnitTestBase

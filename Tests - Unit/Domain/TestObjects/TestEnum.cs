@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace PokerCalculator.Tests.Unit.TestObjects
+namespace PokerCalculator.Tests.Unit.Domain.TestObjects
 {
 	public enum TestEnum
 	{

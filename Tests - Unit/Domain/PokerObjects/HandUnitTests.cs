@@ -1,35 +1,23 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using NUnit.Framework;
-using PokerCalculator.Domain.Helpers;
+﻿using NUnit.Framework;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
 using System;
 using System.Collections.Generic;
 
-namespace PokerCalculator.Tests.Unit.PokerObjects
+namespace PokerCalculator.Tests.Unit.Domain.PokerObjects
 {
 	[TestFixture]
 	public class HandUnitTests : AbstractUnitTestBase
 	{
 		private Hand _instance;
-		private IEqualityComparer<Card> _cardComparer;
 
 		[SetUp]
 		protected override void Setup()
 		{
-			_cardComparer = new CardComparer();
-
 			base.Setup();
 
-			_instance = new Hand(new List<Card>(), _cardComparer);
-		}
-
-		protected override void RegisterServices(IServiceCollection services)
-		{
-			base.RegisterServices(services);
-
-			services.AddSingleton(_cardComparer);
+			_instance = new Hand(new List<Card>());
 		}
 
 		#region Constructor
@@ -72,7 +60,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			};
 
 			//act + assert
-			var actualException = Assert.Throws<ArgumentException>(() => new Hand(cards, _cardComparer));
+			var actualException = Assert.Throws<ArgumentException>(() => new Hand(cards));
 			Assert.That(actualException.Message, Is.EqualTo("A Hand cannot contain more than seven cards (Parameter 'cards')"));
 			Assert.That(actualException.ParamName, Is.EqualTo("cards"));
 		}
@@ -90,7 +78,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			var cards = new List<Card> { duplicatedCard1, card3, duplicatedCard2 };
 
 			//act + assert
-			var actualException = Assert.Throws<ArgumentException>(() => new Hand(cards, _cardComparer));
+			var actualException = Assert.Throws<ArgumentException>(() => new Hand(cards));
 			Assert.That(actualException.Message, Is.EqualTo("A Hand cannot contain duplicate cards (Parameter 'cards')"));
 			Assert.That(actualException.ParamName, Is.EqualTo("cards"));
 		}
@@ -106,7 +94,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			var cards = new List<Card> { card1, card2, card3 };
 
 			//act
-			var actual = new Hand(cards, _cardComparer);
+			var actual = new Hand(cards);
 
 			//assert
 			Assert.That(actual.Cards, Is.Not.SameAs(cards));

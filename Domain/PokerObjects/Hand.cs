@@ -1,5 +1,4 @@
-﻿using CommonServiceLocator;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,8 +7,6 @@ namespace PokerCalculator.Domain.PokerObjects
 	public class Hand
 	{
 		#region Properties and Fields
-
-		private readonly IEqualityComparer<Card> _cardComparer;
 
 		//todo is a Hand actually a collection of cards, rather than having a collection of cards?
 		public virtual List<Card> Cards { get; private set; } //todo this can probably be made into an init property
@@ -22,13 +19,10 @@ namespace PokerCalculator.Domain.PokerObjects
 		/// 
 		/// </summary>
 		/// <param name="cards"></param>
-		public Hand(List<Card> cards) : this(cards, ServiceLocator.Current.GetInstance<IEqualityComparer<Card>>()) { }
-		public Hand(List<Card> cards, IEqualityComparer<Card> cardComparer)
+		public Hand(List<Card> cards)
 		{
-			_cardComparer = cardComparer;
-
 			if (cards.Count > 7) throw new ArgumentException("A Hand cannot contain more than seven cards", nameof(cards));
-			if (cards.Distinct(_cardComparer).Count() != cards.Count) throw new ArgumentException("A Hand cannot contain duplicate cards", nameof(cards));
+			if (cards.Distinct().Count() != cards.Count) throw new ArgumentException("A Hand cannot contain duplicate cards", nameof(cards));
 
 			Cards = cards.ToList();
 		}
@@ -101,8 +95,8 @@ namespace PokerCalculator.Domain.PokerObjects
 		protected internal virtual void VerifyCardsCanBeAdded(List<Card> cardsToAdd)
 		{
 			if (Cards.Count + cardsToAdd.Count > 7) throw new ArgumentException("A Hand cannot have more than seven cards");
-			if (cardsToAdd.Distinct(_cardComparer).Count() != cardsToAdd.Count) throw new ArgumentException("A Hand cannot contain duplicate cards");
-			if (cardsToAdd.Any(x => Cards.Contains(x, _cardComparer))) throw new ArgumentException("A Hand cannot contain duplicate cards");
+			if (cardsToAdd.Distinct().Count() != cardsToAdd.Count) throw new ArgumentException("A Hand cannot contain duplicate cards");
+			if (cardsToAdd.Any(x => Cards.Contains(x))) throw new ArgumentException("A Hand cannot contain duplicate cards");
 		}
 
 		#endregion

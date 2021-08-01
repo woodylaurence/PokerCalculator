@@ -8,12 +8,12 @@ using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
 using PokerCalculator.Tests.Shared.TestObjects;
-using PokerCalculator.Tests.Unit.TestData;
+using PokerCalculator.Tests.Unit.Domain.TestData;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace PokerCalculator.Tests.Unit.PokerCalculator
+namespace PokerCalculator.Tests.Unit.Domain.PokerCalculator
 {
 	[TestFixture]
 	public class PokerHandBasedHandRankPokerCalculatorUnitTests : AbstractUnitTestBase
@@ -21,14 +21,12 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 		private PokerHandBasedHandRankPokerCalculator _instance;
 		private Deck _deck;
 		private Mock<IHandRankCalculator<PokerHandBasedHandRank, PokerHand>> _handRankCalculator;
-		private CardComparer _cardComparer;
 		private MethodInfo _executeCalculatePokerOddsForIterationMethod;
 
 		[SetUp]
 		protected override void Setup()
 		{
 			_handRankCalculator = new Mock<IHandRankCalculator<PokerHandBasedHandRank, PokerHand>>();
-			_cardComparer = new CardComparer();
 
 			base.Setup();
 
@@ -42,7 +40,6 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			base.RegisterServices(services);
 
 			services.AddSingleton<IRandomNumberGenerator, FakeRandomNumberGenerator>();
-			services.AddSingleton<IEqualityComparer<Card>>(_cardComparer);
 		}
 
 
@@ -73,12 +70,12 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			//assert
 			Assert.That(_deck.Cards, Has.Count.EqualTo(47));
 
-			var expectedDeckCards = CardTestCaseData.AllCards.Where(x => _cardComparer.Equals(x, myHandCard1) == false &&
-																		 _cardComparer.Equals(x, myHandCard2) &&
-																		 _cardComparer.Equals(x, boardHandCard1) &&
-																		 _cardComparer.Equals(x, boardHandCard2) &&
-																		 _cardComparer.Equals(x, boardHandCard3)).ToList();
-			expectedDeckCards.ForEach(x => Assert.That(_deck.Cards.Contains(x, _cardComparer)));
+			var expectedDeckCards = CardTestCaseData.AllCards.Where(x => x != myHandCard1 &&
+																		 x != myHandCard2 &&
+																		 x != boardHandCard1 &&
+																		 x != boardHandCard2 &&
+																		 x != boardHandCard3).ToList();
+			expectedDeckCards.ForEach(x => Assert.That(_deck.Cards.Contains(x)));
 		}
 
 		[Test]
@@ -103,8 +100,8 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 
 			//assert
 			Assert.That(myHand.Cards, Has.Count.EqualTo(2));
-			Assert.That(myHand.Cards, Has.One.EqualTo(myHandCard1).Using(_cardComparer));
-			Assert.That(myHand.Cards, Has.One.EqualTo(myHandCard2).Using(_cardComparer));
+			Assert.That(myHand.Cards, Has.One.EqualTo(myHandCard1));
+			Assert.That(myHand.Cards, Has.One.EqualTo(myHandCard2));
 		}
 
 		[Test]
@@ -129,9 +126,9 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 
 			//assert
 			Assert.That(boardHand.Cards, Has.Count.EqualTo(3));
-			Assert.That(boardHand.Cards, Has.One.EqualTo(boardHandCard1).Using(_cardComparer));
-			Assert.That(boardHand.Cards, Has.One.EqualTo(boardHandCard2).Using(_cardComparer));
-			Assert.That(boardHand.Cards, Has.One.EqualTo(boardHandCard3).Using(_cardComparer));
+			Assert.That(boardHand.Cards, Has.One.EqualTo(boardHandCard1));
+			Assert.That(boardHand.Cards, Has.One.EqualTo(boardHandCard2));
+			Assert.That(boardHand.Cards, Has.One.EqualTo(boardHandCard3));
 		}
 
 		#endregion

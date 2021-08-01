@@ -1,11 +1,11 @@
-﻿using NUnit.Framework;
+﻿using System.Collections.Generic;
+using System.Linq;
+using NUnit.Framework;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace PokerCalculator.Tests.Unit.TestData
+namespace PokerCalculator.Tests.Unit.Domain.TestData
 {
 	public static class CardTestCaseData
 	{

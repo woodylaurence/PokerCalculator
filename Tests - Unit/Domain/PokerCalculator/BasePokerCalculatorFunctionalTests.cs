@@ -8,7 +8,7 @@ using PokerCalculator.Tests.Shared;
 using PokerCalculator.Tests.Shared.TestObjects;
 using System.Collections.Generic;
 
-namespace PokerCalculator.Tests.Unit.PokerCalculator
+namespace PokerCalculator.Tests.Unit.Domain.PokerCalculator
 {
 	public abstract class BasePokerCalculatorFunctionalTests : AbstractUnitTestBase
 	{
@@ -34,7 +34,6 @@ namespace PokerCalculator.Tests.Unit.PokerCalculator
 			base.RegisterServices(services);
 
 			services.AddSingleton(_randomNumberGenerator);
-			services.AddSingleton<IEqualityComparer<Card>>(new CardComparer());
 		}
 
 		#region CalculatePokerOdds

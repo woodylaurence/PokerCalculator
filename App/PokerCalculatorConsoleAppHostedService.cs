@@ -15,11 +15,13 @@ namespace PokerCalculator.App
 	public class PokerCalculatorConsoleAppHostedService : IHostedService
 	{
 		private readonly IPokerCalculator _pokerCalculator;
+		private readonly StringToCardParser _cardParser;
 		private readonly AppSettings _appSettings;
 
-		public PokerCalculatorConsoleAppHostedService(IPokerCalculator pokerCalculator, IOptions<AppSettings> appSettings)
+		public PokerCalculatorConsoleAppHostedService(IPokerCalculator pokerCalculator, IOptions<AppSettings> appSettings, StringToCardParser cardParser)
 		{
 			_pokerCalculator = pokerCalculator ?? throw new ArgumentNullException(nameof(pokerCalculator));
+			_cardParser = cardParser;
 			_appSettings = appSettings?.Value ?? throw new ArgumentNullException(nameof(appSettings));
 		}
 
@@ -81,7 +83,7 @@ namespace PokerCalculator.App
 			var clonedDeck = deck.Clone();
 			try
 			{
-				var cards = cardsForHand.Select(x => new Card(x)).ToList();
+				var cards = cardsForHand.Select(_cardParser.ParseCard).ToList();
 				cards.ForEach(card =>
 				{
 					hand.AddCard(card);

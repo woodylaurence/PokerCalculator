@@ -3,11 +3,11 @@ using NUnit.Framework;
 using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Tests.Shared;
-using PokerCalculator.Tests.Unit.TestData;
+using PokerCalculator.Tests.Unit.Domain.TestData;
 using System;
 using System.Collections.Generic;
 
-namespace PokerCalculator.Tests.Unit.HandRankCalculator
+namespace PokerCalculator.Tests.Unit.Domain.HandRankCalculator
 {
 	[TestFixture]
 	public class PokerHandBasedHandRankUnitTests : AbstractUnitTestBase

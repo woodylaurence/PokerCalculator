@@ -2,7 +2,7 @@
 using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.PokerCalculator;
 
-namespace PokerCalculator.Tests.Unit.PokerCalculator
+namespace PokerCalculator.Tests.Unit.Domain.PokerCalculator
 {
 	[TestFixture]
 	public class PokerHandBasedHandRankPokerCalculatorFunctionalTests : BasePokerCalculatorFunctionalTests

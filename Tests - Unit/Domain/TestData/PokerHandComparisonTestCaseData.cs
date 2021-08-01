@@ -1,10 +1,10 @@
-﻿using NUnit.Framework;
+﻿using System.Collections.Generic;
+using System.Linq;
+using NUnit.Framework;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerEnums;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace PokerCalculator.Tests.Unit.TestData
+namespace PokerCalculator.Tests.Unit.Domain.TestData
 {
 	public class PokerHandComparisonTestCaseData : TestCaseData
 	{

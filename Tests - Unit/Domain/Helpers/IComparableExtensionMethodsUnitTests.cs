@@ -1,9 +1,9 @@
 ﻿using NUnit.Framework;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Tests.Shared;
-using PokerCalculator.Tests.Unit.TestObjects;
+using PokerCalculator.Tests.Unit.Domain.TestObjects;
 
-namespace PokerCalculator.Tests.Unit.Helpers
+namespace PokerCalculator.Tests.Unit.Domain.Helpers
 {
 	[TestFixture]
 	public class IComparableExtensionMethodsUnitTests : AbstractUnitTestBase

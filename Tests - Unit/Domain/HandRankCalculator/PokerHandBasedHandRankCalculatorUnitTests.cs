@@ -1,13 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using PokerCalculator.Domain.HandRankCalculator;
-using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
 using System.Collections.Generic;
 
-namespace PokerCalculator.Tests.Unit.HandRankCalculator
+namespace PokerCalculator.Tests.Unit.Domain.HandRankCalculator
 {
 	[TestFixture]
 	public class PokerHandBasedHandRankCalculatorUnitTests : AbstractUnitTestBase
@@ -21,13 +19,6 @@ namespace PokerCalculator.Tests.Unit.HandRankCalculator
 			base.Setup();
 
 			_instance = new PokerHandBasedHandRankCalculator();
-		}
-
-		protected override void RegisterServices(IServiceCollection services)
-		{
-			base.RegisterServices(services);
-
-			services.AddSingleton<IEqualityComparer<Card>, CardComparer>();
 		}
 
 		#region CalculateHandRank

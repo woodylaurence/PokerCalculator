@@ -6,8 +6,6 @@ using PokerCalculator.Domain.HandRankCalculator;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerCalculator;
 using PokerCalculator.Domain.PokerEnums;
-using PokerCalculator.Domain.PokerObjects;
-using System.Collections.Generic;
 
 namespace PokerCalculator.App
 {
@@ -19,7 +17,7 @@ namespace PokerCalculator.App
 				.ConfigureAppConfiguration(x => x.AddJsonFile("appsettings.json", false, true))
 				.ConfigureServices((context, services) =>
 				{
-					services.AddSingleton<IEqualityComparer<Card>, CardComparer>();
+					services.AddSingleton<StringToCardParser>();
 					services.AddTransient<IRandomNumberGenerator, RandomNumberGenerator>();
 					services.AddTransient<IHandRankCalculator<PokerHandBasedHandRank, PokerHand>, PokerHandBasedHandRankCalculator>();
 					services.AddTransient<IPokerCalculator, PokerHandBasedHandRankPokerCalculator>();

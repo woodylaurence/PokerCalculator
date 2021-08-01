@@ -4,7 +4,7 @@ using PokerCalculator.Tests.Shared;
 using System;
 using System.Collections.Generic;
 
-namespace PokerCalculator.Tests.Unit.PokerCalculator
+namespace PokerCalculator.Tests.Unit.Domain.PokerCalculator
 {
 	[TestFixture]
 	public class PokerOddsUnitTests : AbstractUnitTestBase

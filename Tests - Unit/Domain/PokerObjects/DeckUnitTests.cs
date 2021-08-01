@@ -5,19 +5,18 @@ using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Domain.PokerEnums;
 using PokerCalculator.Domain.PokerObjects;
 using PokerCalculator.Tests.Shared;
-using PokerCalculator.Tests.Unit.TestData;
+using PokerCalculator.Tests.Unit.Domain.TestData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace PokerCalculator.Tests.Unit.PokerObjects
+namespace PokerCalculator.Tests.Unit.Domain.PokerObjects
 {
 	[TestFixture]
 	public class DeckUnitTests : AbstractUnitTestBase
 	{
 		private Deck _instance;
 		private Mock<IRandomNumberGenerator> _randomNumberGenerator;
-		private CardComparer _cardComparer;
 
 		[SetUp]
 		protected override void Setup()
@@ -25,8 +24,6 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			_randomNumberGenerator = new Mock<IRandomNumberGenerator>();
 
 			base.Setup();
-
-			_cardComparer = new CardComparer();
 		}
 
 		protected override void RegisterServices(IServiceCollection services)
@@ -48,7 +45,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 
 			//assert
 			Assert.That(actual.Cards, Has.Count.EqualTo(52));
-			CardTestCaseData.AllCards.ForEach(x => Assert.That(actual.Cards.Contains(x, _cardComparer), $"Deck is missing card: {x}"));
+			CardTestCaseData.AllCards.ForEach(x => Assert.That(actual.Cards.Contains(x), $"Deck is missing card: {x}"));
 		}
 
 		#endregion
@@ -72,7 +69,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 
 			//assert
 			Assert.That(actual.Cards, Has.Count.EqualTo(4));
-			cards.ForEach(x => Assert.That(actual.Cards.Contains(x, _cardComparer)));
+			cards.ForEach(x => Assert.That(actual.Cards.Contains(x)));
 		}
 
 		[Test]
@@ -95,7 +92,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 
 			var cardToAddAfterDeckCreated = new Card(CardValue.Two, CardSuit.Spades);
 			cards.Add(cardToAddAfterDeckCreated);
-			Assert.That(actual.Cards, Has.None.EqualTo(cardToAddAfterDeckCreated).Using(_cardComparer));
+			Assert.That(actual.Cards, Has.None.EqualTo(cardToAddAfterDeckCreated));
 		}
 
 		#endregion
@@ -127,10 +124,10 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 
 			//assert
 			Assert.That(_instance.Cards, Has.Count.EqualTo(4));
-			Assert.That(_instance.Cards[0], Is.EqualTo(card4).Using(_cardComparer));
-			Assert.That(_instance.Cards[1], Is.EqualTo(card2).Using(_cardComparer));
-			Assert.That(_instance.Cards[2], Is.EqualTo(card1).Using(_cardComparer));
-			Assert.That(_instance.Cards[3], Is.EqualTo(card3).Using(_cardComparer));
+			Assert.That(_instance.Cards[0], Is.EqualTo(card4));
+			Assert.That(_instance.Cards[1], Is.EqualTo(card2));
+			Assert.That(_instance.Cards[2], Is.EqualTo(card1));
+			Assert.That(_instance.Cards[3], Is.EqualTo(card3));
 		}
 
 		#endregion
@@ -158,10 +155,10 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			var actual = _instance.Clone();
 
 			//assert
-			Assert.That(actual.Cards[0], Is.EqualTo(card1InOriginalDeck).Using(_cardComparer));
-			Assert.That(actual.Cards[1], Is.EqualTo(card2InOriginalDeck).Using(_cardComparer));
-			Assert.That(actual.Cards[2], Is.EqualTo(card3InOriginalDeck).Using(_cardComparer));
-			Assert.That(actual.Cards[3], Is.EqualTo(card4InOriginalDeck).Using(_cardComparer));
+			Assert.That(actual.Cards[0], Is.EqualTo(card1InOriginalDeck));
+			Assert.That(actual.Cards[1], Is.EqualTo(card2InOriginalDeck));
+			Assert.That(actual.Cards[2], Is.EqualTo(card3InOriginalDeck));
+			Assert.That(actual.Cards[3], Is.EqualTo(card4InOriginalDeck));
 		}
 
 		[Test]
@@ -183,8 +180,8 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			Assert.That(actual.Cards, Is.Not.SameAs(_instance.Cards));
 
 			var randomCardFromOriginalDeck = _instance.TakeRandomCard();
-			Assert.That(_instance.Cards, Has.None.EqualTo(randomCardFromOriginalDeck).Using(_cardComparer));
-			Assert.That(actual.Cards, Has.One.EqualTo(randomCardFromOriginalDeck).Using(_cardComparer));
+			Assert.That(_instance.Cards, Has.None.EqualTo(randomCardFromOriginalDeck));
+			Assert.That(actual.Cards, Has.One.EqualTo(randomCardFromOriginalDeck));
 		}
 
 		#endregion
@@ -220,7 +217,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			_instance.RemoveCard(value, suit);
 
 			//assert
-			Assert.That(_instance.Cards, Has.None.EqualTo(new Card(value, suit)).Using(_cardComparer));
+			Assert.That(_instance.Cards, Has.None.EqualTo(new Card(value, suit)));
 		}
 
 		[Test]
@@ -235,8 +232,8 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			_instance.RemoveCard(value, suit);
 
 			//assert
-			var otherCards = CardTestCaseData.AllCards.Where(x => _cardComparer.Equals(x, new Card(value, suit)) == false).ToList();
-			otherCards.ForEach(x => Assert.That(_instance.Cards, Has.One.EqualTo(x).Using(_cardComparer)));
+			var otherCards = CardTestCaseData.AllCards.Where(x => x != new Card(value, suit)).ToList();
+			otherCards.ForEach(x => Assert.That(_instance.Cards, Has.One.EqualTo(x)));
 		}
 
 		#endregion
@@ -272,7 +269,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			_instance.TakeCard(value, suit);
 
 			//assert
-			Assert.That(_instance.Cards, Has.None.EqualTo(new Card(value, suit)).Using(_cardComparer));
+			Assert.That(_instance.Cards, Has.None.EqualTo(new Card(value, suit)));
 		}
 
 		[Test]
@@ -287,7 +284,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			var actual = _instance.TakeCard(value, suit);
 
 			//assert
-			Assert.That(actual, Is.EqualTo(new Card(value, suit)).Using(_cardComparer));
+			Assert.That(actual, Is.EqualTo(new Card(value, suit)));
 		}
 
 		[Test]
@@ -302,8 +299,8 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			_instance.TakeCard(value, suit);
 
 			//assert
-			var otherCards = CardTestCaseData.AllCards.Where(x => _cardComparer.Equals(x, new Card(value, suit)) == false).ToList();
-			otherCards.ForEach(x => Assert.That(_instance.Cards, Has.One.EqualTo(x).Using(_cardComparer)));
+			var otherCards = CardTestCaseData.AllCards.Where(x => x != new Card(value, suit)).ToList();
+			otherCards.ForEach(x => Assert.That(_instance.Cards, Has.One.EqualTo(x)));
 		}
 
 		#endregion
@@ -336,7 +333,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			_instance.TakeRandomCard();
 
 			//assert
-			Assert.That(_instance.Cards, Has.None.EqualTo(randomCardToTakeFromDeck).Using(_cardComparer));
+			Assert.That(_instance.Cards, Has.None.EqualTo(randomCardToTakeFromDeck));
 		}
 
 		[Test]
@@ -354,7 +351,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			var actual = _instance.TakeRandomCard();
 
 			//assert
-			Assert.That(actual, Is.EqualTo(randomCardToTakeFromDeck).Using(_cardComparer));
+			Assert.That(actual, Is.EqualTo(randomCardToTakeFromDeck));
 		}
 
 		[Test]
@@ -372,8 +369,8 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			_instance.TakeRandomCard();
 
 			//assert
-			var otherCards = CardTestCaseData.AllCards.Where(x => _cardComparer.Equals(x, randomCardToTakeFromDeck) == false).ToList();
-			otherCards.ForEach(x => Assert.That(_instance.Cards, Has.One.EqualTo(x).Using(_cardComparer)));
+			var otherCards = CardTestCaseData.AllCards.Where(x => x != randomCardToTakeFromDeck).ToList();
+			otherCards.ForEach(x => Assert.That(_instance.Cards, Has.One.EqualTo(x)));
 		}
 
 		#endregion
@@ -417,9 +414,9 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			_instance.TakeRandomCards(3);
 
 			//assert
-			Assert.That(_instance.Cards, Has.None.EqualTo(randomCard1ToTakeFromDeck).Using(_cardComparer));
-			Assert.That(_instance.Cards, Has.None.EqualTo(randomCard2ToTakeFromDeck).Using(_cardComparer));
-			Assert.That(_instance.Cards, Has.None.EqualTo(randomCard3ToTakeFromDeck).Using(_cardComparer));
+			Assert.That(_instance.Cards, Has.None.EqualTo(randomCard1ToTakeFromDeck));
+			Assert.That(_instance.Cards, Has.None.EqualTo(randomCard2ToTakeFromDeck));
+			Assert.That(_instance.Cards, Has.None.EqualTo(randomCard3ToTakeFromDeck));
 		}
 
 		[Test]
@@ -445,9 +442,9 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 
 			//assert
 			Assert.That(actual, Has.Count.EqualTo(3));
-			Assert.That(actual, Has.One.EqualTo(randomCard1ToTakeFromDeck).Using(_cardComparer));
-			Assert.That(actual, Has.One.EqualTo(randomCard2ToTakeFromDeck).Using(_cardComparer));
-			Assert.That(actual, Has.One.EqualTo(randomCard3ToTakeFromDeck).Using(_cardComparer));
+			Assert.That(actual, Has.One.EqualTo(randomCard1ToTakeFromDeck));
+			Assert.That(actual, Has.One.EqualTo(randomCard2ToTakeFromDeck));
+			Assert.That(actual, Has.One.EqualTo(randomCard3ToTakeFromDeck));
 		}
 
 		[Test]
@@ -472,9 +469,9 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			_instance.TakeRandomCards(3);
 
 			//assert
-			var otherCards = CardTestCaseData.AllCards.Where(x => _cardComparer.Equals(x, randomCard1ToTakeFromDeck) &&
-																  _cardComparer.Equals(x, randomCard2ToTakeFromDeck) &&
-																  _cardComparer.Equals(x, randomCard3ToTakeFromDeck)).ToList();
+			var otherCards = CardTestCaseData.AllCards.Where(x => x != randomCard1ToTakeFromDeck &&
+																  x != randomCard2ToTakeFromDeck &&
+																  x != randomCard3ToTakeFromDeck).ToList();
 			otherCards.ForEach(x => Assert.That(_instance.Cards, Has.One.EqualTo(x), $"Deck is missing {x}"));
 		}
 
@@ -511,7 +508,7 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 			_instance.GetRandomCards(3);
 
 			//assert
-			CardTestCaseData.AllCards.ForEach(x => Assert.That(_instance.Cards, Has.One.EqualTo(x).Using(_cardComparer)));
+			CardTestCaseData.AllCards.ForEach(x => Assert.That(_instance.Cards, Has.One.EqualTo(x)));
 		}
 
 		[Test]
@@ -537,9 +534,9 @@ namespace PokerCalculator.Tests.Unit.PokerObjects
 
 			//assert
 			Assert.That(actual, Has.Count.EqualTo(3));
-			Assert.That(actual, Has.One.EqualTo(randomCard1ToTakeFromDeck).Using(_cardComparer));
-			Assert.That(actual, Has.One.EqualTo(randomCard2ToTakeFromDeck).Using(_cardComparer));
-			Assert.That(actual, Has.One.EqualTo(randomCard3ToTakeFromDeck).Using(_cardComparer));
+			Assert.That(actual, Has.One.EqualTo(randomCard1ToTakeFromDeck));
+			Assert.That(actual, Has.One.EqualTo(randomCard2ToTakeFromDeck));
+			Assert.That(actual, Has.One.EqualTo(randomCard3ToTakeFromDeck));
 		}
 
 		#endregion

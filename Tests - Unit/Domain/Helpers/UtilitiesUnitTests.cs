@@ -1,11 +1,11 @@
 ﻿using NUnit.Framework;
 using PokerCalculator.Domain.Helpers;
 using PokerCalculator.Tests.Shared;
-using PokerCalculator.Tests.Unit.TestObjects;
+using PokerCalculator.Tests.Unit.Domain.TestObjects;
 using System;
 using System.Diagnostics;
 
-namespace PokerCalculator.Tests.Unit.Helpers
+namespace PokerCalculator.Tests.Unit.Domain.Helpers
 {
 	[TestFixture]
 	public class UtilitiesUnitTests : AbstractUnitTestBase
